@@ -1,0 +1,146 @@
+<template>
+    <li 
+        class="{{classes}}"
+        on-mouseenter="handleMouseenter"
+        on-mouseleave="handleMouseleave">
+        <div class="view-menu-submenu-title" on-click="handleClick">
+            <slot name="title"></slot>
+            <icon type="ios-arrow-down" class="view-menu-submenu-title-icon"></icon>
+        </div>
+        <ul class="{{ulClasses}}" s-if="mode === 'vertical' && opened">
+            <slot></slot>
+        </ul>
+        <Drop
+            s-else
+            visible="{{opened}}"
+            placement="bottom"
+            width="{{width}}"
+            s-ref="drop">
+            <ul class="view-menu-drop-list">
+                <slot></slot>
+            </ul>
+        </Drop>
+
+    </li>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import Drop from '../select/dropdown';
+import Icon from '../icon';
+import * as C from './constant';
+
+import {getStyle} from '../../utils/assist';
+
+const prefixCls = 'view-menu';
+
+export default {
+    dataTypes: {
+        name: DataTypes.oneOfType([DataTypes.string, DataTypes.number]),
+        disabled: DataTypes.bool,
+        activeName: DataTypes.oneOfType([DataTypes.string, DataTypes.number])
+    },
+    initData() {
+        return {
+            disabled: false,
+            opened: false,
+            active: false
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}-submenu`,
+                {
+                    [`${prefixCls}-item-active`]: this.data.get('active'),
+                    [`${prefixCls}-opened`]: this.data.get('opened'),
+                    [`${prefixCls}-submenu-disabled`]: this.data.get('disabled')
+                }
+            ]);
+        },
+        ulClasses() {
+            return classNames([
+                prefixCls
+            ]);
+        },
+        active() {
+            const activeName = this.data.get('activeName');
+            const name = this.data.get('name');
+            if (!activeName) {
+                return false;
+            }
+
+            return name === activeName;
+        }
+    },
+    components: {
+        'drop': Drop,
+        'icon': Icon
+    },
+    inited() {
+        this.dispatch(C.SUBMENU_ITEM_INITED);
+    },
+    attached() {
+        this.data.set('width', parseFloat(getStyle(this.el, 'width')));
+        this.watch('mode', val => {
+            if (val === 'horizontal') {
+                this.ref('drop').update();
+            }
+        });
+
+        this.watch('opened', val => {
+            if (this.data.get('mode') === 'vertical') {
+                return;
+            }
+            if (val) {
+                this.ref('drop').fire('update-popper');
+            }
+            else {
+                this.ref('drop').destroy();
+            }
+        });
+    },
+    detached() {
+        this.dispatch(C.SUBMENU_ITEM_DETACHED);
+    },
+    handleMouseenter() {
+        if (this.data.get('disabled')) {
+            return;
+        }
+        if (this.data.get('mode') === 'vertical') {
+            return;
+        }
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+            // this.parent.updateOpenKeys(this.name);
+            this.data.set('opened', true);
+        }, 250);
+    },
+    handleMouseleave() {
+        if (this.data.get('disabled')) {
+            return;
+        }
+        if (this.data.get('mode') === 'vertical') {
+            return;
+        }
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+            this.data.set('opened', false);
+        }, 150);
+    },
+    handleClick() {
+        if (this.data.get('disabled')) {
+            return;
+        }
+        if (this.data.get('mode') === 'horizontal') {
+            return;
+        }
+        const opened = this.data.get('opened');
+        if (this.data.get('accordion')) {
+            this.dispatch(C.SUBMENU_ITEM_SELECTED, this.data.get('name'));
+        }
+        // this.data.set('activeName', this.data.get('name'));
+        this.data.set('opened', !opened);
+    }
+};
+</script>

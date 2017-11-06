@@ -1,0 +1,21 @@
+.view-upload
+    input[type="file"]
+        display: none
+
+    &-select
+        display: inline-block
+    
+    &-drag
+        background: #fff
+        border: 1px dashed $border-color-base
+        border-radius: $border-radius-small
+        text-align: center
+        cursor: pointer
+        position: relative
+        overflow: hidden
+        transition: border-color $transition-time ease
+
+        &:hover
+            border: 1px dashed $primary-color
+    &-dragOver
+        border: 2px dashed $primary-color

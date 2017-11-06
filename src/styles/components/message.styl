@@ -1,0 +1,70 @@
+.view-message
+    font-size: $font-size-small;
+    position: fixed;
+    z-index: $zindex-message;
+    width: 100%;
+    top: 16px;
+    left: 0;
+
+    &-notice 
+        width: auto;
+        vertical-align: middle;
+        position: absolute;
+        left: 50%;
+
+        &-close
+            position: absolute;
+            right: 4px;
+            top: 9px;
+            color: #999;
+            outline: none;
+
+            i.view-icon
+                close-base(-3px)
+
+    &-notice-content 
+        position: relative;
+        right: 50%;
+        padding: 8px 16px;
+        border-radius: $border-radius-small;
+        box-shadow: $shadow-base;
+        background: #fff
+        display: block
+        &-text
+            display: inline-block
+
+    &-notice-closable
+        .view-message-notice-content-text
+            padding-right: 32px
+
+    &-success .view-icon
+        color: $success-color
+
+    &-error .view-icon
+        color: $error-color
+
+    &-warning .view-icon
+        color: $warning-color
+
+    &-info .view-icon,
+    &-loading .view-icon 
+        color: $primary-color
+
+    .view-icon
+        margin-right: 8px
+        font-size: 14px
+        top: 1px
+        position: relative
+
+@keyframes ivuMoveUpIn {
+    0% {
+        transform-origin: 0 0;
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform-origin: 0 0;
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}

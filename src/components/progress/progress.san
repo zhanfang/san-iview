@@ -1,0 +1,132 @@
+<template>
+    <div class="{{wrapClasses}}">
+        <div class="{{outerClasses}}">
+            <div class="{{innerClasses}}"><div class="{{bgClasses}}" style="{{bgStyle}}"></div></div>
+        </div>
+        <span s-if="!hideInfo" class="{{textClasses}}">
+            <slot>
+                <span s-if="isStatus" class="{{textInnerClasses}}">
+                    <Icon type="{{statusIcon}}"></Icon>
+                </span>
+                <span s-else class="{{textInnerClasses}}">
+                    {{ percent }}%
+                </span>
+            </slot>
+        </span>
+    </div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import Icon from '../icon';
+
+const prefixCls = 'view-progress';
+
+export default {
+    dataTypes: {
+        percent: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+        status: DataTypes.oneOf(['normal', 'active', 'wrong', 'success']),
+        hideInfo: DataTypes.bool,
+        strokeWidth: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+        vertical: DataTypes.bool
+    },
+    initData() {
+        return {
+            percent: 0,
+            status: 'normal',
+            hideInfo: false,
+            strokeWidth: 10,
+            vertical: false
+        };
+    },
+    computed: {
+        isStatus() {
+            const status = this.data.get('status');
+            if (status === 'wrong' || status === 'success') {
+                return true;
+            }
+            return (this.data.get('status') === 'wrong') || (this.data.get('status') === 'success');
+        },
+        statusIcon() {
+            let type = '';
+            switch (this.data.get('status')) {
+                case 'wrong':
+                    type = 'ios-close';
+                    break;
+                case 'success':
+                    type = 'ios-checkmark';
+                    break;
+            }
+            return type;
+        },
+        bgStyle() {
+            return this.data.get('vertical') ? {
+                height: `${this.data.get('percent')}%`,
+                width: `${this.data.get('strokeWidth')}px`
+            } : {
+                width: `${this.data.get('percent')}%`,
+                height: `${this.data.get('strokeWidth')}px`
+            };
+        },
+        wrapClasses() {
+            return classNames([
+                `${prefixCls}`,
+                `${prefixCls}-${this.data.get('status')}`,
+                {
+                    [`${prefixCls}-show-info`]: !this.data.get('hideInfo'),
+                    [`${prefixCls}-vertical`]: this.data.get('vertical')
+                }
+            ]);
+        },
+        textClasses() {
+            return `${prefixCls}-text`;
+        },
+        textInnerClasses() {
+            return `${prefixCls}-text-inner`;
+        },
+        outerClasses() {
+            return `${prefixCls}-outer`;
+        },
+        innerClasses() {
+            return `${prefixCls}-inner`;
+        },
+        bgClasses() {
+            return `${prefixCls}-bg`;
+        }
+    },
+    components: {
+        'icon': Icon
+    },
+    inited() {
+        this.handleStatus();
+        this.percent = this.data.get('percent');
+        this.watch('percent', percent => {
+            // percent = percent > 100 ? 100 : percent;
+
+            if (percent > this.percent) {
+                this.handleStatus(false, percent);
+                this.percent = percent;
+            }
+            // else if (percent === 100) {
+            //     this.data.set('percent', 100);
+            // }
+            else {
+                this.handleStatus(true, percent);
+                this.percent = percent;
+            }
+        });
+    },
+    handleStatus(isDown, percent) {
+        if (isDown) {
+            this.data.set('status', 'normal');
+            this.fire('status-change', 'normal');
+        } else {
+            if (parseInt(percent, 10) === 100) {
+                this.data.set('status', 'success');
+                this.fire('status-change', 'success');
+            }
+        }
+    }
+};
+</script>

@@ -1,0 +1,139 @@
+<template>
+<div style="{{warpperStyles}}">
+    <div class="{{classes}}"
+        style="{{styles}}"
+        on-mousedown="handleMouseDown($event)"
+        on-mousemove="handleMouseMove($event)">
+    </div>
+    <div 
+        s-if="icon"
+        class="{{iconClasses}}"
+        style="{{iconStyles}}"
+        on-click="handleIconClick($event)"
+        >
+        <icon type="ios-arrow-back"></icon>
+    </div>
+</div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import {throttle} from '../../utils/throttle';
+
+import Icon from '../icon';
+
+const prefixCls = 'view-resize';
+
+export default {
+    dataTypes: {
+        type: DataTypes.oneOf(['left', 'right', 'top', 'bottom']),
+        icon: DataTypes.bool,
+        iconBottom: DataTypes.number,
+        height: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        width: DataTypes.number,
+        max: DataTypes.number,
+        min: DataTypes.number
+    },
+    initData() {
+        return {
+            type: 'left',
+            max: 400,
+            min: 200,
+            isMouseDown: false,
+            icon: false,
+            iconShow: true
+        };
+    },
+    components: {
+        'icon': Icon
+    },
+    computed: {
+        warpperStyles() {
+            const style = {};
+            if (this.data.get('float')) {
+                style.float = this.data.get('float');
+                return style;
+            }
+        },
+        classes() {
+            return classNames([
+                prefixCls,
+                {
+                    [`${prefixCls}-selected`]: this.data.get('isMouseDown')
+                }
+            ]);
+        },
+        styles() {
+            const type = this.data.get('type');
+            let style = {};
+            if (type === 'left' || type === 'right') {
+                style.cursor = 'ew-resize';
+                style.width = '1px';
+                style.height = `${this.data.get('height')}px`;
+            }
+            else if (type === 'top' || type === 'bottom') {
+                style.cursor = 'ns-resize';
+                style.width = `${this.data.get('width')}px`;
+                style.height = '1px';
+            }
+            return style;
+        },
+        iconClasses() {
+            return classNames([
+                {
+                    [`${prefixCls}-icon`]: !!this.data.get('icon'),
+                    [`${prefixCls}-icon-right`]: this.data.get('type') === 'right',
+                    [`${prefixCls}-icon-change`]: !this.data.get('iconShow')
+                }
+            ]);
+        }
+    },
+    handleMouseDown(e) {
+        e.stopPropagation();
+        this.data.set('isMouseDown', true);
+        // register global event handlers because now we are not bound to the component anymore
+        document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        // global mouse up listener
+        document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    },
+    throttle: throttle(fn => {fn();}, 20, {
+        'leading': true,
+        'trailing': false
+    }),
+    handleMouseMove(e) {
+        const type = this.data.get('type');
+
+        if (!this.data.get('isMouseDown')) {
+            return;
+        }
+
+        if (type === 'left' || type === 'right') {
+            if (e.clientX > this.data.get('min') && e.clientX < this.data.get('max')) {
+                this.throttle(() => {
+                    this.fire('resize', e.clientX);
+                });
+            }
+        }
+        else if (type === 'top' || type === 'bottom') {
+            if (e.clientY > this.data.get('min') && e.clientY < this.data.get('max')) {
+                this.throttle(() => {
+                    this.fire('resize', e.clientY);
+                });
+            }
+        }
+    },
+    handleMouseUp(e) {
+        this.data.set('isMouseDown', false);
+
+        document.removeEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('mouseup', this.handleMouseUp);
+    },
+    handleIconClick(e) {
+        this.fire('iconclick', this.data.get('iconShow'));
+        this.data.set('iconShow', !this.data.get('iconShow'));
+    }
+};
+</script>

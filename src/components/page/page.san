@@ -1,0 +1,187 @@
+<template>
+    <ul class="{{classes}}">
+        <li
+            title="上一页"
+            class="{{prevClasses}}"
+            on-click="prev">
+            <a><icon type="chevron-left"></icon></a>
+        </li>
+        <li 
+            title="1" 
+            class="{{firstPageClasses}}" 
+            on-click="changePage(1)">
+            <a>1</a>
+        </li>
+        <li 
+            s-if="current - 3 > 1"
+            class="view-page-item-jump-prev" 
+            on-click="fastPrev">
+        </li>
+        <li 
+            title="{{current - 2}}" 
+            style="{{current - 2 > 1 ? '' : 'display: none'}}" 
+            class="view-page-item" 
+            on-click="changePage(current - 2)">
+            <a>{{ current - 2 }}</a>
+        </li>
+        <li 
+            title="{{current - 1}}" 
+            style="{{current - 1 > 1 ? '' : 'display: none'}}" 
+            class="view-page-item"
+            on-click="changePage(current - 1)">
+            <a>{{ current - 1 }}</a>
+        </li>
+        <li 
+            title="{{current}}" 
+            style="{{(current != 1 && current != allPages) ? '' : 'display: none'}}" 
+            class="view-page-item view-page-item-active">
+            <a>{{ current }}</a>
+        </li>
+        <li 
+            title="{{current + 1}}"
+            style="{{current + 1 < allPages ? '' : 'display: none'}}" 
+            s-if="current + 1 < allPages"
+            class="view-page-item" 
+            on-click="changePage(current + 1)">
+            <a>{{ current + 1 }}</a>
+        </li>
+        <li 
+            title="{{current + 2}}" 
+            style="{{current + 2 < allPages ? '' : 'display: none'}}" 
+            class="view-page-item"
+            on-click="changePage(current + 2)">
+            <a>{{ current + 2 }}</a>
+        </li>
+        <li 
+            style="{{current + 3 < allPages ? '' : 'display: none'}}" 
+            class="view-page-item-jump-next" 
+            on-click="fastNext">
+        </li>
+        <li 
+            title="{{allPages}}" 
+            style="{{allPages > 1 ? '' : 'display: none'}}" 
+            class="{{lastPageClasses}}"
+            on-click="changePage(allPages)">
+            <a>{{ allPages }}</a>
+        </li>
+        <li
+            title="下一页"
+            class="{{nextClasses}}"
+            on-click="next">
+            <a><icon type="chevron-right"></icon></a>
+        </li>
+        <span class="view-page-all">共 {{allPages}} 页</span>
+    </ul>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+import Icon from '../icon';
+
+const prefixCls = 'view-page';
+
+export default {
+    dataTypes: {
+        size: DataTypes.oneOf(['small']),
+        total: DataTypes.number,
+        pageSize: DataTypes.number,
+        current: DataTypes.number
+    },
+    initData() {
+        return {
+            total: 100,
+            pageSize: 8,
+            current: 1
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    'mini': !!this.data.get('size')
+                }
+            ]);
+        },
+        allPages() {
+            const allPage = Math.ceil(this.data.get('total') / this.data.get('pageSize'));
+            return (allPage === 0) ? 1 : allPage;
+        },
+        prevClasses() {
+            return classNames([
+                `${prefixCls}-prev`,
+                {
+                    [`${prefixCls}-disabled`]: this.data.get('current') === 1
+                }
+            ]);
+        },
+        nextClasses() {
+            return classNames([
+                `${prefixCls}-next`,
+                {
+                    [`${prefixCls}-disabled`]: this.data.get('current') === this.data.get('allPages')
+                }
+            ]);
+        },
+        firstPageClasses() {
+            return classNames([
+                `${prefixCls}-item`,
+                {
+                    [`${prefixCls}-item-active`]: this.data.get('current') === 1
+                }
+            ]);
+        },
+        lastPageClasses() {
+            return classNames([
+                `${prefixCls}-item`,
+                {
+                    [`${prefixCls}-item-active`]: this.data.get('current') === this.data.get('allPages')
+                }
+            ]);
+        }
+    },
+    components: {
+        'icon': Icon
+    },
+    changePage(page) {
+        if (this.data.get('current') !== page) {
+            this.data.set('current', page);
+            this.fire('select', page);
+        }
+    },
+    prev() {
+        const current = this.data.get('current');
+        if (current <= 1) {
+            return false;
+        }
+        this.changePage(current - 1);
+    },
+    next() {
+        const current = this.data.get('current');
+        if (current >= this.data.get('allPages')) {
+            return false;
+        }
+        this.changePage(current + 1);
+    },
+    fastPrev() {
+        const page = this.data.get('current') - 5;
+        if (page > 0) {
+            this.changePage(page);
+        }
+        else {
+            this.changePage(1);
+        }
+    },
+    fastNext() {
+        const page = this.data.get('current') + 5;
+        if (page > this.data.get('allPages')) {
+            this.changePage(this.allPages);
+        }
+        else {
+            this.changePage(page);
+        }
+    }
+};
+</script>

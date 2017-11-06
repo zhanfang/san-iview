@@ -1,0 +1,162 @@
+<template>
+    <div>
+        <div class="{{maskClasses}}"></div>
+        <div class="{{wrapClasses}}" on-click="handleWrapClick($event)">
+            <div class="view-modal" style="{{mainStyles}}" s-if="value">
+                <div class="view-modal-content">
+                    <a class="{{closeClasses}}" on-click="close($event)">
+                        <slot name="close">
+                            <icon type="ios-close-empty"></icon>
+                        </slot>
+                    </a>
+                    <div 
+                        class="view-modal-header" s-if="showHead">
+                        <slot name="header">
+                            <div class="view-modal-header-inner">
+                                {{ title }}
+                            </div>
+                        </slot>
+                    </div>
+
+                    <div class="view-modal-body">
+                        <slot></slot>
+                    </div>
+
+                    <div class="view-modal-footer" s-if="showFooter">
+                        <slot name="footer">
+                            <btn type="text" size="large" on-select="cancel($event)">
+                                {{ cancelText }}
+                            </btn>
+                            <btn type="primary" size="large" on-select="ok($event)">
+                                {{ okText }}
+                            </btn>
+                        </slot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+import Icon from '../icon';
+import Button from '../button';
+
+const prefixCls = 'view-modal';
+
+export default {
+    dataTypes: {
+        value: DataTypes.bool,
+        maskCloseable: DataTypes.bool,
+        closeable: DataTypes.bool,
+        title: DataTypes.string,
+        width: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+        okText: DataTypes.string,
+        cancelText: DataTypes.string,
+        showHead: DataTypes.bool,
+        showFooter: DataTypes.bool
+    },
+    initData() {
+        return {
+            value: false,
+            width: 520,
+            closeable: true,
+            maskCloseable: true,
+            wrapShow: false,
+            showHead: true,
+            showFooter: true,
+            okText: '确定',
+            cancelText: '取消'
+        };
+    },
+    computed: {
+        maskClasses() {
+            return classNames([
+                `${prefixCls}-mask`,
+                {
+                    [`${prefixCls}-mask-hidden`]: !this.data.get('value')
+                }
+            ]);
+        },
+        wrapClasses() {
+            return classNames([
+                `${prefixCls}-wrap`,
+                {
+                    [`${prefixCls}-hidden`]: !this.data.get('value'),
+                    [`${this.data.get('className')}`]: !!this.data.get('className')
+                }
+            ]);
+        },
+        closeClasses() {
+            return classNames([
+                `${prefixCls}-close`,
+                {
+                    [`${prefixCls}-close-hidden`]: !this.data.get('closeable')
+                }
+            ]);
+        },
+        mainStyles() {
+            let style = {};
+            const width = parseInt(this.data.get('width'), 10);
+            const styleWidth = {
+                width: width <= 100 ? `${width}%` : `${width}px`
+            };
+            const customStyle = this.data.get('styles') ? this.data.get('styles') : {};
+            Object.assign(style, styleWidth, customStyle);
+            return style;
+        }
+    },
+    components: {
+        'icon': Icon,
+        'btn': Button
+    },
+    inited() {
+        this.watch('value', value => {
+            if (value) {
+                document.body.style['overflow'] = 'hidden';
+            } else {
+                document.body.style['overflow'] = 'scroll';
+            }
+        });
+    },
+    attached() {
+        // ESC close
+        this._escClose = this.escClose.bind(this);
+        document.addEventListener('keydown', this._escClose);
+    },
+    detached() {
+        document.removeEventListener('keydown', this._escClose);
+        delete this._escClose;
+    },
+    close() {
+        this.fire('close');
+    },
+    clickMask() {
+        if (this.data.get('maskCloseable')) {
+            this.close();
+        }
+    },
+    handleWrapClick(e) {
+        const className = e.target.getAttribute('class');
+        if (className && className.indexOf(`${prefixCls}-wrap`) > -1) {
+            this.clickMask();
+        }
+    },
+    ok(e) {
+        this.fire('ok');
+    },
+    cancel(e) {
+        this.close();
+    },
+    escClose(e) {
+        if (this.data.get('value') && this.data.get('closeable')) {
+            if (e.keyCode === 27) {
+                this.close();
+            }
+        }
+    }
+};
+</script>

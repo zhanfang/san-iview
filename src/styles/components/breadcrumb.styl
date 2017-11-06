@@ -1,0 +1,25 @@
+.view-breadcrumb
+    color: #999
+    font-size: $font-size-base
+
+    a
+        color: $text-color
+        transition: color $transition-time $ease-in-out
+        cursor: pointer
+        &:hover
+            color: tint($primary-color, 20%)
+
+    & > span:last-child
+        font-weight: bold
+        color: $text-color
+
+    & > span:last-child &-item-separator
+        display: none
+
+    &-item-separator
+        margin: 0 8px
+        color: $border-color-base
+
+    &-item-link
+        > .view-icon + span 
+            margin-left: 4px

@@ -1,0 +1,52 @@
+<template>
+    <div class="{{classes}}">
+        <slot></slot>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-checkbox-group';
+
+export default {
+    dataTypes: {
+        value: DataTypes.array,
+        size: DataTypes.oneOf(['small', 'large', 'default'])
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`view-checkbox-${this.data.get('size')}`]: !!this.data.get('size')
+                }
+            ]);
+        }
+    },
+    inited() {
+        this.items = [];
+
+        this.watch('value', value => {
+            this.items.forEach(item => {
+                item.data.set('value', value);
+            });
+        });
+    },
+    messages: {
+        [C.CHECKBOX_ITEM_INITED](e) {
+            const item = e.target;
+            this.items.push(e.target);
+            item.data.set('value', this.data.get('value'));
+        },
+        [C.CHECKBOX_ITEM_DETACHED](e) {
+            this.items = this.items.filter(item => item !== e.target);
+        },
+        [C.CHECKBOX_ITEM_SELECTED](e) {
+            this.data.set('value', e.value);
+            this.fire('select', e.value);
+        }
+    }
+};
+</script>

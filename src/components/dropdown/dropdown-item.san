@@ -1,0 +1,48 @@
+<template>
+    <li class="{{classes}}" on-click="handleClick($event)">
+        <slot></slot>
+    </li>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-dropdown-item';
+
+export default {
+    dataTypes: {
+        name: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        disabled: DataTypes.bool,
+        selected: DataTypes.bool
+    },
+    initData() {
+        return {
+            disabled: false,
+            selected: false,
+            divided: false
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-disabled`]: this.data.get('disabled'),
+                    [`${prefixCls}-selected`]: this.data.get('selected'),
+                    [`${prefixCls}-divided`]: this.data.get('divided')
+                }
+            ]);
+        }
+    },
+    handleClick(e) {
+        if (this.data.get('disabled')) {
+            return false;
+        }
+
+        this.fire('select', this.data.get('name'));
+    }
+};
+</script>

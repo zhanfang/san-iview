@@ -1,0 +1,93 @@
+<template>
+<div>
+    <form class="{{classes}}">
+        <slot></slot>
+    </form>
+</div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-form';
+
+export default {
+    dataTypes: {
+        labelWidth: DataTypes.number,
+        labelPosition: DataTypes.oneOf(['left', 'right', 'top']),
+        inline: DataTypes.bool,
+        rules: DataTypes.object,
+        model: DataTypes.object
+    },
+    initData() {
+        return {
+            labelPosition: 'right',
+            inline: false
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                `${prefixCls}-label-${this.data.get('labelPosition')}`,
+                {
+                    [`${prefixCls}-inline`]: this.data.get('inline')
+                }
+            ]);
+        }
+    },
+    inited() {
+        this.items = [];
+        this.watch('rules', rules => {
+            this.validate();
+        });
+        this.watch('model', model => {
+            this.items.forEach(item => {
+                item.data.set('formModel', model)
+            })
+        })
+    },
+    resetFields() {
+        this.items.forEach(field => {
+            field.resetField();
+        });
+    },
+    validate(callback) {
+        let valid = true;
+        let count = 0;
+        this.items.forEach(field => {
+            field.validate('', errors => {
+                if (errors) {
+                    valid = false;
+                }
+                if (typeof callback === 'function' && ++count === this.items.length) {
+                    callback(valid);
+                }
+            });
+        });
+    },
+    validateField(prop, cb) {
+        const field = this.items.filter(field => field.prop === prop)[0];
+        if (!field) {
+            throw new Error('[view warn]: must call validateField with valid prop string!');
+        }
+        field.validate('', cb);
+    },
+    messages: {
+        [C.FORM_ITEM_INITED](e) {
+            const item = e.target;
+            this.items.push(item);
+            if (!item.data.get('labelWidth')) {
+                item.data.set('labelWidth', this.data.get('labelWidth'));
+            }
+            item.data.set('formRules', this.data.get('rules'));
+            item.data.set('formModel', this.data.get('model'));
+        },
+        [C.MENU_ITEM_DETACHED](e) {
+            this.items = this.items.filter(item => item !== e.target);
+        }
+    }
+};
+</script>

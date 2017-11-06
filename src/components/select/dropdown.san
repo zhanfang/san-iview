@@ -1,0 +1,121 @@
+<template>
+    <div 
+        class="{{classes}}"
+        style="{{styles}}">
+        <slot></slot>
+    </div>
+</template>
+
+<script>
+import classNames from 'classnames';
+import {DataTypes, nextTick} from 'san';
+import Popper from 'popper.js';
+
+import {getStyle} from '../../utils/assist';
+import {debounce} from '../../utils/throttle.js';
+
+export default {
+    dataTypes: {
+        placement: DataTypes.string,
+        visible: DataTypes.bool,
+        overflow: DataTypes.bool,
+        width: DataTypes.oneOfType([DataTypes.number, DataTypes.string])
+    },
+    initData() {
+        return {
+            placement: 'bottom-start',
+            width: '',
+            visible: false,
+            overflow: false
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                'view-select-dropdown',
+                {
+                    ['view-select-dropdown-hide']: !this.data.get('visible')
+                }
+            ]);
+        },
+        styles() {
+            let style = {};
+            if (this.data.get('width')) {
+                style.width = `${this.data.get('width')}px`;
+            }
+
+            return style;
+        }
+    },
+    debounce: debounce((fn, data) => {fn(data);}, 300),
+    inited() {
+        this.on('update-popper', this.update.bind(this));
+        this.on('destroy-popper', this.destroy.bind(this));
+        // this.watch('visible', visible => {
+        //     if (!visible) {
+        //         this.debounce(() => this.data.set('status', true));
+        //     }
+        //     else {
+        //         this.data.set('status', false);
+        //     }
+        // })
+    },
+    detached() {
+        if (this.popper) {
+            this.popper.destroy();
+        }
+    },
+    update() {
+        if (this.popper) {
+            nextTick(() => {
+                this.popper.update();
+            });
+        }
+        else {
+            nextTick(() => {
+                let options = {
+                    gpuAcceleration: false,
+                    placement: this.data.get('placement'),
+                    boundariesPadding: 0,
+                    forceAbsolute: true,
+                    boundariesElement: 'body'
+                };
+                if (this.data.get('overflow')) {
+                    options.modifiers = {
+                        preventOverflow: {
+                            order: 300,
+                            enabled: false
+                        },
+                        hide: {
+                            order: 800,
+                            enabled: false
+                        }
+                    };
+                }
+                this.popper = new Popper(this.parentComponent.el, this.el, options);
+                this.popper.onCreate(popper => {
+                    this.resetTransformOrigin(popper);
+                });
+            });
+        }
+        if (this.data.get('width') === '' || !this.data.get('width')) {
+            this.data.set('width', parseInt(getStyle(this.parentComponent.el, 'width'), 10));
+        }
+    },
+    destroy() {
+        if (this.popper) {
+            this.resetTransformOrigin(this.popper);
+            setTimeout(() => {
+                this.popper.destroy();
+                this.popper = null;
+            }, 300);
+        }
+    },
+    resetTransformOrigin(popper) {
+        let placementMap = {top: 'bottom', bottom: 'top'};
+        let placement = popper._popper.getAttribute('x-placement').split('-')[0];
+        let origin = placementMap[placement];
+        popper._popper.style.transformOrigin = `center ${ origin }`;
+    }
+};
+</script>

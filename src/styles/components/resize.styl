@@ -1,0 +1,28 @@
+.view-resize
+    background #d8d8d8
+    &-selected
+        background $primary-color
+    
+    &-icon
+        position absolute
+        width 26px
+        height 26px
+        bottom 37px
+        text-align center
+        border-radius 4px
+        border-top-left-radius: 0
+        border-bottom-left-radius: 0
+        background #d8d8d8
+        color #fff
+        cursor pointer
+        i {
+            font-size 26px
+            font-weight 600
+            transition .3s ease
+        }
+        &-right
+            transform: rotate(180deg)
+            transform-origin: 0% 50%;
+        &-change
+            i
+                transform: rotate(180deg)

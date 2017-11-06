@@ -1,0 +1,186 @@
+<template>
+<div class="{{classes}}">
+    <div class="view-tabs-bar">
+        <div class="view-tabs-nav-container">
+            <div class="view-tabs-nav-wrap">
+                <div class="view-tabs-nav-scroll">
+                    <div class="view-tabs-nav">
+                        <div class="{{barClasses}}" style="{{barStyle}}"></div>
+                        <div 
+                            class="view-tabs-tab {{item.disabled ? 'view-tabs-tab-disabled': ''}} {{item.name === name ? 'view-tabs-tab-active': ''}}"
+                            s-for="item, index in navList"
+                            on-click="handleChange(index)">
+                            <icon s-if="item.icon" type="{{item.icon}}"></icon>
+                            {{item.label}}
+                        </div>
+                    </div>
+                    <div class="view-tabsnav-right" s-if="showSlot">
+                        <slot name="extra"></slot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="{{contentClasses}}" style="{{contentStyle}}">
+        <slot></slot>
+    </div>
+</div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+import Icon from '../icon';
+
+const prefixCls = 'view-tabs';
+
+export default {
+    dataTypes: {
+        value: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        type: DataTypes.oneOf(['line', 'card']),
+        size: DataTypes.oneOf(['small', 'default']),
+        animated: DataTypes.bool,
+        closable: DataTypes.bool,
+        name: DataTypes.string
+    },
+    initData() {
+        return {
+            type: 'line',
+            size: 'default',
+            animated: true,
+            closable: false,
+            navList: [],
+            barWidth: 0,
+            barOffset: 0,
+            showSlot: true
+        };
+    },
+    components: {
+        'icon': Icon
+    },
+    inited() {
+        this.items = [];
+    },
+    attached() {
+        let extraNum = 0;
+        this.slotChilds.forEach(child => {
+            if (child.name === 'extra') {
+                extraNum++;
+            }
+        });
+        if (extraNum === 0) {
+            this.data.set('showSlot', false);
+        }
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-card`]: this.data.get('type') === 'card',
+                    [`${prefixCls}-mini`]: this.data.get('size') === 'small' && this.data.get('type') === 'line',
+                    [`${prefixCls}-no-animation`]: !this.data.get('animated')
+                }
+            ]);
+        },
+        barClasses() {
+            return classNames([
+                `${prefixCls}-ink-bar`,
+                {
+                    [`${prefixCls}-ink-bar-animated`]: this.data.get('animated')
+                }
+            ]);
+        },
+        barStyle () {
+            let style = {
+                display: 'none',
+                width: `${this.data.get('barWidth')}px`
+            };
+            if (this.data.get('type') === 'line') style.display = 'block';
+            if (this.data.get('animated')) {
+                style.transform = `translate3d(${this.data.get('barOffset')}px, 0px, 0px)`;
+            } else {
+                style.left = `${this.data.get('barOffset')}px`;
+            }
+            return style;
+        },
+        contentClasses() {
+            return classNames([
+                `${prefixCls}-content`,
+                {
+                    [`${prefixCls}-content-animated`]: this.data.get('animated')
+                }
+            ]);
+        },
+        contentStyle() {
+            const navList = this.data.get('navList');
+            const x = navList.findIndex(
+                nav => nav.name === this.data.get('name')
+            );
+            const p = x === 0 ? '0%' : `-${x}00%`;
+            let style = {};
+            if (x > -1) {
+                style = {
+                    transform: `translateX(${p}) translateZ(0px)`
+                };
+            }
+            return style;
+        }
+    },
+    messages: {
+        [C.TABS_ITEM_INITED](e) {
+            let item = e.target;
+            this.items.push(e.target);
+            item.data.set('activeName', this.data.get('name'));
+            this.updateNav(item);
+        },
+        [C.TABS_ITEM_DETACHED](e) {
+            this.items = this.items.filter(item => item !== e.target);
+        }
+    },
+    // updateBar () {
+    //     const index = this.navList.findIndex((nav) => nav.name === this.activeKey);
+    //     const prevTabs = this.$refs.nav.querySelectorAll(`.${prefixCls}-tab`);
+    //     const tab = prevTabs[index];
+    //     this.barWidth = tab ? parseFloat(tab.offsetWidth) : 0;
+    //     if (index > 0) {
+    //         let offset = 0;
+    //         const gutter = this.size === 'small' ? 0 : 16;
+    //         for (let i = 0; i < index; i++) {
+    //             offset += parseFloat(prevTabs[i].offsetWidth) + gutter;
+    //         }
+    //         this.barOffset = offset;
+    //     } else {
+    //         this.barOffset = 0;
+    //     }
+    // },
+    updateNav(item) {
+        this.data.push('navList', {
+            name: item.data.get('name'),
+            label: item.data.get('label'),
+            icon: item.data.get('icon'),
+            disabled: item.data.get('disabled')
+        });
+    },
+    handleChange(index) {
+        const nav = this.data.get(`navList[${index}]`);
+        if (nav.disabled) {
+            return;
+        }
+        this.data.set('name', nav.name);
+        this.setItemsActiveName();
+        this.fire('change', nav.name);
+    },
+    setItemsActiveName() {
+        this.items.forEach(item => {
+            item.data.set('activeName', this.data.get('name'));
+        });
+    }
+};
+</script>
+

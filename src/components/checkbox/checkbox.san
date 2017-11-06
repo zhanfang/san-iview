@@ -1,0 +1,90 @@
+<template>
+    <label class="{{wrapClasses}}">
+        <span class="{{checkboxClasses}}">
+            <span class="{{innerClasses}}"></span>
+            <input
+                type="checkbox"
+                class="{{inputClasses}}"
+                disabled="{{disabled}}"
+                checked="{=value=}"
+                value="{{label}}"
+                on-change="change($event)">
+        </span>
+        <slot>{{label}}</slot>
+    </label>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-checkbox';
+
+export default {
+    dataTypes: {
+        label: DataTypes.oneOfType([DataTypes.string, DataTypes.number, DataTypes.bool]),
+        disabled: DataTypes.bool,
+        value: DataTypes.array,
+        size: DataTypes.oneOf(['small', 'large', 'default']),
+        indeterminate: DataTypes.bool
+    },
+    initData() {
+        return {
+            disabled: false,
+            group: true
+        };
+    },
+    computed: {
+        wrapClasses() {
+            return classNames([
+                `${prefixCls}-wrapper`,
+                {
+                    [`${prefixCls}-group-item`]: this.data.get('group'),
+                    [`${prefixCls}-wrapper-checked`]: this.data.get('checked'),
+                    [`${prefixCls}-wrapper-disabled`]: this.data.get('disabled'),
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size')
+                }
+            ]);
+        },
+        checkboxClasses() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-checked`]: this.data.get('checked'),
+                    [`${prefixCls}-disabled`]: this.data.get('disabled'),
+                    [`${prefixCls}-indeterminate`]: this.data.get('indeterminate')
+                }
+            ]);
+        },
+        innerClasses() {
+            return `${prefixCls}-inner`;
+        },
+        inputClasses() {
+            return `${prefixCls}-input`;
+        },
+        checked() {
+            const value = this.data.get('value');
+            if (!value || value.length === 0) {
+                return;
+            }
+            return value.indexOf(this.data.get('label')) >= 0;
+        }
+    },
+    inited() {
+        this.dispatch(C.CHECKBOX_ITEM_INITED);
+    },
+    detached() {
+        this.dispatch(C.CHECKBOX_ITEM_DETACHED);
+    },
+    change(e) {
+        if (this.data.get('disabled')) {
+            return false;
+        }
+        const checked = event.target.checked;
+
+        if (this.data.get('group')) {
+            this.dispatch(C.CHECKBOX_ITEM_SELECTED, this.data.get('value'));
+        }
+    }
+};
+</script>

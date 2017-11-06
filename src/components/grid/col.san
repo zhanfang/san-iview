@@ -1,0 +1,78 @@
+<template>
+    <div class="{{classes}}" style="{{styles}}">
+        <slot></slot>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-col';
+
+export default {
+    dataTypes: {
+        span: DataTypes.oneOfType([DataTypes.string, DataTypes.number]),
+        order: DataTypes.oneOfType([DataTypes.string, DataTypes.number]),
+        offset: DataTypes.oneOfType([DataTypes.string, DataTypes.number]),
+        push: DataTypes.oneOfType([DataTypes.string, DataTypes.number]),
+        pull: DataTypes.oneOfType([DataTypes.string, DataTypes.number]),
+        xs: DataTypes.oneOfType([DataTypes.string, DataTypes.object]),
+        sm: DataTypes.oneOfType([DataTypes.string, DataTypes.object]),
+        md: DataTypes.oneOfType([DataTypes.string, DataTypes.object]),
+        lg: DataTypes.oneOfType([DataTypes.string, DataTypes.object])
+    },
+    initData() {
+        return {
+            // 布局类型，默认normal
+            type: 'normal',
+            // 布局的栅格的间距
+            gutter: 0
+        };
+    },
+    computed: {
+        classes() {
+            let classList = [
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-span-${this.data.get('span')}`]: this.data.get('span'),
+                    [`${prefixCls}-order-${this.data.get('order')}`]: this.data.get('order'),
+                    [`${prefixCls}-offset-${this.data.get('offset')}`]: this.data.get('offset'),
+                    [`${prefixCls}-push-${this.data.get('push')}`]: this.data.get('push'),
+                    [`${prefixCls}-pull-${this.data.get('pull')}`]: this.data.get('pull'),
+                    [`${this.data.get('className')}`]: !!this.data.get('className')
+                }
+            ];
+
+            ['xs', 'sm', 'md', 'lg'].forEach(size => {
+                const sizeVal = this.data.get(size);
+                if (typeof sizeVal === 'string') {
+                    classList.push(`${prefixCls}-${size}-span-${sizeVal}`);
+                }
+                else if (typeof sizeVal === 'object') {
+                    Object.keys(sizeVal).forEach(prop => {
+                        classList.push(
+                            prop !== 'span'
+                                ? `${prefixCls}-${size}-${prop}-${sizeVal[prop]}`
+                                : `${prefixCls}-${size}-span-${sizeVal[prop]}`
+                        );
+                    });
+                }
+            });
+
+            return classNames(classList);
+        },
+        styles() {
+            let style = {};
+            const gutter = this.data.get('gutter');
+            if (gutter !== 0) {
+                style = {
+                    marginLeft: gutter / -2 + 'px',
+                    marginRight: gutter / -2 + 'px'
+                };
+            }
+
+            return style;
+        }
+    }
+};
+</script>

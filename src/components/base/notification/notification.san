@@ -1,0 +1,88 @@
+<template>
+    <div class="{{classes}}" style="{{styles}}">
+        <notice 
+            s-for="notice in notices"
+            prefixCls="{{prefixCls}}"
+            styles="{{notice.styles}}"
+            type="{{notice.type}}"
+            content="{{notice.content}}"
+            duration="{{notice.duration}}"
+            closable="{{notice.closable}}"
+            name="{{notice.name}}"
+            onClose="{{notice.onClose}}"
+            transitionName="{{notice.transitionName}}"
+            >
+        </notice>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import Notice from './notice';
+
+const prefixCls = 'view-notification';
+
+let seed = 0;
+const now = Date.now();
+function getUuid() {
+    return 'viewNotification_' + now + '_' + (seed++);
+}
+
+export default {
+    components: {
+        'notice': Notice
+    },
+    dataTypes: {
+        prefixCls: DataTypes.string,
+        styles: DataTypes.object,
+        content: DataTypes.string,
+        className: DataTypes.string,
+        transitionName: DataTypes.string
+    },
+    initData() {
+        return {
+            prefixCls: prefixCls,
+            styles: {
+                top: '65px',
+                left: '50%'
+            },
+            notices: []
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${this.data.get('prefixCls')}`,
+                {
+                    [`${this.data.get('className')}`]: !!this.data.get('className')
+                }
+            ]);
+        }
+    },
+    add(notice) {
+        const name = notice.name || getUuid();
+        let _notice = Object.assign({
+            styles: {
+                right: '50%'
+            },
+            content: '',
+            duration: 1.5,
+            closable: false,
+            name: name
+        }, notice);
+        this.data.push('notices', _notice);
+    },
+    close(name) {
+        const notices = this.data.get('notices');
+        for (let i = 0; i < notices.length; i++) {
+            if (notices[i].name === name) {
+                this.data.splice('notices', [i, 1]);
+                break;
+            }
+        }
+    },
+    closeAll() {
+        this.data.set('notices', []);
+    }
+};
+</script>

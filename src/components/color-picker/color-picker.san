@@ -1,0 +1,293 @@
+<template>
+    <div class="view-color-picker">
+        <div class="{{wrapClasses}}" on-click="toggleMenu($event)">
+            <icon type="arrow-down-b" class="view-input-icon view-input-icon-normal"></icon>
+            <div class="{{inputClasses}}">
+                <div class="view-color-picker-color">
+                    <div class="view-color-picker-color-empty" s-if="value === '' && !visible">
+                        <i class="ivu-icon ivu-icon-ios-close-empty"></i>
+                    </div>
+                    <div s-if="value || visible" style="background:{{displayedColor}}"></div>
+                </div>
+            </div>
+        </div>
+        <drop
+            class="{{dropdownCls}}"
+            placement="{{placement}}"
+            visible="{{visible}}"
+            s-ref="dropdown">
+            <div class="view-color-picker-picker">
+                <div class="view-color-picker-picker-wrapper">
+                    <div class="view-color-picker-picker-panel" style="{{dropdownStyles}}">
+                        <saturation 
+                            colors="{{colors}}" 
+                            on-colorchange="childChange($event)"
+                            on-saturation-pick-color="handleSaturationPick"></saturation>
+                    </div>
+                    <div class="view-color-picker-picker-hue-slider">
+                        <hue colors="{{colors}}" on-colorchange="childChange($event)"></hue>
+                    </div>
+                    <recommend-color
+                        s-if="isRecommend"
+                        list="{{rColor}}"
+                        class="view-color-picker-picker-colors"
+                        on-pick-color="handleSelectColor($event)">
+                    </recommend-color>
+                </div>
+                <div class="view-color-picker-confirm">
+                    <in 
+                        type="text" 
+                        class="view-color-picker-confirm-color" 
+                        value="{{ value.hex }}" 
+                        on-input-blur="handleInputColor($event)"></in>
+                    <div class="view-color-picker-confirm-op">
+                        <btn type="text" size="small" on-select="handleClear">清空</btn>
+                        <btn type="primary" size="small" on-select="handleConfirm">确认</btn>
+                    </div>
+                </div>
+            </div>
+        </drop>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+import tinycolor from 'tinycolor2';
+
+import Button from '../button';
+import Icon from '../icon';
+import Input from '../input';
+import Drop from '../select/dropdown';
+import RecommendColor from './recommend-color';
+import Saturation from './saturation';
+import Hue from './hue';
+
+const prefixCls = 'view-color-picker';
+const inputPrefixCls = 'view-input';
+
+function colorChange(data, oldHue) {
+    data = data === undefined ? '#2d8cf0' : data;
+    const alpha = data && data.a;
+    let color;
+    // hsl is better than hex between conversions
+    if (data && data.hsl) {
+        color = tinycolor(data.hsl);
+    } else if (data && data.hex && data.hex.length > 0) {
+        color = tinycolor(data.hex);
+    } else {
+        color = tinycolor(data);
+    }
+    if (color && (color._a === undefined || color._a === null)) {
+        color.setAlpha(alpha || 1);
+    }
+    const hsl = color.toHsl();
+    const hsv = color.toHsv();
+    if (hsl.s === 0) {
+        hsv.h = hsl.h = data.h || (data.hsl && data.hsl.h) || oldHue || 0;
+    }
+    // when the hsv.v is less than 0.0164 (base on test)
+    // because of possible loss of precision
+    // the result of hue and saturation would be miscalculated
+    if (hsv.v < 0.0164) {
+        hsv.h = data.h || (data.hsv && data.hsv.h) || 0;
+        hsv.s = data.s || (data.hsv && data.hsv.s) || 0;
+    }
+    if (hsl.l < 0.01) {
+        hsl.h = data.h || (data.hsl && data.hsl.h) || 0;
+        hsl.s = data.s || (data.hsl && data.hsl.s) || 0;
+    }
+    return {
+        hsl: hsl,
+        hex: color.toHexString().toUpperCase(),
+        rgba: color.toRgb(),
+        hsv: hsv,
+        oldHue: data.h || oldHue || hsl.h,
+        source: data.source,
+        a: data.a || color.getAlpha()
+    };
+}
+
+export default {
+    dataTypes: {
+        value: DataTypes.oneOfType([
+            DataTypes.number,
+            DataTypes.string,
+            DataTypes.bool,
+            DataTypes.object
+        ]),
+        rColors: DataTypes.array,
+        size: DataTypes.oneOf(['small', 'large', 'default']),
+        disabled: DataTypes.bool,
+        placement: DataTypes.string,
+        recommend: DataTypes.bool,
+        showInput: DataTypes.bool,
+        width: DataTypes.oneOfType([DataTypes.string, DataTypes.number])
+    },
+    initData() {
+        return {
+            visible: false,
+            width: 240,
+            size: 'default',
+            disabled: false,
+            showInput: false,
+            placement: 'bottom',
+            recommend: false,
+            recommendedColor: [
+                '#2d8cf0',
+                '#19be6b',
+                '#ff9900',
+                '#ed3f14',
+                '#00b5ff',
+                '#19c919',
+                '#f9e31c',
+                '#ea1a1a',
+                '#9b1dea',
+                '#00c2b1',
+                '#ac7a33',
+                '#1d35ea',
+                '#8bc34a',
+                '#f16b62',
+                '#ea4ca3',
+                '#0d94aa',
+                '#febd79',
+                '#5d4037',
+                '#00bcd4',
+                '#f06292',
+                '#cddc39',
+                '#607d8b',
+                '#000000',
+                '#ffffff'
+            ]
+        };
+    },
+    computed: {
+        wrapClasses() {
+            return classNames([
+                `${prefixCls}-rel`,
+                `${prefixCls}-${this.data.get('size')}`,
+                `${inputPrefixCls}-wrapper`,
+                `${inputPrefixCls}-wrapper-${this.data.get('size')}`
+            ]);
+        },
+        inputClasses() {
+            return classNames([
+                `${prefixCls}-input`,
+                `${inputPrefixCls}`,
+                `${inputPrefixCls}-${this.data.get('size')}`,
+                {
+                    [`${inputPrefixCls}-disabled`]: this.data.get('disabled')
+                }
+            ]);
+        },
+        dropdownCls() {
+            return classNames([
+                {
+                    [`${prefixCls}-drop-hide`]: !this.data.get('visible')
+                }
+            ]);
+        },
+        dropdownStyles() {
+            let style = {
+                width: `${this.data.get('width')}px` || '100%'
+            };
+            return style;
+        },
+        isRecommend() {
+            return this.data.get('recommend') || !!this.data.get('rColors');
+        },
+        rColor() {
+            const colors = this.data.get('rColors');
+            if (colors) {
+                return colors;
+            }
+            return this.data.get('recommendedColor');
+        },
+        displayedColor() {
+            const rgba = this.data.get('value.rgba');
+            if (rgba) {
+                let color;
+                color = {
+                    r: rgba.r,
+                    g: rgba.g,
+                    b: rgba.b,
+                    a: rgba.a
+                };
+                return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
+            }
+        },
+        colors() {
+            const value = this.data.get('value');
+            if (value.rgba) {
+                return value;
+            }
+        },
+        value() {
+            let value = this.data.get('value');
+            if (!value) {
+                value = '#2d8cf0';
+            }
+            if (value.rgba) {
+                return value;
+            }
+            return colorChange(value);
+        }
+    },
+    components: {
+        'btn': Button,
+        'icon': Icon,
+        'drop': Drop,
+        'in': Input,
+        'recommend-color': RecommendColor,
+        'saturation': Saturation,
+        'hue': Hue
+    },
+    attached() {
+        this.registerClickOutside();
+    },
+    registerClickOutside() {
+        const self = this;
+        function documentHandler(e) {
+            if (self.el.contains(e.target)) {
+                return false;
+            }
+            self.handleClickOutside(e);
+        }
+        this.__clickOutside__ = documentHandler;
+        document.addEventListener('click', documentHandler);
+    },
+    handleClickOutside(e) {
+        this.data.set('visible', false);
+    },
+    detached() {
+        document.removeEventListener('click', this.__clickOutside__);
+        delete this.__clickOutside__;
+        this.data.set('value', null);
+    },
+    toggleMenu(e) {
+        e.stopPropagation();
+        this.data.set('visible', !this.data.get('visible'));
+    },
+    childChange(data) {
+        this.data.set('value', colorChange(data));
+        this.fire('change', this.data.get('value'));
+    },
+    handleSelectColor(color) {
+        this.data.set('value', colorChange(color));
+        this.fire('pick-color', this.data.get('value'));
+    },
+    handleSaturationPick() {
+        this.fire('pick-color', this.data.get('value'));
+    },
+    handleConfirm() {
+        this.handleSaturationPick();
+        this.data.set('visible', false);
+    },
+    handleClear() {
+        this.data.set('value', '#fff');
+    },
+    handleInputColor(e) {
+        this.data.set('value', e.target.value);
+    }
+};
+</script>

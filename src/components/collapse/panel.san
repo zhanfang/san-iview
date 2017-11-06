@@ -1,0 +1,77 @@
+<template>
+    <div class="{{itemClasses}}">
+        <div class="{{headerClasses}}" on-click="toggle">
+            <icon type="arrow-right-b"></icon>
+            <slot name="header"></slot>
+        </div>
+        <div class="{{contentClasses}}" s-if="isActive">
+            <div class="{{boxClasses}}">
+                <slot name="content"></slot>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+import Icon from '../icon';
+
+const prefixCls = 'view-collapse';
+
+export default {
+    dataTypes: {
+        name: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        headerCls: DataTypes.string
+    },
+    initData() {
+        return {
+            isActive: false
+        };
+    },
+    components: {
+        'icon': Icon
+    },
+    inited() {
+        this.dispatch(C.COLLAPSE_ITEM_INITED);
+    },
+    detached() {
+        this.dispatch(C.COLLAPSE_ITEM_DETACHED);
+    },
+    computed: {
+        itemClasses() {
+            return classNames([
+                `${prefixCls}-item`,
+                {
+                    [`${prefixCls}-item-active`]: this.data.get('isActive')
+                }
+            ]);
+        },
+        headerClasses() {
+            return classNames([
+                `${prefixCls}-header`,
+                {
+                    [`${this.data.get('headerCls')}`]: !!this.data.get('headerCls')
+                }
+            ]);
+        },
+        contentClasses() {
+            return `${prefixCls}-content`;
+        },
+        boxClasses() {
+            return `${prefixCls}-content-box`;
+        },
+        isActive() {
+            /* eslint-disable */
+            return this.data.get('activeName') == this.data.get('name');
+            /* eslint-enable */
+        }
+    },
+    toggle() {
+        this.dispatch(C.COLLAPSE_ITEM_SELECTED, this.data.get('name'));
+    }
+};
+</script>

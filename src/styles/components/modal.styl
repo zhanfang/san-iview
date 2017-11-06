@@ -1,0 +1,69 @@
+.view-modal
+    width: auto;
+    margin: 0 auto;
+    position: relative;
+    outline: none;
+    top: 100px;
+
+    &-hidden
+        display: none
+
+    &-wrap
+        position: fixed
+        overflow: auto
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+        z-index: $zindex-modal
+        -webkit-overflow-scrolling: touch
+        outline: 0
+
+    &-wrap * 
+        box-sizing: border-box
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+    
+    &-mask
+        mask()
+
+    &-content
+        position: relative
+        background-color: #fff
+        border: 0
+        border-radius: $border-radius-base
+        background-clip: padding-box
+    &-header
+        content-header()
+
+    &-close
+        font-size: $font-size-small
+        position: absolute
+        right: 16px
+        top: 8px
+        overflow: hidden
+        cursor: pointer
+
+        &-hidden
+            display: none
+
+        i
+            font-size: 31px;
+            color: $legend-color;
+            transition: color $transition-time ease;
+            position: relative;
+            top: 1px;
+            &:hover 
+                color: #444
+        
+    &-body
+        padding: 16px
+        font-size: 12px
+        line-height: 1.5
+
+    &-footer
+        border-top: 1px solid $border-color-split;
+        padding: 12px 18px 12px 18px
+        text-align: right
+        button + button
+            margin-left: 8px
+            margin-bottom: 0

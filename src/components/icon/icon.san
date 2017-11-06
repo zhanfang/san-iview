@@ -1,0 +1,46 @@
+<template>
+<i class="{{classes}}" style="{{styles}}" on-click="handleClick($event)"></i>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-icon';
+
+export default {
+    dataTypes: {
+        type: DataTypes.string,
+        size: DataTypes.oneOfType([
+            DataTypes.number,
+            DataTypes.string
+        ]),
+        color: DataTypes.string
+    },
+    computed: {
+        classes() {
+            return classNames([
+                prefixCls,
+                {
+                    [`ion-${this.data.get('type')}`]: !!this.data.get('type')
+                }
+            ]);
+        },
+        styles() {
+            let style = {};
+
+            if (this.data.get('size')) {
+                style['font-size'] = `${this.data.get('size')}px`;
+            }
+
+            if (this.color) {
+                style.color = this.color;
+            }
+
+            return style;
+        }
+    },
+    handleClick(e) {
+        this.fire('select', e);
+    }
+};
+</script>

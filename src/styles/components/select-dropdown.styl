@@ -1,0 +1,20 @@
+.view-select-dropdown
+    display: block
+    width: inherit;
+    // max-height: 200px;
+    overflow: auto;
+    margin: 5px 0;
+    padding: 5px 0;
+    background-color: #fff;
+    box-sizing: border-box;
+    border-radius: $select-dropdown-border-radius
+    box-shadow: $shadow-base
+    position: absolute
+    z-index: $zindex-select
+    transition: .3s ease;
+    &-transfer
+        z-index: $zindex-transfer
+    &-hide
+        display: none;
+    &.view-transfer-no-max-height
+        max-height: none

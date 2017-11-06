@@ -1,0 +1,36 @@
+<template>
+    <div class="{{classes}}">
+        <slot></slot>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-btn-group';
+
+export default {
+    dateTypes: {
+        size: DataTypes.oneOf(['small', 'large', 'default']),
+        shape: DataTypes.oneOf(['circle', 'circle-outline']),
+        vertical: DataTypes.bool
+    },
+    initData() {
+        return {
+            vertical: false
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size'),
+                    [`${prefixCls}-${this.data.get('shape')}`]: !!this.data.get('shape'),
+                    [`${prefixCls}-vertical`]: this.data.get('vertical')
+                }
+            ]);
+        }
+    }
+};
+</script>

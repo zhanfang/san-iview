@@ -1,0 +1,113 @@
+<template>
+    <div class="{{classes}}" style="{{styles}}">
+        <div s-if="type === 'notice'">
+            <div class="{{baseClass}}-content" s-html="{{content}}"></div>
+            <a class="{{baseClass}}-close" on-click="close" s-if="closable">
+                <i class="view-icon ion-ios-close-empty"></i>
+            </a>
+        </div>
+        <div s-if="type === 'message'">
+            <div class="{{baseClass}}-content">
+                <div class="{{baseClass}}-content-text" s-html="{{content}}"></div>
+                <a class="{{baseClass}}-close" on-click="close" s-if="closable">
+                    <i class="view-icon ion-ios-close-empty"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+import {debounce} from '../../../utils/throttle.js';
+
+function isFunction(fn) {
+   return Object.prototype.toString.call(fn)=== '[object Function]';
+}
+
+export default {
+    dataTypes: {
+        prefixCls: DataTypes.string,
+        duration: DataTypes.number,
+        type: DataTypes.string,
+        content: DataTypes.string,
+        style: DataTypes.object,
+        closable: DataTypes.bool,
+        className: DataTypes.string,
+        name: DataTypes.string,
+        onClose: DataTypes.func,
+        transitionName: DataTypes.string
+    },
+    initData() {
+        return {
+            prefixCls: '',
+            duration: 1.5,
+            content: '',
+            closeable: false,
+            withDesc: false,
+            enterStatus: false,
+            leaveStatus: false,
+            transitionName: 'move-up'
+        };
+    },
+    computed: {
+        baseClass() {
+            return `${this.data.get('prefixCls')}-notice`;
+        },
+        classes() {
+            return classNames([
+                this.data.get('baseClass'),
+                {
+                    [`${this.data.get('transitionName')}-enter-active`]: this.data.get('enterStatus'),
+                    [`${this.data.get('transitionName')}-leave-active`]: !this.data.get('enterStatus'),
+                    [`${this.data.get('className')}`]: !!this.data.get('className'),
+                    [`${this.data.get('baseClass')}-closable`]: this.data.get('closable'),
+                    [`${this.data.get('baseClass')}-with-desc`]: this.data.get('withDesc')
+                }
+            ]);
+        },
+        contentClasses() {
+            return `${this.data.get('baseClass')}-content`;
+        }
+    },
+    attached() {
+        this.clearCloseTimer();
+        this.data.set('enterStatus', true);
+        const duration = this.data.get('duration');
+
+        if (duration !== 0) {
+            this.closeTimer = setTimeout(() => {
+                this.close();
+            }, duration * 1000);
+        }
+
+        // check if with desc in notice component
+        if (this.prefixCls === 'view-notice') {
+            this.withDesc = this.$refs.content.querySelectorAll(`.${this.prefixCls}-desc`)[0].innerHTML !== '';
+        }
+    },
+    debounce: debounce((fn, data) => {fn(data);}, 300),
+    clearCloseTimer() {
+        if (this.closeTimer) {
+            clearTimeout(this.closeTimer);
+            this.closeTimer = null;
+        }
+    },
+    close() {
+        this.data.set('enterStatus', false);
+        this.clearCloseTimer();
+        const onClose = this.data.get('onClose');
+        
+        if (isFunction(onClose)) {
+            onClose();
+        }
+        this.debounce(() => {
+            this.parentComponent.close(this.data.get('name'))
+        });
+    },
+    detached() {
+        this.clearCloseTimer();
+    }
+};
+</script>

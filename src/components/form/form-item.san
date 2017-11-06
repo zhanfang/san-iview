@@ -1,0 +1,245 @@
+<template>
+    <div class="{{classes}}">
+        <label 
+            class="view-form-item-label" 
+            style="{{labelStyles}}" 
+            s-if="label">
+            {{ label }}
+        </label>
+        <div class="view-form-item-content" style="{{contentStyles}}">
+            <slot></slot>
+            <div 
+                class="view-form-item-error-tip"
+                s-if="validateState === 'error'">
+                {{ validateMessage }}
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import AsyncValidator from 'async-validator';
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-form-item';
+
+function getPropByPath(obj, path) {
+    let tempObj = obj;
+    path = path.replace(/\[(\w+)\]/g, '.$1');
+    path = path.replace(/^\./, '');
+
+    let keyArr = path.split('.');
+    let i = 0;
+
+    for (let len = keyArr.length; i < len - 1; ++i) {
+        let key = keyArr[i];
+        if (key in tempObj) {
+            tempObj = tempObj[key];
+        } else {
+            throw new Error('[view warn]: please transfer a valid prop path to form item!');
+        }
+    }
+    return {
+        o: tempObj,
+        k: keyArr[i],
+        v: tempObj[keyArr[i]]
+    };
+}
+
+export default {
+    dataTypes: {
+        // 是否必填
+        required: DataTypes.bool,
+        // label值
+        label: DataTypes.string,
+        // label宽度
+        labelWidth: DataTypes.number,
+        // 字段name
+        prop: DataTypes.string,
+        // 验证规则
+        rules: DataTypes.oneOfType([DataTypes.array, DataTypes.object]),
+        // 错误信息
+        error: DataTypes.string,
+        // 提示信息
+        help: DataTypes.string,
+        formRules: DataTypes.oneOfType([DataTypes.array, DataTypes.object]),
+        formModel: DataTypes.oneOfType([DataTypes.array, DataTypes.object])
+    },
+    initData() {
+        return {
+            // 是否必须
+            required: false,
+            // 验证提示信息
+            validateMessage: '',
+            // 验证结果 error success validating
+            validateState: '',
+            validateDisabled: false,
+            validator: {}
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-required`]: this.data.get('required'),
+                    [`${prefixCls}-error`]: this.data.get('validateState') === 'error',
+                    [`${prefixCls}-validating`]: this.data.get('validateState') === 'validating'
+                }
+            ]);
+        },
+        labelStyles() {
+            let style = {};
+
+            const labelWidth = this.data.get('labelWidth');
+            if (labelWidth) {
+                style.width = `${labelWidth}px`;
+            }
+            return style;
+        },
+        contentStyles() {
+            let style = {};
+
+            const labelWidth = this.data.get('labelWidth');
+            if (labelWidth) {
+                style['margin-left'] = `${labelWidth}px`;
+            }
+            return style;
+        },
+        fieldValue() {
+            const prop = this.data.get('prop');
+            const model = this.data.get('formModel');
+            if (!model || !prop) {
+                return;
+            }
+
+            let path = prop;
+            if (path.indexOf(':') !== -1) {
+                path = path.replace(/:/, '.');
+            }
+            const temp = getPropByPath(model, path)
+
+            return temp.v;
+        },
+        showHelp() {
+            if (this.data.get('help')) {
+                return true;
+            }
+            return false;
+        },
+        showError() {
+            if (this.data.get('error')) {
+                return true;
+            }
+            return false;
+        }
+    },
+    inited() {
+        this.dispatch(C.FORM_ITEM_INITED);
+    },
+    attached() {
+        if (this.data.get('prop')) {
+            Object.defineProperty(this, 'initialValue', {
+                value: this.data.get('fieldValue')
+            });
+            let rules = this.getRules();
+            if (rules.length) {
+                rules.every(rule => {
+                    if (rule.required) {
+                        this.data.set('required', true);
+                        return false;
+                    }
+                });
+            }
+        }
+    },
+    detached() {
+        this.dispatch(C.FORM_ITEM_DETACHED);
+    },
+    getRules () {
+        let formRules = this.data.get('formRules');
+        const selfRules = this.data.get('rules');
+        formRules = formRules ? formRules[this.data.get('prop')] : [];
+        return [].concat(selfRules || formRules || []);
+    },
+    getFilteredRule (trigger) {
+        const rules = this.getRules();
+
+        return rules.filter(rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1);
+    },
+    validate(trigger, callback = function () {}) {
+        const prop = this.data.get('prop');
+        if (!prop) return;
+
+        const rules = this.getFilteredRule(trigger);
+        if (!rules || rules.length === 0) {
+            callback();
+            return true;
+        }
+        
+        this.data.set('validateState','validating');
+
+        let descriptor = {};
+        descriptor[prop] = rules;
+
+        const validator = new AsyncValidator(descriptor);
+        let model = {};
+    
+        model[prop] = this.data.get('fieldValue');
+    
+        validator.validate(model, { firstFields: true }, errors => {
+            if (errors) {
+                this.data.set('validateState', 'error');
+                this.data.set('validateMessage', errors[0].message);
+            }
+            else {
+                this.data.set('validateState', 'success');
+                this.data.set('validateMessage', '');
+            }
+            callback(this.data.get('validateMessage'));
+        });
+        this.data.set('validateDisabled', false);
+    },
+    resetField () {
+        let path = this.data.get('prop');
+        if (!path) return;
+
+        this.data.set('validateState', '');
+        this.data.set('validateMessage', '');
+        let model = this.data.get('formModel');
+        let value = this.data.get('fieldValue');
+        
+        if (path.indexOf(':') !== -1) {
+            path = path.replace(/:/, '.');
+        }
+        let prop = getPropByPath(model, path);
+        if (Array.isArray(value)) {
+            this.data.set('validateDisabled', true);
+            prop.o[prop.k] = [].concat(this.initialValue);
+        } else {
+            this.data.set('validateDisabled', true);
+            prop.o[prop.k] = this.initialValue;
+        }
+    },
+    onFieldBlur() {
+        this.validate('blur');
+    },
+    onFieldChange() {
+        if (this.data.get('validateDisabled')) {
+            this.data.set('validateDisabled', false)
+            return;
+        }
+        this.validate('change');
+    },
+    messages: {
+        [C.FORM_ITEM_BLUR](arg) {
+            this.onFieldBlur();
+        },
+        [C.FORM_ITEM_CHANGE](arg) {
+            this.onFieldChange();
+        }
+    },
+};
+</script>

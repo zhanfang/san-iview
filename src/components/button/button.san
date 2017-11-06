@@ -1,0 +1,71 @@
+<template>
+    <button 
+        type="{{htmlType}}" 
+        class="{{classes}}" 
+        disabled="{{disabled}}"
+        on-click="handleClick($event)"
+    >
+        <icon class="view-load-loop" type="load-c" s-if="loading"></icon>
+        <icon type="{{icon}}" s-if="icon && !loading"></icon>
+        <span s-if="showSlot">
+            <slot></slot>
+        </span>
+    </button>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+import Icon from '../icon';
+
+const prefixCls = 'view-btn';
+
+export default {
+    dateTypes: {
+        type: DataTypes.oneOf(['primary', 'ghost', 'dashed', 'text', 'info', 'success', 'warning', 'error', 'default']),
+        shape: DataTypes.oneOf(['circle', 'circle-outline']),
+        size: DataTypes.oneOf(['small', 'large', 'default']),
+        loading: DataTypes.bool,
+        disabled: DataTypes.bool,
+        htmlType: DataTypes.oneOf(['button', 'submit', 'reset']),
+        icon: DataTypes.string,
+        long: DataTypes.bool,
+        showSlot: DataTypes.bool
+    },
+    initData() {
+        return {
+            htmlType: 'button',
+            long: false,
+            showSlot: true
+        };
+    },
+    components: {
+        icon: Icon
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-${this.data.get('type')}`]: !!this.data.get('type'),
+                    [`${prefixCls}-long`]: this.data.get('long'),
+                    [`${prefixCls}-${this.data.get('shape')}`]: !!this.data.get('shape'),
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size'),
+                    [`${prefixCls}-loading`]: this.data.get('loading') != null && this.data.get('loading'),
+                    [`${prefixCls}-icon-only`]: !this.data.get('showSlot')
+                        && (!!this.data.get('icon')
+                        || this.data.get('loading'))
+                }
+            ]);
+        }
+    },
+    attached() {
+        if (this.slotChilds.length === 0) {
+            this.data.set('showSlot', false);
+        }
+    },
+    handleClick(e) {
+        this.fire('select', e);
+    }
+};
+</script>

@@ -1,0 +1,105 @@
+<template>
+    <ul class="{{classes}}" style="{{styles}}">
+        <slot></slot>
+    </ul>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-menu';
+
+export default {
+    dataTypes: {
+        mode: DataTypes.oneOf(['horizontal', 'vertical']),
+        theme: DataTypes.oneOf(['light', 'dark', 'primary']),
+        activeName: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        openNames: DataTypes.array,
+        accordion: DataTypes.bool,
+        width: DataTypes.string
+    },
+    initData() {
+        return {
+            mode: 'horizontal',
+            theme: 'light',
+            width: '240px',
+            openNames: [],
+            accordion: false
+        };
+    },
+    inited() {
+        this.items = [];
+        this.subItems = [];
+        this.watch('activeName', activeName => {
+            this.items.forEach(item => {
+                item.data.set('activeName', activeName);
+            });
+        });
+        this.watch('mode', mode => {
+            this.subItems.forEach(item => {
+                item.data.set('mode', mode);
+            });
+        });
+        this.watch('accordion', accordion => {
+            this.subItems.forEach(item => {
+                item.data.set('accordion', accordion);
+            });
+        });
+    },
+    computed: {
+        classes() {
+            let theme = this.data.get('theme');
+            const mode = this.data.get('mode');
+            if (mode === 'vertical' && theme === 'primary') {
+                theme = 'light';
+            }
+
+            return classNames([
+                `${prefixCls}`,
+                `${prefixCls}-${theme}`,
+                {
+                    [`${prefixCls}-${mode}`]: mode
+                }
+            ]);
+        },
+        styles() {
+            let style = {};
+
+            if (this.data.get('mode') === 'vertical') {
+                style.width = this.data.get('width');
+            }
+
+            return style;
+        }
+    },
+    messages: {
+        [C.MENU_ITEM_INITED](e) {
+            this.items.push(e.target);
+        },
+        [C.MENU_ITEM_DETACHED](e) {
+            this.items = this.items.filter(item => item !== e.target);
+        },
+        [C.MENU_ITEM_SELECTED](e) {
+            this.data.set('activeName', e.value);
+            this.fire('select', e.value);
+        },
+        [C.SUBMENU_ITEM_INITED](e) {
+            const item = e.target;
+            item.data.set('mode', this.data.get('mode'));
+            item.data.set('accordion', this.data.get('accordion'));
+            this.subItems.push(e.target);
+        },
+        [C.SUBMENU_ITEM_DETACHED](e) {
+            this.subItems = this.subItems.filter(item => item !== e.target);
+        },
+        [C.SUBMENU_ITEM_SELECTED](e) {
+            // this.data.set('activeName', e.value);
+            // this.fire('select', e.value);
+        }
+    }
+};
+</script>

@@ -1,0 +1,89 @@
+<template>
+    <div class="view-color-picker-hue">
+        <div class="view-color-picker-hue-container"
+             on-mousedown="handleMouseDown"
+             on-click="handleChange($event)">
+            <div 
+                class="view-color-picker-hue-pointer"
+                style="top: 0; left: {{pointerLeft}}">
+                <div class="view-color-picker-hue-picker"></div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+
+export default {
+    dataTypes: {
+        colors: DataTypes.object
+    },
+    initData() {
+        return {
+            oldHue: 0,
+            pullDirection: ''
+        };
+    },
+    computed: {
+        oldHue() {
+            const h = this.data.get('colors.hsl.h');
+            if (h !== 0 && h - this.oldHue > 0) {
+                this.data.set('pullDirection', 'right');
+            }
+            if (h !== 0 && h - this.oldHue < 0) {
+                this.data.set('pullDirection', 'left');
+            }
+            return h;
+        },
+        pointerLeft() {
+            if (this.data.get('colors.hsl.h') === 0 && this.data.get('pullDirection') === 'right') {
+                return '100%';
+            }
+            return (this.data.get('colors.hsl.h') * 100) / 360 + '%';
+        }
+    },
+    handleMouseDown() {
+        this._handleChange = this.handleChange.bind(this);
+        this._handleMouseUp = this.handleMouseUp.bind(this);
+        window.addEventListener('mousemove', this._handleChange);
+        window.addEventListener('mouseup', this._handleMouseUp);
+    },
+    handleChange(e) {
+        e.preventDefault();
+
+        const container = this.el.querySelector('.view-color-picker-hue-container');
+        const containerWidth = container.clientWidth;
+        const xOffset = container.getBoundingClientRect().left + window.pageXOffset;
+        const pageX = e.pageX || (e.touches ? e.touches[0].pageX : 0);
+        const left = pageX - xOffset;
+        let h;
+        let percent;
+
+        if (left < 0) {
+            h = 0;
+        }
+        else if (left > containerWidth) {
+            h = 360;
+        }
+        else {
+            percent = left * 100 / containerWidth;
+            h = (360 * percent / 100);
+        }
+
+        const hsl = this.data.get('colors.hsl');
+        if (hsl.h !== h) {
+            this.fire('colorchange', {
+                h: h,
+                s: hsl.s,
+                l: hsl.l,
+                a: hsl.a,
+                source: 'hsl'
+            });
+        }
+    },
+    handleMouseUp() {
+        window.removeEventListener('mousemove', this._handleChange);
+        window.removeEventListener('mouseup', this._handleMouseUp);
+    }
+};
+</script>

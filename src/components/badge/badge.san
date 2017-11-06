@@ -1,0 +1,77 @@
+<template>
+    <span class="{{classes}}">
+        <span s-if="dot">
+            <slot></slot>
+            <sup class="{{dotClasses}}"></sup>
+        </span>
+        <span s-else>
+            <slot></slot>
+            <sup class="{{countClasses}}">{{ finalCount }}</sup>
+        </span>
+    </span>
+</template>
+<script>
+    import {DataTypes} from 'san';
+    import classNames from 'classnames';
+
+    const prefixCls = 'view-badge';
+
+    export default {
+        dataTypes: {
+            count: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+            dot: DataTypes.bool,
+            overflowCount: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+            className: DataTypes.string
+        },
+        initData() {
+            return {
+                dot: false,
+                overflowCount: 99
+            };
+        },
+        computed: {
+            classes () {
+                return `${prefixCls}`;
+            },
+            dotClasses () {
+                return `${prefixCls}-dot`;
+            },
+            countClasses () {
+                return classNames([
+                    `${prefixCls}-count`,
+                    {
+                        [`${this.data.get('className')}`]: !!this.data.get('className'),
+                        [`${prefixCls}-count-alone`]: false
+                    }
+                ]);
+            },
+            finalCount () {
+                const count = this.data.get('count');
+                const overflowCount = this.data.get('overflowCount');
+                return parseInt(count) >= parseInt(overflowCount) ? `${overflowCount}+` : count;
+            },
+            badge () {
+                let status = false;
+                const count = this.data.get('count');
+
+                if (count) {
+                    status = !(parseInt(count) === 0);
+                }
+
+                if (this.data.get('dot')) {
+                    status = true;
+                    if (count !== null) {
+                        if (parseInt(count) === 0) {
+                            status = false;
+                        }
+                    }
+                }
+
+                return status;
+            }
+        },
+        attached() {
+            console.log(this);
+        }
+    };
+</script>

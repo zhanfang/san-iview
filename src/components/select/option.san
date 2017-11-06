@@ -1,0 +1,77 @@
+<template>
+    <li 
+        class="{{classes}}"
+        on-click="select($event)"
+        on-mouseout="blur($event)">
+        <slot>{{showLabel}}</slot>
+    </li>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-select-item';
+
+export default {
+    dataTypes: {
+        value: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number,
+            DataTypes.bool
+        ]),
+        label: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        disable: DataTypes.bool
+    },
+    initData() {
+        return {
+            selected: false,
+            disabled: false
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-disabled`]: this.data.get('disabled'),
+                    [`${prefixCls}-selected`]: this.data.get('selected'),
+                    [`${prefixCls}-focus`]: this.data.get('isFocus')
+                }
+            ]);
+        },
+        selected() {
+            return this.data.get('activeValue') === this.data.get('value');
+        },
+        showLabel() {
+            if (this.data.get('label')) {
+                return this.data.get('label');
+            }
+            return this.data.get('value');
+        }
+    },
+    inited() {
+        this.dispatch(C.SELECT_ITEM_INITED);
+    },
+    attached() {
+        // this.parentComponent.watch('value', value => {
+        //     this.data.set('activeValue', value);
+        // });
+    },
+    detached() {
+        this.dispatch(C.SELECT_ITEM_DETACHED);
+    },
+    select(e) {
+        if (this.data.get('disabled')) {
+            return false;
+        }
+
+        this.dispatch(C.SELECT_ITEM_SELECTED, this.data.get('value'));
+    }
+};
+</script>
+

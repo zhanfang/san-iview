@@ -1,0 +1,61 @@
+<template>
+    <div class="view-loading-bar" style="{{outerStyles}}">
+        <div class="{{innerClasses}}" style="{{styles}}" s-if="show"></div>
+    </div>
+</template>
+<script>
+    import {DataTypes} from 'san';
+    import classNames from 'classnames';
+
+    const prefixCls = 'view-loading-bar';
+
+    export default {
+        dataTypes: {
+            color: DataTypes.string,
+            failedColor: DataTypes.string,
+            height: DataTypes.number
+        },
+        initData() {
+            return {
+                percent: 0,
+                color: 'primary',
+                failedColor: 'error',
+                height: 2,
+                status: 'success',
+                show: false
+            };
+        },
+        computed: {
+            innerClasses() {
+                return classNames([
+                    `${prefixCls}-inner`,
+                    {
+                        [`${prefixCls}-inner-color-primary`]: this.data.get('color') === 'primary' && this.data.get('status') === 'success',
+                        [`${prefixCls}-inner-failed-color-error`]: this.data.get('failedColor') === 'error' && this.data.get('status') === 'error'
+                    }
+                ]);
+            },
+            outerStyles() {
+                return {
+                    height: `${this.data.get('height')}px`
+                };
+            },
+            styles() {
+                let style = {
+                    width: `${this.data.get('percent')}%`,
+                    height: `${this.data.get('height')}px`
+                };
+
+                if (this.data.get('color') !== 'primary' && this.data.get('status') === 'success') {
+                    style.backgroundColor = this.data.get('color');
+                }
+
+                if (this.data.get('failedColor') !== 'error' && this.data.get('status') === 'error') {
+                    style.backgroundColor = this.data.get('failedColor');
+                }
+
+                return style;
+            }
+        }
+    };
+</script>

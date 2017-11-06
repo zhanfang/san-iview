@@ -1,0 +1,110 @@
+<template>
+    <div
+        class="view-dropdown"
+        on-mouseenter="handleMouseenter"
+        on-mouseleave="handleMouseleave">
+        <div class="view-dropdown-rel" on-click="handleClick">
+            <slot></slot>
+        </div>
+        <drop
+            class="{{dropdownCls}}"
+            placement="{{placement}}"
+            overflow="{{overflow}}"
+            width="{{width}}"
+            visible="{{visible}}"
+            s-ref="dropdown"
+            on-mouseenter="handleMouseenter"
+            on-mouseleave="handleMouseleave">
+            <slot name="list"></slot>
+        </drop>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import Drop from '../select/dropdown';
+
+const prefixCls = 'view-dropdown';
+
+export default {
+    dataTypes: {
+        trigger: DataTypes.oneOf(['click', 'hover', 'custom']),
+        placement: DataTypes.oneOf([
+            'top',
+            'top-start',
+            'top-end',
+            'bottom',
+            'bottom-start',
+            'bottom-end',
+            'left',
+            'left-start',
+            'left-end',
+            'right',
+            'right-start',
+            'right-end']),
+        width: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+        overflow: DataTypes.bool
+    },
+    initData() {
+        return {
+            trigger: 'hover',
+            visible: false,
+            placement: 'bottom',
+            overflow: true,
+            width: 100
+        };
+    },
+    computed: {
+        dropdownCls() {
+            return classNames([
+                'view-dropdown-drop'
+                // {
+                //     ['slide-up-enter-active']: this.data.get('visible'),
+                //     ['slide-up-leave-active']: !this.data.get('visible')
+                // }
+            ]);
+        }
+    },
+    components: {
+        'drop': Drop
+    },
+    attached() {
+        this.watch('visible', val => {
+            if (val) {
+                this.ref('dropdown').fire('update-popper');
+            }
+            else {
+                this.ref('dropdown').destroy();
+            }
+        });
+    },
+    handleClick() {
+        if (this.data.get('trigger') !== 'click') {
+            return false;
+        }
+        this.data.set('visible', !this.data.get('visible'));
+    },
+    handleMouseenter() {
+        if (this.data.get('trigger') !== 'hover') {
+            return false;
+        }
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
+        this.timeout = setTimeout(() => {
+            this.data.set('visible', true);
+        }, 250);
+    },
+    handleMouseleave() {
+        if (this.data.get('trigger') !== 'hover') {
+            return false;
+        }
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+                this.data.set('visible', false);
+            }, 150);
+        }
+    }
+};
+</script>

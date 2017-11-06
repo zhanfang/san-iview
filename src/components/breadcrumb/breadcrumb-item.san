@@ -1,0 +1,69 @@
+<template>
+    <span>
+        <a s-if="href" class="{{linkClasses}}" on-click="handleClick($event)">
+            <slot></slot>
+        </a>
+        <span s-else class="{{linkClasses}}">
+            <slot></slot>
+        </span>
+        <span 
+            class="{{separatorClasses}}" 
+            s-html="separator" 
+            s-if="!showSeparator">
+        </span>
+        <span class="{{separatorClasses}}" s-else>
+            <slot name="separator"></slot>
+        </span>
+    </span>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-breadcrumb-item';
+
+export default {
+    dataTypes: {
+        href: DataTypes.string,
+        replace: DataTypes.bool
+    },
+    initData() {
+        return {
+            separator: '',
+            replace: false,
+            showSeparator: true
+        };
+    },
+    computed: {
+        linkClasses() {
+            return `${prefixCls}-link`;
+        },
+        separatorClasses() {
+            return `${prefixCls}-separator`;
+        }
+    },
+    inited() {
+        this.dispatch(C.BREAD_ITEM_INITED);
+    },
+    detached() {
+        this.dispatch(C.BREAD_ITEM_DETACHED);
+    },
+    attached() {
+        let num = 0;
+        this.slotChilds.forEach(child => {
+            if (child.name === 'separator') {
+                num++;
+            }
+        });
+        if (num === 0) {
+            this.data.set('showSeparator', false);
+        }
+
+    },
+    handleClick(e) {
+        e.preventDefault();
+        window.location.href = this.data.get('href');
+    }
+};
+</script>

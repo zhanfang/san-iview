@@ -1,0 +1,102 @@
+<template>
+    <div class="view-color-picker-saturation-wrapper">
+        <div
+            class="view-color-picker-saturation"
+            style="{{bgStyles}}"
+            on-mousedown="handleMouseDown"
+            on-click="handleColorClick($event)">
+            <div class="view-color-picker-saturation--white"></div>
+            <div class="view-color-picker-saturation--black"></div>
+            <div 
+                class="view-color-picker-saturation-pointer" 
+                style="{{circleStyles}}">
+                <div class="view-color-picker-saturation-circle"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+
+import {throttle} from '../../utils/throttle';
+
+export default {
+    dataTypes: {
+        colors: DataTypes.object
+    },
+    computed: {
+        bgStyles() {
+            let style = {
+                background: `hsl(${this.data.get('colors.hsv.h')}, 100%, 50%)`
+            };
+            return style;
+        },
+        circleStyles() {
+            let style = {};
+            style.top = (-(this.data.get('colors.hsv.v') * 100) + 1) + 100 + '%';
+            style.left = this.data.get('colors.hsv.s') * 100 + '%';
+            return style;
+        }
+    },
+    throttle: throttle((fn, data) => {fn(data);}, 20, {
+        'leading': true,
+        'trailing': false
+    }),
+    handleMouseDown() {
+        this._handleChange = this.handleChange.bind(this);
+        this._handleMouseUp = this.handleMouseUp.bind(this);
+        window.addEventListener('mousemove', this._handleChange);
+        window.addEventListener('mouseup', this._handleMouseUp);
+    },
+    handleChange(e) {
+        e.preventDefault();
+
+        const container = this.el.querySelector('.view-color-picker-saturation');
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        const xOffset = container.getBoundingClientRect().left + window.pageXOffset;
+        const yOffset = container.getBoundingClientRect().top + window.pageYOffset;
+        const pageX = e.pageX || (e.touches ? e.touches[0].pageX : 0);
+        const pageY = e.pageY || (e.touches ? e.touches[0].pageY : 0);
+
+        let left = pageX - xOffset;
+        let top = pageY - yOffset;
+
+        if (left < 0) {
+            left = 0;
+        }
+        else if (left > containerWidth) {
+            left = containerWidth;
+        }
+        else if (top < 0) {
+            top = 0;
+        }
+        else if (top > containerHeight) {
+            top = containerHeight;
+        }
+        const saturation = left / containerWidth;
+        let bright = -(top / containerHeight) + 1;
+        bright = bright > 0 ? bright : 0;
+        bright = bright > 1 ? 1 : bright;
+        this.throttle(param => {
+            this.fire('colorchange', param);
+        }, {
+            h: this.data.get('colors.hsv.h'),
+            s: saturation,
+            v: bright,
+            a: this.data.get('colors.hsv.a'),
+            source: 'hsva'
+        });
+    },
+    handleMouseUp() {
+        this.fire('saturation-pick-color');
+        window.removeEventListener('mousemove', this._handleChange);
+        window.removeEventListener('mouseup', this._handleMouseUp);
+    },
+    handleColorClick(e) {
+        this.handleChange(e);
+        this.fire('saturation-pick-color');
+    }
+};
+</script>

@@ -1,0 +1,22 @@
+<template>
+    <li class="view-menu-item-group">
+        <div class="view-menu-item-group-title">{{ title }}</div>
+        <ul><slot></slot></ul>
+    </li>
+</template>
+<script>
+import {DataTypes} from 'san';
+
+const prefixCls = 'view-menu';
+
+export default {
+    dataTypes: {
+        title: DataTypes.string
+    },
+    initData() {
+        return {
+            title: ''
+        };
+    }
+};
+</script>

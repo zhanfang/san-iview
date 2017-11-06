@@ -1,0 +1,16 @@
+.view-loading-bar
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: $zindex-loading-bar
+
+    &-inner
+        transition: width $transition-time linear;
+
+        &-color-primary
+            background-color: $primary-color
+
+        &-failed-color-error
+            background-color: $error-color

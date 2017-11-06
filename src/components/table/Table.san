@@ -1,0 +1,90 @@
+<template>
+<div class="{{wrapClasses}}" style="{{styles}}">
+    <div class="{{classes}}">
+        <div class="view-table-tip">
+            <table>
+                <slot name="header"></slot>
+                <slot></slot>
+            </table>
+        </div>
+    </div>
+    <div 
+        class="view-tabel-footer" 
+        s-if="showSlotFooter" 
+        ref="footer">
+        <slot name="footer"></slot>
+    </div>
+</div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-table';
+
+export default {
+    dataTypes: {
+        size: DataTypes.oneOf(['small', 'large', 'default']),
+        width: DataTypes.oneOfType([
+            DataTypes.number,
+            DataTypes.string
+        ])
+    },
+    initData() {
+        return {
+            border: false,
+            stripe: false,
+            showSlotHeader: true,
+            showSlotFooter: true
+        };
+    },
+    attached() {
+        let header = 0;
+        let footer = 0;
+        this.slotChilds.forEach(child => {
+            if (child.name === 'header') {
+                header++;
+            }
+            if (child.name === 'footer') {
+                footer++;
+            }
+        });
+        if (header === 0) {
+            this.data.set('showSlotHeader', false);
+        }
+        if (footer === 0) {
+            this.data.set('showSlotFooter', false);
+        }
+    },
+    computed: {
+        wrapClasses() {
+            return classNames([
+                `${prefixCls}-wrapper`,
+                {
+                    [`${prefixCls}-with-header`]: this.data.get('showSlotHeader'),
+                    [`${prefixCls}-with-footer`]: this.data.get('showSlotFooter')
+                }
+            ]);
+        },
+        styles() {
+            let style = {};
+            if (this.width) {
+                style.width = `${this.data.get('width')}px`;
+            }
+            return style;
+        },
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size'),
+                    [`${prefixCls}-border`]: this.data.get('border'),
+                    [`${prefixCls}-stripe`]: this.data.get('stripe'),
+                    [`${prefixCls}-with-fixed-top`]: !!this.data.get('height')
+                }
+            ]);
+        }
+    }
+};
+</script>

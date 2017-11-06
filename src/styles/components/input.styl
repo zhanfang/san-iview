@@ -1,0 +1,143 @@
+.view-input
+    // input基础配置
+    input()
+
+    &-wrapper
+        display: inline-block
+        width: 100%
+        position: relative
+        vertical-align: middle
+    &-icon
+        width: 32px;
+        height: $input-height-base;
+        line-height: $input-height-base;
+        font-size: 16px;
+        text-align: center;
+        color: $subsidiary-color;
+        position: absolute;
+        right: 0;
+        z-index: 3;
+    
+    &-hide-icon &-icon{
+        display: none;
+    }
+
+    &-icon-hide
+        display: none
+
+    &-icon-normal + &
+        padding-right: 32px
+    &-icon-hide + &
+        padding-right: $input-padding-horizontal
+
+    // #554
+    &-hide-icon &-icon-normal + &
+        padding-right: $input-padding-horizontal
+
+    &-wrapper-large &-icon
+        font-size: 18px
+        height: $input-height-large
+        line-height: $input-height-large
+    &-wrapper-small &-icon
+        width: 24px
+        font-size: 14px
+        height: $input-height-small
+        line-height: $input-height-small
+
+.view-input-group
+
+    display: table;
+    width: 100%;
+    border-collapse: separate;
+    position: relative;
+    font-size: $font-size-small;
+    top: 1px; // fixed when using in form inline,
+
+    &-large
+        font-size: $font-size-base
+
+    // Undo padding and float of grid classes
+    &[class*="col-"]
+        float: none
+        padding-left: 0
+        padding-right: 0
+
+    > [class*="col-"]
+        padding-right: 8px
+
+    &-prepend,
+    &-append,
+    > .view-input
+        display: table-cell
+
+
+    &-with-prepend .view-input
+        border-top-left-radius: 0
+        border-bottom-left-radius: 0
+    &-with-append .view-input
+        border-top-right-radius: 0
+        border-bottom-right-radius: 0
+
+    .view-input
+        width: 100%
+        float: left
+        margin-bottom: 0
+        position: relative
+        z-index: 2
+
+    &-prepend,
+    &-append
+        width: 1px // To make addon/wrap as small as possible
+        white-space: nowrap
+        vertical-align: middle
+        padding: $input-padding-vertical-base $input-padding-horizontal;
+        font-size: inherit;
+        font-weight: normal;
+        line-height: 1;
+        color: $input-color;
+        text-align: center;
+        background-color: #eee;
+        border: 1px solid $input-border-color;
+        border-radius: $input-border-radius;
+
+    &-prepend 
+        border-right: 0
+    &-append
+        border-left: 0;
+
+    // Reset rounded corners
+    > span > .view-input:first-child,
+    > .view-input:first-child,
+    &-prepend
+        border-bottom-right-radius: 0 !important
+        border-top-right-radius: 0 !important
+
+        // Reset Select's style in addon
+        .view-select .view-select-selection
+            border-bottom-right-radius: 0
+            border-top-right-radius: 0
+
+    > .view-input:last-child,
+    &-append
+        border-bottom-left-radius: 0 !important;
+        border-top-left-radius: 0 !important;
+
+        // Reset Select's style in addon
+        .view-select .view-select-selection
+            border-bottom-left-radius: 0
+            border-top-left-radius: 0
+
+.view-form-item-error
+    .view-input
+        input-error()
+        &-icon
+            color: $error-color
+    .view-input-group
+        input-group-error()
+
+.view-form-item-validating
+    .view-input
+        &-icon-validate
+            display: inline-block
+        &-icon + .view-input
+            padding-right: 32px

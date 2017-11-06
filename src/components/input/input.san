@@ -1,0 +1,226 @@
+<template>
+<div>
+    <div s-if="type !== 'textarea'"  class="{{wrapClasses}}">
+        <div 
+            class="view-input-group-prepend" 
+            s-if="prepend">
+            <slot name="prepend"></slot>
+        </div>
+        <icon 
+            class="{{iconClasses}}"
+            type="{{icon}}"
+            on-click="handleIconClick($event)">
+        </icon>
+        <input
+            type="{{type}}"
+            class="{{inputClasses}}"
+            placeholder="{{placeholder}}"
+            disabled="{{disabled}}"
+            maxlength="{{maxlength}}"
+            readonly="{{readonly}}"
+            name="{{name}}"
+            value="{=value=}"
+            number="{{number}}"
+            autofocus="{{autofocus}}"
+            autocomplete="{{autocomplete}}"
+            on-click="handleClick($event)"
+            on-keyup="handleKeyup($event)"
+            on-keypress="handleKeypress($event)"
+            on-keydown="handleKeydown($event)"
+            on-focus="handleFocus($event)"
+            on-blur="handleBlur($event)"
+            on-input="handleInput($event)"
+            on-change="handleChange($event)">
+        <div 
+            class="view-input-group-append" 
+            s-if="append">
+            <slot name="append"></slot>
+        </div>
+    </div>
+    <div class="{{wrapClasses}}" s-else>
+        <textarea
+            class="{{textareaClasses}}"
+            style="{{textareaStyles}}"
+            placeholder="{{placeholder}}"
+            disabled="{{disabled}}"
+            maxlength="{{maxlength}}"
+            readonly="{{readonly}}"
+            rows="{{rows}}"
+            name="{{name}}"
+            value="{{value}}"
+            autofocus="{{autofocus}}"
+            autocomplete="{{autocomplete}}"
+            on-keyup="handleKeyup($event)"
+            on-keypress="handleKeypress($event)"
+            on-keydown="handleKeydown($event)"
+            on-focus="handleFocus($event)"
+            on-blur="handleBlur($event)"
+            on-input="handleInput($event)">
+        </textarea>
+    </div>
+</div>
+</template>
+
+<script>
+import {DataTypes, nextTick} from 'san';
+import classNames from 'classnames';
+import calcTextareaHeight from '../../utils/calcTextareaHeight';
+import Icon from '../icon';
+import * as C from '../form/constant';
+
+const prefixCls = 'view-input';
+
+export default {
+    dataTypes: {
+        // input相关
+        type: DataTypes.oneOf(['text', 'textarea', 'password']),
+        value: DataTypes.oneOfType([
+            DataTypes.number,
+            DataTypes.string,
+            DataTypes.bool
+        ]),
+        size: DataTypes.oneOf(['small', 'large', 'default']),
+        placeholder: DataTypes.string,
+        maxlength: DataTypes.number,
+        disabled: DataTypes.bool,
+        name: DataTypes.string,
+        number: DataTypes.bool,
+        autofocus: DataTypes.bool,
+        autocomplete: DataTypes.oneOf(['on', 'off']),
+        readonly: DataTypes.bool,
+        icon: DataTypes.string,
+        prepend: DataTypes.bool,
+        append: DataTypes.bool,
+        // textarea相关
+        rows: DataTypes.number,
+        autosize: DataTypes.object
+    },
+    initData() {
+        return {
+            type: 'text',
+            placeholder: '',
+            disabled: false,
+            autocomplete: 'off',
+            autofocus: true,
+            readonly: false,
+            prepend: false,
+            append: false,
+            rows: 2
+        };
+    },
+    components: {
+        'icon': Icon
+    },
+    computed: {
+        wrapClasses() {
+            return classNames([
+                `${prefixCls}-wrapper`,
+                {
+                    [`${prefixCls}-wrapper-${this.data.get('size')}`]: !!this.data.get('size'),
+                    [`${prefixCls}-group`]: this.data.get('prepend') || this.data.get('append'),
+                    [`${prefixCls}-group-${this.data.get('size')}`]: (this.data.get('prepend') || this.data.get('append')) && !!this.data.get('size'),
+                    [`${prefixCls}-group-with-prepend`]: this.data.get('prepend'),
+                    [`${prefixCls}-group-with-append`]: this.data.get('append'),
+                    [`${prefixCls}-hide-icon`]: this.data.get('append')  // #554
+                }
+            ]);
+        },
+        iconClasses() {
+            return classNames([
+                'view-icon',
+                `${prefixCls}-icon`,
+                `${prefixCls}-icon-normal`,
+                {
+                    [`${prefixCls}-icon-hide`]: !this.data.get('icon')
+                }
+            ]);
+        },
+        inputClasses() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size'),
+                    [`${prefixCls}-disabled`]: this.data.get('disabled')
+                }
+            ]);
+        },
+        textareaClasses() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-disabled`]: this.data.get('disabled')
+                }
+            ]);
+        }
+    },
+    inited() {
+        if (this.data.get('type') !== 'text') {
+            this.watch('value', val => {
+                nextTick(() => {
+                    this.resizeTextarea();
+                });
+            });
+        }
+    },
+    handleClick(e) {
+        this.fire('input-click', e);
+    },
+    handleIconClick(e) {
+        this.fire('input-clickicon', e);
+    },
+    handleKeydown(e) {
+        this.fire('input-keydown', e);
+    },
+    handleKeypress(e) {
+        this.fire('input-keypress', e);
+    },
+    handleKeyup(e) {
+        if (e.keyCode === 13) {
+            this.fire('input-keyenter', e);
+        }
+        this.fire('input-keyup', e);
+    },
+    handleFocus(e) {
+        this.fire('input-focus', e);
+    },
+    handleInput(e) {
+        let value = e.target.value;
+        if (this.data.get('number')) {
+            value = Number.isNaN(Number(value)) ? value : Number(value);
+        }
+
+        this.fire('input-input', value);
+        this.data.set('value', value);
+        this.fire('input-change', e);
+    },
+    handleChange(e) {
+        this.fire('input-change', e);
+        this.dispatch(C.FORM_ITEM_CHANGE, this.data.get('value'));
+    },
+    handleBlur(e) {
+        this.fire('input-blur', e);
+        this.dispatch(C.FORM_ITEM_BLUR, this.data.get('value'));
+    },
+    // TODO
+    resizeTextarea() {
+        let autosize = this.data.get('autosize');
+
+        if (!autosize || this.data.get('type') !== 'textarea') {
+            return false;
+        }
+
+        const minRows = autosize.minRows;
+        const maxRows = autosize.maxRows;
+        const style = calcTextareaHeight(this.el.querySelector('textarea'), minRows, maxRows);
+
+        this.data.set('textareaStyles', style);
+    },
+    focus() {
+        if (this.data.get('type') === 'textarea') {
+            this.el.querySelector('textarea').focus();
+        } else {
+            this.el.querySelector('input').focus();
+        }
+    }
+};
+</script>

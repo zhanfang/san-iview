@@ -1,0 +1,61 @@
+<template>
+    <div class="{{classes}}">
+        <slot></slot>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import * as C from './constant';
+
+const prefixCls = 'view-collapse';
+
+export default {
+    dataTypes: {
+        name: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        accordion: DataTypes.bool
+    },
+    initData() {
+        return {
+            accordion: false
+        };
+    },
+    inited() {
+        this.items = [];
+    },
+    computed: {
+        classes() {
+            return `${prefixCls}`;
+        }
+    },
+    messages: {
+        [C.COLLAPSE_ITEM_INITED](e) {
+            let item = e.target;
+            this.items.push(e.target);
+            item.data.set('activeName', this.data.get('name'));
+        },
+        [C.COLLAPSE_ITEM_DETACHED](e) {
+            this.items = this.items.filter(item => item !== e.target);
+        },
+        [C.COLLAPSE_ITEM_SELECTED](e) {
+            const item = e.target;
+            this.data.set('name', e.value);
+            this.fire('select', e.value);
+            // 开启手风琴模式
+            if (this.data.get('accordion')) {
+                this.items.forEach(item => {
+                    item.data.set('activeName', e.value);
+                });
+                return;
+            }
+
+            item.data.set('isActive', !item.data.get('isActive'));
+        }
+    }
+};
+</script>
+<style>
+
+</style>

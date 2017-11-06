@@ -1,0 +1,90 @@
+<template>
+    <label class="{{wrapClasses}}">
+        <span class="{{radioClasses}}">
+            <span class="{{innerClasses}}"></span>
+            <input
+                type="radio"
+                class="{{inputClasses}}"
+                checked="{{checked}}"
+                on-click="change($event)">
+        </span><slot>{{ label }}</slot>
+    </label>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-radio';
+
+export default {
+    dataTypes: {
+        value: DataTypes.oneOfType([DataTypes.bool, DataTypes.string, DataTypes.number]),
+        trueValue: DataTypes.oneOfType([DataTypes.bool, DataTypes.string, DataTypes.number]),
+        falseValue: DataTypes.oneOfType([DataTypes.bool, DataTypes.string, DataTypes.number]),
+        label: DataTypes.oneOfType([DataTypes.string, DataTypes.number]),
+        disabled: DataTypes.bool,
+        size: DataTypes.oneOf(['small', 'large', 'default'])
+    },
+    initData() {
+        return {
+            trueValue: true,
+            falseValue: false,
+            disabled: false,
+            group: true,
+            checked: false
+        };
+    },
+    computed: {
+        checked() {
+            if (this.data.get('label') === this.data.get('value')) {
+                return true;
+            }
+            return false;
+        },
+        wrapClasses() {
+            return classNames([
+                `${prefixCls}-wrapper`,
+                {
+                    [`${prefixCls}-group-item`]: this.data.get('group'),
+                    [`${prefixCls}-wrapper-checked`]: this.data.get('checked'),
+                    [`${prefixCls}-wrapper-disabled`]: this.data.get('disabled'),
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size')
+                }
+            ]);
+        },
+        radioClasses() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-checked`]: this.data.get('checked'),
+                    [`${prefixCls}-disabled`]: this.data.get('disabled')
+                }
+            ]);
+        },
+        innerClasses() {
+            return `${prefixCls}-inner`;
+        },
+        inputClasses() {
+            return `${prefixCls}-input`;
+        }
+    },
+    inited() {
+        this.dispatch(C.RADIO_ITEM_INITED);
+    },
+    detached() {
+        this.dispatch(C.RADIO_ITEM_DETACHED);
+    },
+    change(e) {
+        if (this.data.get('disabled')) {
+            return;
+        }
+        const checked = event.target.checked;
+
+        this.dispatch(C.RADIO_ITEM_SELECTED, {
+            label: this.data.get('label'),
+            checked: checked
+        });
+    }
+};
+</script>

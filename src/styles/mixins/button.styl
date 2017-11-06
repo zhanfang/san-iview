@@ -1,0 +1,284 @@
+button-size($padding, $font-size, $border-radius)
+    padding: $padding
+    font-size: $font-size
+    border-radius: $border-radius
+
+button-color($color, $background, $border)
+    color: $color
+    background-color: $background
+    border-color: $border
+    // a inside Button which only work in Chrome
+    // http://stackoverflow.com/a/17253457
+    > a:only-child
+        color: currentColor
+        &:after
+            content: ''
+            position: absolute
+            top: 0
+            left: 0
+            bottom: 0
+            right: 0
+            background: transparent
+
+button-variant($color, $background, $border)
+    button-color($color, $background, $border)
+
+    &:hover
+    //&:focus
+        button-color(tint($color, 20%), tint($background, 20%), tint($border, 20%))
+    &:active,
+    &.active 
+        button-color(shade($color, 5%), shade($background, 5%), shade($background, 5%))
+
+    &.disabled,
+    &[disabled],
+    fieldset[disabled] &
+        &,
+        &:hover,
+        &:focus,
+        &:active,
+        &.active
+            button-color($btn-disable-color, $btn-disable-bg, $btn-disable-border)
+
+btn()
+    display: inline-block
+    margin-bottom: 0
+    font-weight: $btn-font-weight
+    text-align: center
+    vertical-align: middle
+    touch-action: manipulation
+    cursor: pointer
+    background-image: none
+    border: 1px solid transparent
+    white-space: nowrap
+    line-height: $line-height-base
+    user-select: none
+    
+    button-size($btn-padding-base, $btn-font-size, $btn-border-radius)
+    
+    transition: color $transition-time linear, background-color $transition-time linear, border $transition-time linear
+    
+    > .view-icon 
+        line-height: 1;
+
+    &,
+    &:active,
+    &:focus
+        outline: 0
+
+    &:not([disabled]):hover
+        text-decoration: none
+
+    &:not([disabled]):active
+        outline: 0
+        transition: none
+
+    &.disabled,
+    &[disabled]
+        cursor: $cursor-disabled;
+        > *
+            pointer-events: none
+
+    &-large
+        button-size($btn-padding-large, $btn-font-size-large, $btn-border-radius)
+
+    &-small
+        button-size($btn-padding-small, $btn-font-size, $btn-border-radius-small)
+
+// Default
+btn-default()
+    button-variant($btn-default-color, $btn-default-bg, $btn-default-border)
+
+    &:hover
+    //&:focus
+        button-color(tint($primary-color, 20%), #fff, tint($primary-color, 20%))
+
+    &:active,
+    &.active
+        button-color(shade($primary-color, 5%), #fff, shade($primary-color, 5%))
+
+// primary
+btn-primary()
+    button-variant($btn-primary-color, $btn-primary-bg, $primary-color)
+
+    &:hover
+    &:active,
+    &.active
+        color: $btn-primary-color
+
+// Ghost
+btn-ghost()
+    button-variant($btn-ghost-color, $btn-ghost-bg, $btn-ghost-border)
+
+    &:hover
+    //&:focus
+        button-color(tint($primary-color, 20%), $btn-ghost-bg, tint($primary-color, 20%))
+    &:active,
+    &.active
+        button-color(shade($primary-color, 5%), $btn-ghost-bg, shade($primary-color, 5%))
+
+// Dashed
+btn-dashed()
+    button-variant($btn-ghost-color, $btn-ghost-bg, $btn-ghost-border)
+    border-style: dashed;
+
+    &:hover
+        button-color(tint($primary-color, 20%), $btn-ghost-bg, tint($primary-color, 20%))
+    &:active,
+    &.active 
+        button-color(shade($primary-color, 5%), $btn-ghost-bg, shade($primary-color, 5%))
+
+// Text
+btn-text()
+    button-variant($btn-ghost-color, $btn-ghost-bg, transparent)
+
+    // for disabled
+    &.disabled,
+    &[disabled],
+    fieldset[disabled] & 
+        &,
+        &:hover,
+        &:focus,
+        &:active,
+        &.active
+            button-color($btn-disable-color, $btn-ghost-bg, transparent)
+
+    &:hover
+        button-color(tint($primary-color, 20%), $btn-ghost-bg, transparent);
+    
+    &:active,
+    &.active
+        button-color(shade($primary-color, 5%), $btn-ghost-bg, transparent)
+
+// Color
+btn-color($color)
+    button-variant($btn-primary-color, $color, $color)
+
+    &:hover,
+    &:active,
+    &.active
+        color: $btn-primary-color
+
+// Circle for Icon
+btn-circle()
+    border-radius: $btn-circle-size
+
+    &.view-btn-large
+        border-radius: $btn-circle-size-large
+
+    &.view-btn-size
+        border-radius: $btn-circle-size-small
+    
+    &.view-btn-icon-only
+        square($btn-circle-size)
+        button-size(0, $font-size-base + 2, 50%)
+
+        &.view-btn-large
+            square($btn-circle-size-large)
+            button-size(0, $btn-font-size-large + 2, 50%)
+
+        &.view-btn-small
+            square($btn-circle-size-small)
+            button-size(0, $font-size-base, 50%)
+
+button-group-base()
+    position: relative
+    display: inline-block
+    vertical-align: middle
+    > .view-btn
+        position relative
+        float left
+        &:hover
+        &:active
+        &.active
+            z-index: 2
+    & .view-btn-icon-only .view-icon
+        font-size: 14px
+        position relative
+        top: 1px
+    &-large .view-btn-icon-only .view-icon
+        font-size: 16px
+        top: 2px
+    &-small .view-btn-icon-only .view-icon
+        font-size: 12px
+        top: 0
+    
+button-group-vertical-base()
+    display: inline-block;
+    vertical-align: middle;
+    > .view-btn
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        float: none;
+
+btn-group()
+    button-group-base()
+
+    .view-btn + .view-btn,
+    .view-btn + &,
+    & + .view-btn,
+    & + &
+        margin-left: -1px
+
+    .view-btn:not(:first-child):not(:last-child)
+        border-radius: 0
+
+    &:not(&-vertical) > .view-btn:first-child
+        margin-left: 0
+        &:not(:last-child) 
+            border-bottom-right-radius: 0
+            border-top-right-radius: 0
+
+    &:not(&-vertical) > .view-btn:last-child:not(:first-child)
+        border-bottom-left-radius: 0
+        border-top-left-radius: 0
+
+    & > &
+        float: left
+
+    & > &:not(:first-child):not(:last-child) > .view-btn 
+        border-radius: 0
+
+    &:not(&-vertical) > &:first-child:not(:last-child)
+        > .view-btn:last-child
+            border-bottom-right-radius: 0
+            border-top-right-radius: 0
+            padding-right: 8px
+
+    &:not(&-vertical) > &:last-child:not(:first-child) > .view-btn:first-child
+        border-bottom-left-radius: 0
+        border-top-left-radius: 0
+        padding-left: 8px
+
+btn-group-vertical()
+    button-group-vertical-base()
+
+    .view-btn + .view-btn ,
+    .view-btn + &,
+    & + .view-btn,
+    & + & {
+        margin-top: -1px;
+        margin-left: 0px;
+    }
+
+    > .view-btn:first-child
+        margin-top: 0
+        &:not(:last-child)
+            border-bottom-left-radius: 0
+            border-bottom-right-radius: 0
+
+    > .view-btn:last-child:not(:first-child)
+        border-top-left-radius: 0
+        border-top-right-radius: 0
+
+    & > &:first-child:not(:last-child)
+        > .view-btn:last-child
+            border-bottom-left-radius: 0
+            border-bottom-right-radius: 0
+            padding-bottom: 8px
+
+    & > &:last-child:not(:first-child) > .view-btn:first-child
+        border-bottom-right-radius: 0
+        border-bottom-left-radius: 0
+        padding-top: 8px

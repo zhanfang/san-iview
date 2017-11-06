@@ -1,0 +1,80 @@
+<template>
+    <span class="{{wrapClasses}}" on-click="toggle($event)">
+        <span class="{{innerClasses}}">
+            <span s-if="value === trueValue">
+                <slot name="open"></slot>
+            </span>
+            <span s-if="value === falseValue">
+                <slot name="close"></slot>
+            </span>
+        </span>
+    </span>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-switch';
+
+export default {
+    dataTypes: {
+        value: DataTypes.oneOfType([
+            DataTypes.string, DataTypes.number, DataTypes.bool
+        ]),
+        trueValue: DataTypes.oneOfType([
+            DataTypes.string, DataTypes.number, DataTypes.bool
+        ]),
+        falseValue: DataTypes.oneOfType([
+            DataTypes.string, DataTypes.number, DataTypes.bool
+        ]),
+        disabled: DataTypes.bool,
+        size: DataTypes.oneOf(['large', 'small', 'default'])
+    },
+    initData() {
+        return {
+            value: false,
+            trueValue: true,
+            falseValue: false,
+            disabled: false,
+            size: 'default'
+        };
+    },
+    computed: {
+        wrapClasses() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-checked`]: this.data.get('value') === this.data.get('trueValue'),
+                    [`${prefixCls}-disabled`]: this.data.get('disabled'),
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size')
+                }
+            ]);
+        },
+        innerClasses() {
+            return `${prefixCls}-inner`;
+        },
+        openSlotState() {
+            return this.data.get('value') === this.data.get('trueValue');
+        },
+        closeSlotState() {
+            return this.data.get('value') === this.data.get('trueValue');
+        }
+    },
+    toggle(e) {
+        if (this.data.get('disabled')) {
+            return false;
+        }
+
+        let checked;
+        if (this.data.get('value') === this.data.get('trueValue')) {
+            checked = this.data.get('falseValue');
+        }
+        else {
+            checked = this.data.get('trueValue');
+        }
+
+        this.data.set('value', checked);
+        this.fire('switch', checked);
+    }
+};
+</script>

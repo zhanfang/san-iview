@@ -1,0 +1,41 @@
+<template>
+<div class="view-tabs-tabpane">
+    <div s-if="active">
+        <slot></slot>
+    </div>
+</div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import * as C from './constant';
+
+export default {
+    dataTypes: {
+        name: DataTypes.string,
+        label: DataTypes.string,
+        icon: DataTypes.string,
+        disabled: DataTypes.bool
+    },
+    initData() {
+        return {
+            active: false,
+            label: ''
+        };
+    },
+    inited() {
+        // this.parentComponent.watch('name', name => {
+        //     this.data.set('active', name === this.data.get('name'));
+        // });
+        this.dispatch(C.TABS_ITEM_INITED);
+    },
+    detached() {
+        this.dispatch(C.TABS_ITEM_DETACHED);
+    },
+    computed: {
+        active() {
+            return this.data.get('activeName') === this.data.get('name');
+        }
+    }
+};
+</script>

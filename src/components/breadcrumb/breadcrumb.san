@@ -1,0 +1,40 @@
+<template>
+    <div class="view-breadcrumb">
+        <slot></slot>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import * as C from './constant';
+
+const prefixCls = 'view-breadcrumb';
+
+export default {
+    dataTypes: {
+        separator: DataTypes.string
+    },
+    initData() {
+        return {
+            separator: '/'
+        };
+    },
+    inited() {
+        this.items = [];
+        this.watch('separator', separator => {
+            this.items.map(item => {
+                item.data.set('separator', separator);
+            });
+        });
+    },
+    messages: {
+        [C.BREAD_ITEM_INITED](e) {
+            const item = e.target;
+            item.data.set('separator', this.data.get('separator'));
+            this.items.push(item);
+        },
+        [C.BREAD_ITEM_DETACHED](e) {
+            this.items = this.items.filter(item => item !== e.target);
+        }
+    }
+};
+</script>

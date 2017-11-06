@@ -1,0 +1,59 @@
+<template>
+    <div class="{{classes}}" s-if="fullscreenVisible">
+        <div class="{{mainClasses}}">
+            <span class="{{dotClasses}}"></span>
+            <div class="{{textClasses}}"><slot></slot></div>
+        </div>
+    </div>
+</template>
+<script>
+    import {DataTypes} from 'san';
+    import classNames from 'classnames';
+
+    const prefixCls = 'view-spin';
+
+    export default {
+        dataTypes: {
+            size: DataTypes.oneOf(['small', 'large']),
+            fix: DataTypes.bool,
+            fullscreen: DataTypes.bool
+        },
+        initData() {
+            return {
+                fix: false,
+                showText: false,
+                fullscreen: false,
+                visible: false
+            };
+        },
+        computed: {
+            classes() {
+                return classNames([
+                    `${prefixCls}`,
+                    {
+                        [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size'),
+                        [`${prefixCls}-fix`]: this.data.get('fix'),
+                        [`${prefixCls}-show-text`]: this.data.get('showText'),
+                        [`${prefixCls}-fullscreen`]: this.data.get('fullscreen'),
+                        [`${prefixCls}-fullscreen-wrapper`]: this.data.get('fullscreen')
+                    }
+                ]);
+            },
+            mainClasses() {
+                return `${prefixCls}-main`;
+            },
+            dotClasses() {
+                return `${prefixCls}-dot`;
+            },
+            textClasses() {
+                return `${prefixCls}-text`;
+            },
+            fullscreenVisible() {
+                if (this.data.get('fullscreen')) {
+                    return this.data.get('visible');
+                }
+                return true;
+            }
+        }
+    };
+</script>

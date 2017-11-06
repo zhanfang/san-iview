@@ -1,0 +1,101 @@
+<template>
+    <div 
+        class="view-tooltip" 
+        on-mouseenter="handleMouseenter"
+        on-mouseleave="handleMouseleave">
+        <div class="view-tooltip-rel" on-click="handleClick">
+            <slot></slot>
+        </div>
+        <drop
+            class="view-tooltip-rel-popper"
+            placement="{{placement}}"
+            overflow="{{false}}"
+            width="{{width}}"
+            visible="{{visible}}"
+            s-ref="dropdown"
+            on-mouseenter="handleMouseenter"
+            on-mouseleave="handleMouseleave">
+            <slot name="content"></slot>
+        </drop>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import Drop from '../select/dropdown';
+
+const prefixCls = 'view-tooltip';
+
+export default {
+    dataTypes: {
+        placement: DataTypes.oneOf([
+            'top',
+            'top-start',
+            'top-end',
+            'bottom',
+            'bottom-start',
+            'bottom-end',
+            'left',
+            'left-start',
+            'left-end',
+            'right',
+            'right-start',
+            'right-end']
+        ),
+        delay: DataTypes.number,
+        disabled: DataTypes.bool,
+        trigger: DataTypes.oneOf(['click', 'hover', 'custom']),
+        width: DataTypes.oneOfType([DataTypes.number, DataTypes.string])
+    },
+    initData() {
+        return {
+            placement: 'bottom',
+            delay: 100,
+            disabled: false,
+            trigger: 'hover',
+            visible: false
+        };
+    },
+    components: {
+        'drop': Drop
+    },
+    attached() {
+        this.watch('visible', val => {
+            if (val) {
+                this.ref('dropdown').fire('update-popper');
+            }
+            else {
+                this.ref('dropdown').destroy();
+            }
+        });
+    },
+    handleClick() {
+        if (this.data.get('trigger') !== 'click') {
+            return false;
+        }
+        this.data.set('visible', !this.data.get('visible'));
+    },
+    handleMouseenter() {
+        if (this.data.get('trigger') !== 'hover') {
+            return false;
+        }
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
+        this.timeout = setTimeout(() => {
+            this.data.set('visible', true);
+        }, this.data.get('delay'));
+    },
+    handleMouseleave() {
+        if (this.data.get('trigger') !== 'hover') {
+            return false;
+        }
+        console.loh('111');
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+                this.data.set('visible', false);
+            }, this.data.get('delay'));
+        }
+    }
+};
+</script>

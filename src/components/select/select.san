@@ -1,0 +1,182 @@
+<template>
+<div class="{{classes}}">
+    <div 
+        class="view-select-selection"
+        on-click="toggleMenu($event)">
+        <span class="view-select-placeholder" s-if="showPlaceholder">
+            {{ placeHolder }}
+        </span>
+        <span class="view-select-selected-value" s-else>
+            {{ selectedSingle }}
+        </span>
+        <input
+            s-if="filterable"
+            class="view-select-input"
+            type="text" 
+            placeHolder="{{showPlaceholder ? placeHolder : ''}}" 
+            disable="{{disable}}"
+            on-blur="handleBlur($event)"
+            on-keydown="resetInputState($event)"
+            value="{=value=}"
+            disabled="{{disabled}}"
+        >
+        <icon 
+            type="ios-close" 
+            class="view-select-arrow">
+        </icon>
+        <icon 
+            type="arrow-down-b" 
+            class="view-select-arrow"
+            >
+        </icon>
+    </div>
+    <drop
+        class="{{dropdownCls}}"
+        visible="{{visible}}"
+        s-ref="dropdown"
+        overflow="{{overflow}}"
+        placement="{{placement}}">
+        <ul class="view-select-dropdown-list">
+            <slot></slot>
+        </ul>
+    </drop>
+</div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import Icon from '../icon';
+import Drop from './dropdown';
+import * as C from './constant.js';
+
+const prefixCls = 'view-select';
+
+export default {
+    dataTypes: {
+        value: DataTypes.oneOfType([
+            DataTypes.bool,
+            DataTypes.string,
+            DataTypes.number,
+            DataTypes.array
+        ]),
+        disabled: DataTypes.bool,
+        placeHolder: DataTypes.string,
+        filterable: DataTypes.bool,
+        size: DataTypes.oneOf(['small', 'large', 'default']),
+        clearable: DataTypes.bool,
+        transfer: DataTypes.bool,
+        placement: DataTypes.oneOf(['top', 'bottom']),
+        overflow: DataTypes.bool
+    },
+    initData() {
+        return {
+            disabled: false,
+            placeHolder: '请选择',
+            filterable: false,
+            size: 'default',
+            selectedSingle: '',    // label
+            clearable: false,
+            visible: false,
+            transfer: false,
+            placement: 'bottom'
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                `${prefixCls}-single`,
+                {
+                    [`${prefixCls}-visible`]: this.data.get('visible'),
+                    [`${prefixCls}-disabled`]: this.data.get('disabled'),
+                    [`${prefixCls}-show-clear`]: this.data.get('clearable') && this.data.get('value') !== '',
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size')
+                }
+            ]);
+        },
+        dropdownCls() {
+            return classNames([{
+                [`${prefixCls}-dropdown-transfer`]: this.data.get('transfer'),
+                // ['slide-up-enter-active']: this.data.get('visible'),
+                // ['slide-up-leave-active']: !this.data.get('visible'),
+            }]);
+        },
+        showPlaceholder() {
+            return !!this.data.get('placeHolder') && this.data.get('value') === 'undefined';
+        }
+    },
+    components: {
+        icon: Icon,
+        drop: Drop
+    },
+    inited() {
+        this.items = [];
+    },
+    attached() {
+        this.watch('visible', val => {
+            this.ref('dropdown').fire('update-popper');
+        });
+        this.registerClickOutside();
+    },
+    registerClickOutside() {
+        const self = this;
+        function documentHandler(e) {
+            if (self.el.contains(e.target)) {
+                return false;
+            }
+            self.handleClickOutside(e);
+        }
+        this.__clickOutside__ = documentHandler;
+        document.addEventListener('click', documentHandler);
+    },
+    detached() {
+        document.removeEventListener('click', this.__clickOutside__);
+        delete this.__clickOutside__;
+    },
+    toggleMenu(e) {
+        e.stopPropagation();
+        if (this.data.get('disabled')) {
+            return;
+        }
+
+        if (e.target.className === 'view-icon ion-ios-close view-select-arrow') {
+            this.setSelectValue('');
+            return;
+        }
+        this.data.set('visible', !this.data.get('visible'));
+    },
+    setSelectValue(val) {
+        this.data.set('value', val);
+        this.items.forEach(item => {
+            item.data.set('activeValue', val);
+        });
+        this.fire('select', val);
+    },
+    handleBlur(e) {
+        this.setSelectValue(e.target.value);
+    },
+    handleClickOutside(e) {
+        this.data.set('visible', false);
+    },
+    messages: {
+        [C.SELECT_ITEM_INITED](e) {
+            const item = e.target;
+            this.items.push(item);
+            item.data.set('activeValue', this.data.get('value'));
+            if (item.data.get('value') === this.data.get('value')) {
+                this.data.set('selectedSingle', e.target.data.get('showLabel'));
+            }
+        },
+        [C.SELECT_ITEM_DETACHED](e) {
+            this.items = this.items.filter(item => item !== e.target);
+        },
+        [C.SELECT_ITEM_SELECTED](e) {
+            this.data.set('visible', false);
+            this.data.set('selectedSingle', e.target.data.get('showLabel'));
+            this.setSelectValue(e.value);
+        }
+    }
+};
+</script>
+

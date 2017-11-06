@@ -1,0 +1,36 @@
+.view-collapse
+    background-color: $background-color-base
+    border-radius: 3px
+    border: 1px solid $border-color-base
+
+    & > &-item
+        border-top: $collapse-panel-border
+        &:first-child
+            border-top: 0
+
+        > .view-collapse-header
+            height: $collapse-header-height
+            line-height: $collapse-header-height
+            padding: $collapse-header-padding
+            color: #666
+            cursor: pointer
+            position: relative
+
+            > i
+                transition: transform $transition-time $ease-in-out
+            
+    &  > &-item&-item-active > &-header > i
+        transform: rotate(90deg)
+
+    &-content
+        overflow: hidden
+        color: $text-color
+        padding: $collapse-content-padding
+        background-color: #fff
+
+        & > &-box 
+            padding $collapse-content-box-padding
+
+    &-item:last-child 
+        > .view-collapse-content 
+            border-radius: 0 0 3px 3px

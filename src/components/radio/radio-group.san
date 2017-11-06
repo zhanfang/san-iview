@@ -1,0 +1,64 @@
+<template>
+    <div class="{{classes}}">
+        <slot></slot>
+    </div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-radio-group';
+
+export default {
+    dataTypes: {
+        label: DataTypes.oneOfType([DataTypes.string, DataTypes.number]),
+        size: DataTypes.oneOf(['small', 'large', 'default']),
+        type: DataTypes.oneOf(['button']),
+        vertical: DataTypes.bool
+    },
+    initData() {
+        return {
+            vertical: false
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size'),
+                    [`view-radio-${this.data.get('size')}`]: !!this.data.get('size'),
+                    [`${prefixCls}-${this.data.get('type')}`]: !!this.data.get('type'),
+                    [`${prefixCls}-vertical`]: this.data.get('vertical')
+                }
+            ]);
+        }
+    },
+    inited() {
+        this.items = [];
+
+        this.watch('label', label => {
+            this.items.forEach(item => {
+                item.data.set('value', label);
+            });
+        });
+    },
+    messages: {
+        [C.RADIO_ITEM_INITED](e) {
+            const item = e.target;
+            this.items.push(e.target);
+            item.data.set('value', this.data.get('label'));
+        },
+        [C.RADIO_ITEM_DETACHED](e) {
+            this.items = this.items.filter(item => item !== e.target);
+        },
+        [C.RADIO_ITEM_SELECTED](e) {
+            this.data.set('label', e.value.label);
+            this.fire('select', e.value);
+        }
+    }
+};
+</script>
+

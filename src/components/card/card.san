@@ -1,0 +1,87 @@
+<template>
+    <div class="{{classes}}">
+        <div class="{{headClasses}}" s-if="showHead">
+            <slot name="title"></slot>
+        </div>
+        <div class="{{extraClasses}}" s-if="showExtra">
+            <slot name="extra"></slot>
+        </div>
+        <div class="{{bodyClasses}}" style="{{bodyStyles}}">
+            <slot></slot>
+        </div>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-card';
+const defaultPadding = 16;
+
+export default {
+    dataTypes: {
+        bordered: DataTypes.bool,
+        disHover: DataTypes.bool,
+        shadow: DataTypes.bool,
+        padding: DataTypes.number
+    },
+    initData() {
+        return {
+            bordered: true,
+            disHover: false,
+            shadow: false,
+            padding: defaultPadding,
+            showHead: true,
+            showExtra: true
+        };
+    },
+    attached() {
+        let titleNum = 0;
+        let extraNum = 0;
+        this.slotChilds.forEach(child => {
+            if (child.name === 'title') {
+                titleNum++;
+            }
+            else if (child.name === 'extra') {
+                extraNum++;
+            }
+        });
+        if (titleNum === 0) {
+            this.data.set('showHead', false);
+        }
+        if (extraNum === 0) {
+            this.data.set('showExtra', false);
+        }
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-bordered`]: this.data.get('bordered') && !this.data.get('shadow'),
+                    [`${prefixCls}-dis-hover`]: this.data.get('disHover') || this.data.get('shadow'),
+                    [`${prefixCls}-shadow`]: this.data.get('shadow')
+                }
+            ]);
+        },
+        headClasses () {
+            return `${prefixCls}-head`;
+        },
+        extraClasses () {
+            return `${prefixCls}-extra`;
+        },
+        bodyClasses () {
+            return `${prefixCls}-body`;
+        },
+        bodyStyles () {
+            if (this.data.get('padding') !== defaultPadding) {
+                return {
+                    padding: `${this.data.get('padding')}px`
+                };
+            } else {
+                return '';
+            }
+        }
+    },
+};
+</script>

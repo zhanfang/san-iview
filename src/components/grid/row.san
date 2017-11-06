@@ -1,0 +1,49 @@
+<template>
+    <div class="{{classes}}" style="{{styles}}">
+        <slot></slot>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-row';
+
+export default {
+    dataTypes: {
+        type: DataTypes.oneOf(['normal', 'flex']),
+        align: DataTypes.oneOf(['top', 'middle', 'bottom']),
+        gutter: DataTypes.number,
+        justify: DataTypes.oneOf(['start', 'end', 'center', 'space-around', 'space-between']),
+        className: DataTypes.string
+    },
+    initData() {
+        return {
+            // 布局的栅格的间距
+            gutter: 0
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([{
+                [`${prefixCls}`]: !this.data.get('type'),
+                [`${prefixCls}-${this.data.get('type')}`]: !!this.data.get('type'),
+                [`${prefixCls}-${this.data.get('type')}-${this.data.get('align')}`]: !!this.data.get('align'),
+                [`${prefixCls}-${this.data.get('type')}-${this.data.get('justify')}`]: !!this.data.get('justify'),
+                [`${this.data.get('className')}`]: !!this.data.get('className')
+            }]);
+        },
+        styles() {
+            let style = {};
+            const gutter = this.data.get('gutter');
+            if (gutter !== 0) {
+                style = {
+                    marginLeft: gutter / -2 + 'px',
+                    marginRight: gutter / -2 + 'px'
+                };
+            }
+            return style;
+        }
+    }
+};
+</script>

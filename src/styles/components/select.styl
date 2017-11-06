@@ -1,0 +1,149 @@
+.view-select
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    vertical-align: middle;
+    color: $text-color;
+    font-size: $font-size-base;
+    line-height: normal;
+
+    &-selection
+        display: block
+        box-sizing: border-box
+        outline: none
+        user-select: none
+        cursor: pointer
+        position: relative
+
+        background-color: #fff
+        border-radius: $select-border-radius
+        border: 1px solid $border-color-base
+        transition: all $transition-time $ease-in-out
+
+        .view-select-arrow:nth-of-type(1)
+            display: none
+            cursor: pointer
+        .view-select-arrow:nth-of-type(2)
+            // display: none
+            cursor: pointer
+
+        &:hover
+            hover()
+            .view-select-arrow:nth-of-type(2)
+                display: inline-block
+
+
+    &-show-clear &-selection:hover 
+        .view-select-arrow:nth-of-type(2)
+            display: none
+        .view-select-arrow:nth-of-type(1)
+            display: inline-block
+
+    &-visible
+        .view-select-arrow:nth-of-type(2)
+            transform: rotate(180deg)
+    
+    &-arrow
+        inner-arrow()
+
+    // input
+    &-input
+        display: inline-block;
+        width: 100%
+        height: $input-height-base;
+        line-height: $input-height-base;
+        padding: 0 24px 0 8px;
+        font-size: $font-size-small;
+        outline: none;
+        border: none;
+        box-sizing: border-box;
+        color: $input-color;
+        background-color: transparent;
+        position: relative;
+        cursor: pointer;
+        placeholder()
+
+    &-large &-input
+        font-size: $font-size-base
+        height: $input-height-large
+
+    &-small &-input
+        height: $input-height-small
+
+    &-disabled 
+        cursor not-allowed
+        pointer-events: none
+        .view-select-selection
+            disabled()
+
+            .view-select-arrow:nth-of-type(1)
+                display: none
+
+            &:hover
+                border-color: $border-color-base
+                box-shadow: none
+
+                .view-select-arrow:nth-of-type(2) 
+                    display: inline-block
+    &-single &-selection
+        height $input-height-base
+        position relative
+
+        .view-select-placeholder
+            color $input-placeholder-color
+
+        .view-select-placeholder, .view-select-selected-value
+            display: block
+            height: $input-height-base - 2px
+            line-height: $input-height-base - 2px
+            font-size: $font-size-small
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+            padding-left: 8px
+            padding-right: 24px
+    &-large&-single &-selection
+        height: $input-height-large
+
+        .view-select-placeholder, .view-select-selected-value
+            height $input-height-large - 2px
+            line-height $input-height-large - 2px
+            font-size $font-size-base
+
+    &-small&-single &-selection
+        height $input-height-small
+        border-radius: $btn-border-radius-small
+
+        .view-select-placeholder, .view-select-selected-value
+            height: $input-height-small - 2px
+            line-height: $input-height-small - 2px
+
+.view-select-item
+    margin: 0
+    line-height: normal
+    padding: 7px 16px
+    clear: both
+    color: $text-color
+    font-size: $font-size-small !important
+    white-space: nowrap
+    list-style: none
+    cursor: pointer
+    transition: background $transition-time $ease-in-out
+
+    &:hover
+        background: $background-color-select-hover
+    &-focus 
+        background: $background-color-select-hover
+    &-disabled
+        color: $btn-disable-color
+        cursor: $cursor-disabled
+        &:hover
+            color: $btn-disable-color
+            background-color: #fff
+            cursor: $cursor-disabled
+    &-selected ,&-selected:hover
+        color: #fff
+        background: $selected-color
+
+    &-selected&-focus
+        background: shade($selected-color, 10%)

@@ -1,0 +1,63 @@
+<template>
+    <li 
+        class="{{classes}}" 
+        on-click="handleClick">
+        <slot></slot>
+    </li>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+import * as C from './constant';
+
+const prefixCls = 'view-menu';
+
+export default {
+    dataTypes: {
+        name: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        activeName: DataTypes.oneOfType([
+            DataTypes.string,
+            DataTypes.number
+        ]),
+        disabled: DataTypes.bool
+    },
+    initData() {
+        return {
+            disabled: false,
+            active: false
+        };
+    },
+    inited() {
+        this.dispatch(C.MENU_ITEM_INITED);
+    },
+    detached() {
+        this.dispatch(C.MENU_ITEM_DETACHED);
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}-item`,
+                {
+                    [`${prefixCls}-item-active`]: this.data.get('active'),
+                    [`${prefixCls}-item-selected`]: this.data.get('active'),
+                    [`${prefixCls}-item-disabled`]: this.data.get('disabled')
+                }
+            ]);
+        },
+        active() {
+            return this.data.get('activeName') === this.data.get('name');
+        }
+    },
+    handleClick() {
+        if (this.data.get('disabled')) {
+            return;
+        }
+
+        this.dispatch(C.MENU_ITEM_SELECTED, this.data.get('name'));
+    }
+};
+</script>

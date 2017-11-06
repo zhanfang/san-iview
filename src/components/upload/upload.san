@@ -1,0 +1,76 @@
+<template>
+    <div class="view-upload">
+        <div
+            class="{{classes}}"
+            on-click="handleClick"
+            on-drop="drop($event)"
+            on-dragover="dragOver($event)"
+            on-dragleave="dragLeave($event)">
+            <input
+                type="file"
+                class="view-upload-input"
+                on-change="handleChange($event)"
+                multiple="{{multiple}}"
+                accept="{{accept}}">
+            <slot></slot>
+        </div>
+        <slot name="tip"></slot>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san';
+import classNames from 'classnames';
+
+const prefixCls = 'view-upload';
+
+export default {
+    dataTypes: {
+        type: DataTypes.oneOf(['select', 'drag']),
+        accept: DataTypes.string,
+        multiple: DataTypes.bool
+    },
+    initData() {
+        return {
+            type: 'select',
+            dragOver: false,
+            multiple: false
+        };
+    },
+    computed: {
+        classes() {
+            return classNames([
+                `${prefixCls}`,
+                {
+                    [`${prefixCls}-select`]: this.data.get('type') === 'select',
+                    [`${prefixCls}-drag`]: this.data.get('type') === 'drag',
+                    [`${prefixCls}-dragOver`]: this.data.get('type') === 'drag' && this.data.get('dragOver')
+                }
+            ]);
+        }
+    },
+    handleClick() {
+        this.el.querySelector('input').click();
+    },
+    handleChange(e) {
+        const files = e.target.files;
+        if (!files) {
+            return;
+        }
+        this.fire('upload', files);
+    },
+    drop(e) {
+        e.preventDefault();
+
+        this.dragOver = false;
+        this.fire('upload', e.dataTransfer.files);
+    },
+    dragOver(e) {
+        e.preventDefault();
+        this.data.set('dragOver', true);
+    },
+    dragLeave(e) {
+        e.preventDefault();
+        this.data.set('dragOver', false);
+    }
+};
+</script>
