@@ -1,6 +1,6 @@
 {
   "name": "san-iview",
-  "version": "0.2.5",
+  "version": "1.0.0",
   "title": "san-iview",
   "description": "A high quality UI components Library with San",
   "keywords": [
@@ -30,12 +30,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/efe/san-view"
+    "url": "https://github.com/ecomfe/san-iview"
   },
-  "author": "zhanfang",
+  "author": "ecomfe",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zhanfang/san-view/issues"
+    "url": "https://github.com/ecomfe/san-iview/issues"
   },
   "dependencies": {
     "async-validator": "^1.8.1",
