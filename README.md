@@ -10,7 +10,7 @@ npm install san-iview --save
 ```javascript
 // main.js
 import san from 'san';
-import '../dist/styles/san-iview.css';
+import 'san-iview/dist/styles/san-iview.css';
 
 import App from './App';
 
@@ -26,7 +26,7 @@ app.attach(document.getElementById('app'));
 </div>
 </template>
 <script>
-import {Icon} from '../dist/san-iview';
+import {Icon} from 'san-iview';
 
 export default {
     components: {
