@@ -2,6 +2,41 @@
 一套桌面端 `San Ui` 组件库。基于 [iView](https://github.com/iview/iview)样式进行开发
 
 ## 使用指南
+### CDN引入
+```html
+<!-- import san -->
+<script src="//unpkg.com/san@latest"></script>
+<!-- import stylesheet -->
+<link rel="stylesheet" href="//unpkg.com/san-iview/dist/styles/san-iview.css">
+<!-- import san-iview -->
+<script src="//unpkg.com/san-iview/dist/san-iview.min.js"></script>
+```
+
+示例
+```javascript
+const {Button, Message} = window['san-iview'];
+
+const Demo = san.defineComponent({
+    template: `
+        <div class="parent">
+            <btn type="primary" on-select="change">
+                add child
+            </btn>
+        </div>`,
+    components: {
+      btn: Button
+    },
+    change() {
+        Message.success('hello world');
+    }
+});
+
+const demo = new Demo();
+
+demo.attach(document.body);
+```
+
+### NPM安装
 1. 通过`npm`安装
 ```bash
 npm install san-iview --save
