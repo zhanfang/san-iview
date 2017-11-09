@@ -8,19 +8,26 @@
             {{ item.label }}
         </select-option>
     </select>
+    <p style="margin-top: 9px">
+        <circle percent="{{80}}">
+            <span>80%</span>
+        </circle>
+    </p>
 </div>
 </template>
 <script>
-import {Icon, Select} from '../dist/san-iview';
+import {Icon, Select, Circle} from '../dist/san-iview';
 
 export default {
     components: {
         'icon': Icon,
         'select': Select,
-        'select-option': Select.Option
+        'select-option': Select.Option,
+        'circle': Circle
     },
     initData() {
         return {
+
             cityList: [
                     {
                         value: 'beijing',

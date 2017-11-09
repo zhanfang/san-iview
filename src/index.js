@@ -19,6 +19,7 @@ import Modal from './components/modal';
 import {Row, Col} from './components/grid';
 import Page from './components/page';
 import Progress from './components/progress';
+import Circle from './components/circle';
 import Radio from './components/radio';
 import Resize from './components/resize';
 import Select from './components/select';
@@ -47,6 +48,7 @@ const view = {
     Modal,
     Page,
     Progress,
+    Circle,
     Table,
     Tabs,
     Tooltip,
