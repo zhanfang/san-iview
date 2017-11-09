@@ -1,0 +1,101 @@
+<template>
+    <div class="{{wrapClasses}}" style="{{circleSize}}">
+        <svg viewBox="0 0 100 100">
+            <path
+                    d="{{pathString}}"
+                    stroke="{{trailColor}}"
+                    stroke-width="{{trailWidth}}"
+                    fill-opacity="0"/>
+            <path
+                    d="{{pathString}}"
+                    stroke-linecap="{{strokeLinecap}}"
+                    stroke="{{strokeColor}}"
+                    stroke-width="{{strokeWidth}}"
+                    fill-opacity="0"
+                    style="{{pathStyle}}"/>
+        </svg>
+        <div class="{{innerClasses}}">
+            <slot></slot>
+        </div>
+    </div>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+import classnames from 'classnames';
+
+const prefixCls = 'view-circle';
+
+export default {
+    dataTypes: {
+        // 进度环百分比
+        percent: DataTypes.number,
+        // 进度环宽度和高度
+        size: DataTypes.number,
+        // 进度环的线宽
+        strokeWidth: DataTypes.number,
+        // 进度环的颜色
+        strokeColor: DataTypes.string,
+        // 进度环背景颜色
+        trailColor: DataTypes.string,
+        // 进度环背景线宽
+        trailWidth: DataTypes.number,
+        // 进度环顶端的形状, 默认值为 square
+        strokeLinecap: DataTypes.oneOf(['round', 'square'])
+    },
+    initData() {
+        return {
+            // 进度环百分比
+            percent: 0,
+            // 进度环的宽度（和高度）, 单位px
+            size: 120,
+            // 进度环的线宽
+            strokeWidth: 6,
+            // 进度环颜色
+            strokeColor: '#2db7f5',
+            // 进度环顶端的形状 (可选 square, round ,默认为square)
+            strokeLinecap: 'round',
+            // 进度环背景颜色
+            trailColor: '#eaeef2',
+            // 进度环背景的线宽
+            trailWidth: 5
+        };
+    },
+    computed: {
+        pathStyle() {
+            let percent = this.data.get('percent');
+            let radius = this.data.get('radius');
+            let len = Math.PI * 2 * radius;
+
+            return {
+                'stroke-dasharray': `${len}px ${len}px`,
+                'stroke-dashoffset': `${((100 - percent) / 100 * len)}`,
+                'transition': 'stroke-dashoffset 0.6s ease 0s, stroke 0.6s ease'
+            };
+        },
+        radius() {
+            let strokeWidth = this.data.get('strokeWidth');
+            return 50 - strokeWidth / 2;
+        },
+        pathString() {
+            let radius = this.data.get('radius');
+            return `M 50,50 m 0,-${radius}
+                a ${radius},${radius} 0 1 1 0,${2 * radius}
+                a ${radius},${radius} 0 1 1 0,-${2 * radius}`;
+        },
+        circleSize() {
+            let size = this.data.get('size');
+            return {
+                width: `${size}px`,
+                height: `${size}px`
+            };
+        },
+        innerClasses() {
+            return `${prefixCls}-inner`;
+        },
+        wrapClasses() {
+            return `${prefixCls}`;
+        }
+    }
+}
+</script>
