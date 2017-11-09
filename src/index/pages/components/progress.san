@@ -1,0 +1,166 @@
+<template>
+    <div>
+        <article>
+            <h1>Progress 进度条</h1>
+            <anchor title="概述" h2></anchor>
+            <p>展示操作或任务的当前进度，比如上传文件。</p>
+            <anchor title="代码示例" h2></anchor>
+            <demo title="基本用法">
+                <div slot="demo">
+                    <progress percent="25"></progress>
+                    <progress percent="45" status="active"></progress>
+                    <progress percent="65" status="wrong"></progress>
+                    <progress percent="100"></progress>
+                    <progress percent="25" hideInfo></progress>
+                </div>
+                <div slot="desc">
+                    <p>处在不同状态下的进度条，当 percent 为 100 时，自动将状态置为 success。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.base }}</i-code>
+            </demo>
+            <demo title="垂直方向">
+                <div slot="demo">
+                    <div style="height: 100px;">
+                        <progress vertical percent="25"></progress>
+                        <progress vertical percent="45" status="active"></progress>
+                        <progress vertical percent="65" status="wrong"></progress>
+                        <progress vertical percent="100" status="success"></progress>
+                        <progress vertical percent="25" hideInfo></progress>
+                    </div>
+                </div>
+                <div slot="desc">
+                    <p>设置属性 <code>vertical</code> 将以垂直方向显示。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.vertical }}</i-code>
+            </demo>
+            <demo title="配合外部组件使用">
+                <div slot="demo">
+                    <progress percent="{=percent=}"></progress>
+                    <button-group size="large">
+                        <i-button icon="ios-plus-empty" on-select="add"></i-button>
+                        <i-button icon="ios-minus-empty" on-select="minus"></i-button>
+                    </button-group>
+                </div>
+                <div slot="desc">
+                    <p>通过数据的联动和逻辑控制，实现动态效果。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.percent }}</i-code>
+            </demo>
+            <demo title="自定义更多样式">
+                <div slot="demo">
+                    <progress percent="25" stroke-width="5"></progress>
+                    <progress percent="100">
+                        <Icon type="checkmark-circled"></Icon>
+                        <span>成功</span>
+                    </progress>
+                </div>
+                <div slot="desc">
+                    <p>通过自定义<code>slot</code>和属性<code>stroke-width</code>改变进度条效果。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.custom }}</i-code>
+            </demo>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="progress props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>percent</td>
+                            <td>百分比</td>
+                            <td>Number, String</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>状态，可选值为<code>normal</code>、<code>active</code>、<code>wrong</code>、<code>success</code></td>
+                            <td>String</td>
+                            <td>normal</td>
+                        </tr>
+                        <tr>
+                            <td>strokeWidth</td>
+                            <td>进度条的线宽，单位 px</td>
+                            <td>Number, String</td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td>hideInfo</td>
+                            <td>隐藏数值或状态图标</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>vertical</td>
+                            <td>是否在垂直方向显示</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="progress slot" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>无</td>
+                            <td>自定义显示状态内容</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import Code from 'code/progress';
+    import article from 'components/article';
+    import anchor from 'components/anchor';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import {Icon, Button, Progress} from 'san-iview';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'icon': Icon,
+            'i-button': Button,
+            'button-group': Button.Group,
+            'progress': Progress
+        },
+        initData () {
+            return {
+                code: Code,
+                percent: 0
+            }
+        },
+        add () {
+            let percent = this.data.get('percent');
+            if ( percent>= 100) {
+                return false;
+            }
+            this.data.set('percent', percent + 10);
+        },
+        minus () {
+            let percent = this.data.get('percent');
+            if ( percent <= 0) {
+                return false;
+            }
+            this.data.set('percent', percent - 10);
+        }
+    }
+</script>

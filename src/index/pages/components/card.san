@@ -1,0 +1,315 @@
+<style lang="stylus">
+    .ivu-article{
+        .view-card p{
+            margin: 0;
+        }
+        .view-card ul{
+            padding: 0 !important;
+            li{
+                list-style: none;
+                span{
+                    float: right;
+                    color: #ffac2d;
+                    i:last-child{
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+        .view-card img{
+            height: 85px;
+        }
+
+    }
+</style>
+<template>
+    <div>
+        <article>
+            <h1>card 卡片</h1>
+            <anchor title="概述" h2></anchor>
+            <p>基础容器，用来显示文字、列表、图文等内容，也可以配合其它组件一起使用。</p>
+            <anchor title="代码示例" h2></anchor>
+            <demo title="基本用法">
+                <div slot="demo">
+                    <card style="width:350px">
+                        <p slot="title">
+                            <Icon type="ios-film-outline"></Icon>
+                            经典电影
+                        </p>
+                        <a href="#" slot="extra" on-click="handleChange($event)">
+                            <Icon type="ios-loop-strong"></Icon>
+                            换一换
+                        </a>
+                        <ul>
+                            <li s-for="item in randomMovieList">
+                                <a href="{{item.url}}" target="_blank">{{ item.name }}</a>
+                                <span>
+                                    <Icon type="ios-star" s-for="n in 4"></Icon>
+                                    <Icon type="ios-star" s-if="item.rate >= 9.5"></Icon>
+                                    <Icon type="ios-star-half" s-else></Icon>
+                                    {{ item.rate }}
+                                </span>
+                            </li>
+                        </ul>
+                    </card>
+                </div>
+                <div slot="desc">
+                    <p>自定义标题、额外操作和主体内容，可以完全自由控制各个部分，也可以结合其它组件一起使用，较为灵活。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.base }}</i-code>
+            </demo>
+            <demo title="无边框">
+                <div slot="demo">
+                    <div style="background:#eee;padding: 20px">
+                        <card bordered="{{false}}">
+                            <p slot="title">无边框标题</p>
+                            <p>无边框内容填充无边框内容填充无边框内容填充无边框内容填充无边框内容填充无边框内容填充无边框内容填充无边框内容填充无边框内容填充无边框内容填充无边框内容填充。</p>
+                        </card>
+                    </div>
+                </div>
+                <div slot="desc">
+                    <p>通过设置属性<code>bordered</code>为 false ，可以不添加边框，建议在灰色背景下使用。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.bordered }}</i-code>
+            </demo>
+            <demo title="禁用悬停阴影">
+                <div slot="demo">
+                    <i-row>
+                        <i-col span="11">
+                            <card>
+                                <p slot="title">标准卡片</p>
+                                <p>卡片内容</p>
+                                <p>卡片内容</p>
+                                <p>卡片内容</p>
+                            </card>
+                        </i-col>
+                        <i-col span="11" offset="2">
+                            <card disHover>
+                                <p slot="title">禁用悬停阴影的卡片</p>
+                                <p>卡片内容</p>
+                                <p>卡片内容</p>
+                                <p>卡片内容</p>
+                            </card>
+                        </i-col>
+                    </i-row>
+                </div>
+                <div slot="desc">
+                    <p>通过设置属性<code>dis-hover</code>来禁用鼠标悬停显示阴影的效果。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.disHover }}</i-code>
+            </demo>
+            <demo title="卡片阴影">
+                <div slot="demo">
+                    <i-row style="background:#eee;padding:20px">
+                        <i-col span="11">
+                            <card bordered="{{false}}">
+                                <p slot="title">无边框卡片</p>
+                                <p>卡片内容</p>
+                                <p>卡片内容</p>
+                                <p>卡片内容</p>
+                            </card>
+                        </i-col>
+                        <i-col span="11" offset="2">
+                            <card shadow>
+                                <p slot="title">使用阴影效果的卡片</p>
+                                <p>卡片内容</p>
+                                <p>卡片内容</p>
+                                <p>卡片内容</p>
+                            </card>
+                        </i-col>
+                    </i-row>
+                </div>
+                <div slot="desc">
+                    <p>通过设置属性<code>shadow</code>来显示卡片阴影，使用该属性后，<code>bordered</code>和<code
+                    >dis-hover</code>将无效，建议在灰色背景下使用。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.shadow }}</i-code>
+            </demo>
+            <demo title="简洁卡片">
+                <div slot="demo">
+                    <card style="width:320px">
+                        <div style="text-align:center">
+                            <img src="../../images/logo.png">
+                            <h3>一套基于 San 的高质量UI组件库</h3>
+                        </div>
+                    </card>
+                </div>
+                <div slot="desc">
+                    <p>只包含内容区域，没有标题。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.simple }}</i-code>
+            </demo>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="card props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>bordered</td>
+                            <td>是否显示边框，建议在灰色背景下使用</td>
+                            <td>Boolean</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>disHover</td>
+                            <td>禁用鼠标悬停显示阴影</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>shadow</td>
+                            <td>卡片阴影，建议在灰色背景下使用</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>padding</td>
+                            <td>卡片内部间距，单位 px</td>
+                            <td>Number</td>
+                            <td>16</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="card slot" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>title</td>
+                            <td>自定义卡片标题，如果是简单文字，可以使用<code>&lt;p&gt;</code>标签包裹</td>
+                        </tr>
+                        <tr>
+                            <td>extra</td>
+                            <td>额外显示的内容，默认位置在右上角</td>
+                        </tr>
+                        <tr>
+                            <td>无</td>
+                            <td>卡片主体内容</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import Code from 'code/card';
+    import article from 'components/article';
+    import anchor from 'components/anchor';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import {Icon, Row, Col, Input, Message, Card} from 'san-iview';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'i-row': Row,
+            'i-col': Col,
+            'i-input': Input,
+            'icon': Icon,
+            'card': Card
+        },
+        initData () {
+            return {
+                code: Code,
+                movieList: [
+                    {
+                        name: '肖申克的救赎',
+                        url: 'https://movie.douban.com/subject/1292052/',
+                        rate: 9.6
+                    },
+                    {
+                        name: '这个杀手不太冷',
+                        url: 'https://movie.douban.com/subject/1295644/',
+                        rate: 9.4
+                    },
+                    {
+                        name: '霸王别姬',
+                        url: 'https://movie.douban.com/subject/1291546/',
+                        rate: 9.5
+                    },
+                    {
+                        name: '阿甘正传',
+                        url: 'https://movie.douban.com/subject/1292720/',
+                        rate: 9.4
+                    },
+                    {
+                        name: '美丽人生',
+                        url: 'https://movie.douban.com/subject/1292063/',
+                        rate: 9.5
+                    },
+                    {
+                        name: '千与千寻',
+                        url: 'https://movie.douban.com/subject/1291561/',
+                        rate: 9.2
+                    },
+                    {
+                        name: '辛德勒的名单',
+                        url: 'https://movie.douban.com/subject/1295124/',
+                        rate: 9.4
+                    },
+                    {
+                        name: '海上钢琴师',
+                        url: 'https://movie.douban.com/subject/1292001/',
+                        rate: 9.2
+                    },
+                    {
+                        name: '机器人总动员',
+                        url: 'https://movie.douban.com/subject/2131459/',
+                        rate: 9.3
+                    },
+                    {
+                        name: '盗梦空间',
+                        url: 'https://movie.douban.com/subject/3541415/',
+                        rate: 9.2
+                    }
+                ],
+                randomMovieList: []
+            }
+        },
+        handleChange(e) {
+            e.preventDefault();
+            this.changeLimit();
+        },
+        changeLimit () {
+            function getArrayItems(arr, num) {
+                const temp_array = [];
+                for (let index in arr) {
+                    temp_array.push(arr[index]);
+                }
+                const return_array = [];
+                for (let i = 0; i<num; i++) {
+                    if (temp_array.length>0) {
+                        const arrIndex = Math.floor(Math.random()*temp_array.length);
+                        return_array[i] = temp_array[arrIndex];
+                        temp_array.splice(arrIndex, 1);
+                    } else {
+                        break;
+                    }
+                }
+                return return_array;
+            }
+            const randomMovieList = getArrayItems(this.data.get('movieList'), 5);
+            this.data.set('randomMovieList', randomMovieList);
+        },
+        attached() {
+            this.changeLimit();
+        }
+    }
+</script>

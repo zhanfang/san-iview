@@ -1,0 +1,156 @@
+<style>
+    .icons{
+        overflow: hidden;
+        zoom: 1;
+    }
+    .icons-item{
+        float: left;
+        margin: 6px 6px 6px 0;
+        width: 145px;
+        text-align: center;
+        list-style: none;
+        cursor: pointer;
+        height: 100px;
+        color: #5C6B77;
+        transition: all 0.2s ease;
+        position: relative;
+        padding-top: 10px;
+    }
+    .icons-item p{
+        padding-top: 15px;
+    }
+    .icon-search{
+        position: relative;
+        margin: 20px auto 30px;
+        text-align: center;
+    }
+    .icon-search input{
+        width: 500px;
+        box-sizing: border-box;
+        border: 0;
+        border-radius: 4px;
+        background: #f5f5f5;
+        text-align: center;
+        font-size: 14px;
+        outline: none;
+        margin: 0 auto;
+        padding: 8px 0;
+    }
+    .icon-search p{
+        margin-top: 20px;
+    }
+</style>
+<template>
+    <div>
+        <article>
+            <h1>Icon 图标</h1>
+            <anchor title="概述" h2></anchor>
+            <p>san-iview 的图标使用开源项目<a href="http://ionicons.com/" target="_blank"><Icon type="ionic"></Icon> ionicons</a></p>
+            <anchor title="如何使用" h2></anchor>
+            <p>使用<code>&lt;Icon /></code>组件，指定图标对应的<code>type</code>属性，示例代码：</p>
+            <i-code lang="html" bg>{{ code.demo }}</i-code>
+            <p>渲染后为：</p>
+            <i-code lang="html" bg>{{ code.render }}</i-code>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="Icon props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>type</td>
+                            <td>图标的名称</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>size</td>
+                            <td>图标的大小，单位是 px</td>
+                            <td>Number | String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>color</td>
+                            <td>图标的颜色</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Icon events" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名</th>
+                            <th>说明</th>
+                            <th>返回值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>on-select</td>
+                            <td>点击时触发</td>
+                            <td>name</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <anchor title="示例" h2></anchor>
+            <div class="icon-search">
+                <input
+                    type="text"
+                    placeholder="{{searchPlaceholder}}"
+                    value="{=search=}">
+            </div>
+            <div class="icons">
+                <div class="icons-item" s-for="item in filterIcons">
+                    <i class="view-icon ion-{{item.name}}" style="font-size:32px"></i>
+                    <p>
+                        {{ item.name }}
+                    </p>
+                </div>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import article from 'components/article';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import Code from 'code/icon';
+    import Icons from 'code/iconname';
+    import anchor from 'components/anchor';
+    import {Icon} from 'san-iview';
+
+    const searchPlaceholder = '输入英文关键词搜索，比如 success';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'icon': Icon
+        },
+        initData () {
+            return {
+                code: Code,
+                icons: Icons,
+                searchPlaceholder: searchPlaceholder,
+                search: ''
+            }
+        },
+        computed: {
+            filterIcons() {
+                return this.data.get('icons').filter(icon => icon.tag.indexOf(this.data.get('search')) > -1);
+            }
+        }
+    }
+</script>

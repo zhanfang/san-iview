@@ -1,0 +1,21 @@
+<template>
+<div>
+    <header path="{{path}}"></header>
+    <div id="page"></div>
+</div>
+</template>
+<script>
+import {router} from 'san-router';
+import Header from './components/Header';
+
+export default {
+    components: {
+        'header': Header
+    }
+};
+</script>
+
+<style>
+@import "./styles/common.css";
+</style>
+

@@ -1,0 +1,36 @@
+<template>
+    <div>
+        <div class="wrapper">
+            <div class="wrapper-container">
+                <i-row>
+                    <i-col span="4" class="wrapper-navigate">
+                        <navigate ></navigate>
+                    </i-col>
+                    <i-col span="20">
+                        <div class="wrapper-content ivu-article">
+                            <slot></slot>
+                        </div>
+                    </i-col>
+                </i-row>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+import {Row, Col} from 'san-iview'
+import Navigate from './navigate';
+
+export default {
+    components: {
+        'i-row': Row,
+        'i-col': Col,
+        'navigate': Navigate
+    }
+};
+</script>
+
+<style lang="stylus">
+    @import "../styles/article.styl";
+</style>
+
+

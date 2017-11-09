@@ -1,0 +1,75 @@
+<template>
+<div>
+    <doc-menu
+        class="doc-header"
+        mode="horizontal" 
+        activeName="{{path}}"
+        on-select="selectMenu($event, name)">
+        <doc-menu-item name="/">
+            <span>San View<span>
+        </doc-menu-item>
+        <doc-menu-item name="/install">
+            <span>组件</span>
+            <span class="doc-header-blank">|</span>
+        </doc-menu-item>
+        <doc-menu-item style="float:right" name="/github">
+            <doc-icon type="social-github" size="20"></doc-icon>
+        </doc-menu-item>
+    </doc-menu>
+</div>
+</template>
+<script>
+import {Menu, Icon} from 'san-iview';
+import {router} from 'san-router';
+
+export default {
+    components: {
+        'doc-menu': Menu,
+        'doc-menu-item': Menu.Item,
+        'doc-icon': Icon
+    },
+    selectMenu(name) {
+        if (name === '/github') {
+            window.location = 'https://github.com/ecomfe/san-iview';
+        }
+        else if (name === '/') {
+            router.locator.redirect(`/`);
+        }
+        else {
+            router.locator.redirect(`/docs/guide${name}`);
+        }
+    },
+};
+</script>
+<style lang="stylus">
+.doc-header
+    height 54px
+    line-height 54px
+    &-blank
+        position relative
+        left 16px
+        color #e7e7e7
+    &-icon
+        position relative
+        &-logo
+            width 23px
+            top 6px
+            padding-right 12px
+        &-me
+            position relative
+            top -2px
+            width 20px
+            height 20px
+            padding 5px
+            font-size 14px
+            border-radius 100%
+            background #ff4b42
+            color #fff
+            transition .3s ease
+            &:hover
+                background rgba(#ff4b42, 80%)
+
+        &-msg
+            font-size 20px
+            line-height 20px
+</style>

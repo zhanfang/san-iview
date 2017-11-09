@@ -1,0 +1,303 @@
+<style>
+    .demo-tabs-style1 > .view-tabs-card > .view-tabs-content {
+        height: 120px;
+        margin-top: -16px;
+    }
+
+    .demo-tabs-style1 > .view-tabs-card > .view-tabs-content > .view-tabs-tabpane {
+        background: #fff;
+        padding: 16px;
+    }
+
+    .demo-tabs-style1 > .view-tabs.view-tabs-card > .view-tabs-bar .view-tabs-tab {
+        border-color: transparent;
+    }
+
+    .demo-tabs-style1 > .view-tabs-card > .view-tabs-bar .view-tabs-tab-active {
+        border-color: #fff;
+    }
+    .demo-tabs-style2 > .view-tabs.view-tabs-card > .view-tabs-bar .view-tabs-tab{
+        border-radius: 0;
+        background: #fff;
+    }
+    .demo-tabs-style2 > .view-tabs.view-tabs-card > .view-tabs-bar .view-tabs-tab-active{
+        border-top: 1px solid #3399ff;
+    }
+    .demo-tabs-style2 > .view-tabs.view-tabs-card > .view-tabs-bar .view-tabs-tab-active:before{
+        content: '';
+        display: block;
+        width: 100%;
+        height: 1px;
+        background: #3399ff;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+</style>
+<template>
+    <div>
+        <article>
+            <h1>Tabs 标签页</h1>
+            <anchor title="概述" h2></anchor>
+            <p>选项卡切换组件，常用于平级区域大块内容的的收纳和展现。</p>
+            <anchor title="代码示例" h2></anchor>
+            <demo title="基础用法">
+                <div slot="demo">
+                    <Tabs name="name1">
+                        <TabPane label="标签一" name="name1">标签一的内容</TabPane>
+                        <TabPane label="标签二" name="name2">标签二的内容</TabPane>
+                        <TabPane label="标签三" name="name3">标签三的内容</TabPane>
+                    </Tabs>
+                </div>
+                <div slot="desc">
+                    <p><code>value</code> 与 <code>TabPane</code> 的 <code>name</code> 对应，用于标识当前激活的是哪一项，name 值默认从 0 开始，默认激活第一项。可以使用 v-model 双向绑定数据。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.base }}</i-code>
+            </demo>
+            <demo title="禁用">
+                <div slot="demo">
+                    <Tabs>
+                        <TabPane label="标签一" name="1">标签一的内容</TabPane>
+                        <TabPane label="标签二" name="2" disabled>标签二的内容</TabPane>
+                        <TabPane label="标签三" name="3">标签三的内容</TabPane>
+                    </Tabs>
+                </div>
+                <div slot="desc">
+                    <p>禁用某一项。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.disabled }}</i-code>
+            </demo>
+            <demo title="图标">
+                <div slot="demo">
+                    <Tabs>
+                        <TabPane name="1" label="macOS" icon="social-apple">标签一的内容</TabPane>
+                        <TabPane name="2" label="Windows" icon="social-windows">标签二的内容</TabPane>
+                        <TabPane name="3" label="Linux" icon="social-tux">标签三的内容</TabPane>
+                    </Tabs>
+                </div>
+                <div slot="desc">
+                    <p>通过设置属性 <code>icon</code>，可以显示一个图标。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.icon }}</i-code>
+            </demo>
+            <demo title="迷你型">
+                <div slot="demo">
+                    <Tabs name="1" size="small">
+                        <TabPane name="1" label="标签一">标签一的内容</TabPane>
+                        <TabPane name="2" label="标签二">标签二的内容</TabPane>
+                        <TabPane name="3" label="标签三">标签三的内容</TabPane>
+                    </Tabs>
+                </div>
+                <div slot="desc">
+                    <p>设置属性 <code>size</code> 为 <code>small</code> 可以显示为迷你型，只在 <code>type</code> 为 <code>line</code> 时有效。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.mini }}</i-code>
+            </demo>
+            <demo title="卡片样式">
+                <div slot="demo">
+                    <Tabs type="card">
+                        <TabPane name="1" label="标签一">标签一的内容</TabPane>
+                        <TabPane name="2" label="标签二">标签二的内容</TabPane>
+                        <TabPane name="3" label="标签三">标签三的内容</TabPane>
+                    </Tabs>
+                </div>
+                <div slot="desc">
+                    <p>设置属性 <code>type</code> 为 <code>card</code> 可以显示卡片样式，常用于容器顶部。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.card }}</i-code>
+            </demo>
+            <demo title="附加内容">
+                <div slot="demo">
+                    <Tabs type="card">
+                        <TabPane s-for="tab, index in tabs" label="标签{{index}}" name="tab">标签{{ tab }}</TabPane>
+                        <i-button type="ghost" on-select="handleTabsAdd" size="small" slot="extra" disabled="{{tabs.length >= 3}}">增加</Button>
+                    </Tabs>
+                </div>
+                <div slot="desc">
+                    <p>设置 slot <code>extra</code> 可以在页签右边添加附加操作。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.extra }}</i-code>
+            </demo>
+            <demo title="不使用动画">
+                <div slot="demo">
+                    <Tabs name="1" animated="{{false}}">
+                        <TabPane label="标签一" name="1">标签一的内容</TabPane>
+                        <TabPane label="标签二" name="2">标签二的内容</TabPane>
+                        <TabPane label="标签三" name="3">标签三的内容</TabPane>
+                    </Tabs>
+                </div>
+                <div slot="desc">
+                    <p>通过设置属性 <code>animated</code> 为 <code>false</code> 可以禁用动画。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.animated }}</i-code>
+            </demo>
+            <demo title="其它样式" vertical>
+                <div slot="demo">
+                    <i-row>
+                        <i-col span="11" class="demo-tabs-style1" style="background: #e3e8ee;padding:16px;">
+                            <Tabs type="card">
+                                <TabPane label="标签一">标签一的内容</TabPane>
+                                <TabPane label="标签二">标签二的内容</TabPane>
+                                <TabPane label="标签三">标签三的内容</TabPane>
+                            </Tabs>
+                        </i-col>
+                        <i-col span="11" offset="2" class="demo-tabs-style2">
+                            <Tabs type="card">
+                                <TabPane label="标签一">标签一的内容</TabPane>
+                                <TabPane label="标签二">标签二的内容</TabPane>
+                                <TabPane label="标签三">标签三的内容</TabPane>
+                            </Tabs>
+                        </i-col>
+                    </i-row>
+                </div>
+                <div slot="desc">
+                    <p>可以根据业务自定义 UI，需要一点额外的样式覆盖。</p>
+                </div>
+            </demo>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="Tabs props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>name</td>
+                            <td>当前激活 tab 面板的 name，可以使用双向绑定数据</td>
+                            <td>String</td>
+                            <td>默认为第一项的 name</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td>页签的基本样式，可选值为 <code>line</code> 和 <code>card</code></td>
+                            <td>String</td>
+                            <td>line</td>
+                        </tr>
+                        <tr>
+                            <td>size</td>
+                            <td>尺寸，可选值为 <code>default</code> 和 <code>small</code>，仅在 <code>type="line"</code> 时有效</td>
+                            <td>String</td>
+                            <td>default</td>
+                        </tr>
+                        <tr>
+                            <td>animated</td>
+                            <td>是否使用 CSS3 动画</td>
+                            <td>Boolean</td>
+                            <td>true</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Tabs events" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名</th>
+                            <th>说明</th>
+                            <th>返回值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>on-change</td>
+                            <td>当 active tab 发生变化时触发</td>
+                            <td>name</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Tabs slot" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>extra</td>
+                            <td>附加内容</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="TabPane props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>name</td>
+                            <td>用于标识当前面板，对应 value，默认为其索引值</td>
+                            <td>String | Number</td>
+                            <td>必填</td>
+                        </tr>
+                        <tr>
+                            <td>label</td>
+                            <td>选项卡头显示文字</td>
+                            <td>String</td>
+                            <td>空</td>
+                        </tr>
+                        <tr>
+                            <td>icon</td>
+                            <td>选项卡图标</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>disabled</td>
+                            <td>是否禁用该选项卡</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import Code from 'code/tabs';
+    import article from 'components/article';
+    import anchor from 'components/anchor';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import {Icon, Tabs, Col, Row, Button} from 'san-iview';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'icon': Icon,
+            'tabs': Tabs,
+            'tabpane': Tabs.Pane,
+            'i-col': Col,
+            'i-row': Row,
+            'i-button': Button
+        },
+        initData () {
+            return {
+                code: Code,
+                tab0: true,
+                tab1: true,
+                tab2: true,
+                tabs: [1]
+            }
+        },
+        handleTabsAdd () {
+            this.data.push('tabs', 1);
+        }
+    }
+</script>

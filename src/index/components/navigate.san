@@ -1,0 +1,36 @@
+<style lang="stylus">
+    @import "../styles/navigate.styl"
+</style>
+<template>
+    <div class="navigate">
+        <menu width="auto" on-select="handleSelect($event)" mode="vertical">
+            <menu-group s-for="item in navigate.components" title="{{item.type}}">
+                <menu-item s-for="component in item.list" name="{{component.path}}">
+                    <i class="view-icon ion-{{component.icon}}"></i>
+                    {{ component.title}}
+                </menu-item>
+            </menu-group>
+        </menu>
+    </div>
+</template>
+<script>
+import {Menu} from 'san-iview'
+import navigate from '../config/navigate';
+import {router} from 'san-router';
+
+export default {
+    components: {
+        'menu': Menu,
+        'menu-group': Menu.Group,
+        'menu-item': Menu.Item
+    },
+    initData() {
+        return {
+            navigate: navigate
+        }
+    },
+    handleSelect(e) {
+        router.locator.redirect(e);
+    }
+}
+</script>

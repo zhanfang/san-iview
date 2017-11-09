@@ -1,0 +1,178 @@
+<template>
+    <div>
+        <article>
+            <h1>switch 开关</h1>
+            <anchor title="概述" h2></anchor>
+            <p>在两种状态间切换时用到的开关选择器。</p>
+            <anchor title="代码示例" h2></anchor>
+            <demo title="基本">
+                <div slot="demo">
+                    <switch value="{=switch1=}" on-switch="change($event)"></switch>
+                </div>
+                <div slot="desc">
+                    <p>基本用法，状态切换时会触发事件。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.base }}</i-code>
+            </demo>
+            <demo title="尺寸">
+                <div slot="demo">
+                    <switch size="large"></switch>
+                    <switch></switch>
+                    <switch size="small"></switch>
+                </div>
+                <div slot="desc">
+                    <p>设置<code>size</code>为 <code>large</code> 或 <code>small</code> 使用大号和小号的开关。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.size }}</i-code>
+            </demo>
+            <demo title="文字和图标">
+                <div slot="demo">
+                    <switch>
+                        <span slot="open">开</span>
+                        <span slot="close">关</span>
+                    </switch>
+                    <switch>
+                        <icon type="android-done" slot="open"></icon>
+                        <icon type="android-close" slot="close"></icon>
+                    </switch>
+                    <br><br>
+                    <switch size="large">
+                        <span slot="open">开启</span>
+                        <span slot="close">关闭</span>
+                    </switch>
+                    <switch size="large">
+                        <span slot="open">ON</span>
+                        <span slot="close">OFF</span>
+                    </switch>
+                </div>
+                <div slot="desc">
+                    <p>自定义内容，建议如果使用2个汉字，将开关尺寸设置为 large。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.custom }}</i-code>
+            </demo>
+            <demo title="不可用">
+                <div slot="demo">
+                    <switch disabled></switch>
+                </div>
+                <div slot="desc">
+                    <p>禁用开关。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.disabled }}</i-code>
+            </demo>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="switch props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>value</td>
+                            <td>指定当前是否选中，可以使用双向绑定数据</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>size</td>
+                            <td>开关的尺寸，可选值为<code>large</code>、<code>small</code>、<code>default</code>或者不写。建议开关如果使用了2个汉字的文字，使用 large。</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>disabled</td>
+                            <td>禁用开关</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>true-value</td>
+                            <td>选中时的值，当使用类似 1 和 0 来判断是否选中时会很有用</td>
+                            <td>String, Number, Boolean</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>false-value</td>
+                            <td>没有选中时的值，当使用类似 1 和 0 来判断是否选中时会很有用</td>
+                            <td>String, Number, Boolean</td>
+                            <td>false</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="switch events" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名</th>
+                            <th>说明</th>
+                            <th>返回值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>on-switch</td>
+                            <td>开关变化时触发，返回当前的状态</td>
+                            <td>true | false</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="switch slot" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>open</td>
+                            <td>自定义显示打开时的内容</td>
+                        </tr>
+                        <tr>
+                            <td>close</td>
+                            <td>自定义显示关闭时的内容</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import Code from 'code/switch';
+    import article from 'components/article';
+    import anchor from 'components/anchor';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import {Icon, Row, Col, Input, Switch, Message} from 'san-iview';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'i-row': Row,
+            'i-col': Col,
+            'i-input': Input,
+            'icon': Icon,
+            'switch': Switch
+        },
+        initData () {
+            return {
+                code: Code,
+                disabled: true,
+                switch1: false
+            }
+        },
+        change (status) {
+            Message.info(`开关状态：${status}`);
+        }
+    }
+</script>

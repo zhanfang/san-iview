@@ -1,0 +1,278 @@
+<style>
+    .view-icon{
+        font-size: 14px;
+    }
+</style>
+<template>
+    <div>
+        <article>
+            <h1>radio 单选框</h1>
+            <anchor title="概述" h2></anchor>
+            <p>基本组件-单选框。主要用于一组可选项单项选择，或者单独用于切换到选中状态。</p>
+            <anchor title="代码示例" h2></anchor>
+            <demo title="组合使用">
+                <div slot="demo">
+                    <radio-group label="{=phone=}">
+                        <radio label="apple">
+                            <Icon type="social-apple"></Icon>
+                            <span>Apple</span>
+                        </radio>
+                        <radio label="android">
+                            <Icon type="social-android"></Icon>
+                            <span>Android</span>
+                        </radio>
+                        <radio label="windows">
+                            <Icon type="social-windows"></Icon>
+                            <span>Windows</span>
+                        </radio>
+                    </radio-group>
+                    <p class="demo-data">{{ phone }}</p>
+                    <radio-group label="{=animal=}">
+                        <radio label="金斑蝶"></radio>
+                        <radio label="爪哇犀牛"></radio>
+                        <radio label="印度黑羚"></radio>
+                    </radio-group>
+                    <p class="demo-data">{{ animal }}</p>
+                </div>
+                <div slot="desc">
+                    <p>使用<code>radio-group</code>实现一组互斥的选项组。在组合使用时，<code>radio</code> 使用 <code>label</code> 来自动判断。每个 radio 的内容可以自定义，如不填写则默认使用 label 的值。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.group }}</i-code>
+            </demo>
+            <demo title="不可用">
+                <div slot="demo">
+                    <radio-group label="{=disabledGroup=}">
+                        <radio label="金斑蝶" disabled></radio>
+                        <radio label="爪哇犀牛"></radio>
+                        <radio label="印度黑羚"></radio>
+                    </radio-group>
+                    <p class="demo-data">{{ disabledGroup }}</p>
+                </div>
+                <div slot="desc">
+                    <p>通过设置<code>disabled</code>属性来禁用单选框。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.disabled }}</i-code>
+            </demo>
+            <demo title="垂直">
+                <div slot="demo">
+                    <radio-group label="{=vertical=}" vertical>
+                        <radio label="apple">
+                            <Icon type="social-apple"></Icon>
+                            <span>Apple</span>
+                        </radio>
+                        <radio label="android">
+                            <Icon type="social-android"></Icon>
+                            <span>Android</span>
+                        </radio>
+                        <radio label="windows">
+                            <Icon type="social-windows"></Icon>
+                            <span>Windows</span>
+                        </radio>
+                    </radio-group>
+                </div>
+                <div slot="desc">
+                    <p>设置属性 <code>vertical</code> 可以垂直显示，按钮样式下无效。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.vertical }}</i-code>
+            </demo>
+            <demo title="按钮样式">
+                <div slot="demo">
+                    <radio-group label="{=button1=}" type="button">
+                        <radio label="北京"></radio>
+                        <radio label="上海"></radio>
+                        <radio label="深圳"></radio>
+                        <radio label="杭州"></radio>
+                    </radio-group>
+                    <p class="demo-data">{{ button1 }}</p>
+                    <radio-group label="{=button2=}" type="button">
+                        <radio label="北京"></radio>
+                        <radio label="上海" disabled></radio>
+                        <radio label="深圳"></radio>
+                        <radio label="杭州"></radio>
+                    </radio-group>
+                    <p class="demo-data">{{ button2 }}</p>
+                    <radio-group label="{=button3=}" type="button">
+                        <radio label="北京" disabled></radio>
+                        <radio label="上海" disabled></radio>
+                        <radio label="深圳" disabled></radio>
+                        <radio label="杭州" disabled></radio>
+                    </radio-group>
+                    <p class="demo-data">{{ button3 }}</p>
+                </div>
+                <div slot="desc">
+                    <p>组合使用时可以设置属性<code>type</code>为 button 来应用按钮的样式。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.button }}</i-code>
+            </demo>
+            <demo title="尺寸">
+                <div slot="demo">
+                    <radio-group label="{=button4=}" type="button" size="large">
+                        <radio label="北京"></radio>
+                        <radio label="上海"></radio>
+                        <radio label="深圳"></radio>
+                        <radio label="杭州"></radio>
+                    </radio-group>
+                    <p class="demo-data">{{ button4 }}</p>
+                    <radio-group label="{=button5=}" type="button">
+                        <radio label="北京"></radio>
+                        <radio label="上海"></radio>
+                        <radio label="深圳"></radio>
+                        <radio label="杭州"></radio>
+                    </radio-group>
+                    <p class="demo-data">{{ button5 }}</p>
+                    <radio-group label="{=button6=}" type="button" size="small">
+                        <radio label="北京"></radio>
+                        <radio label="上海"></radio>
+                        <radio label="深圳"></radio>
+                        <radio label="杭州"></radio>
+                    </radio-group>
+                    <p class="demo-data">{{ button6 }}</p>
+                </div>
+                <div slot="desc">
+                    <p>通过设置属性<code>size</code>为<code>large</code>或<code>small</code>将按钮样式设置为大和小尺寸，不设置为默认(中)尺寸。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.size }}</i-code>
+            </demo>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="Radio props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>label </td>
+                            <td>只在组合使用时有效。指定当前选项的 value 值</td>
+                            <td>String | Number</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>disabled</td>
+                            <td>是否禁用当前项</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>size</td>
+                            <td>单选框的尺寸，可选值为 <code>large</code>、<code>small</code>、<code>default</code> 或者不设置</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>true-value</td>
+                            <td>选中时的值，当使用类似 1 和 0 来判断是否选中时会很有用</td>
+                            <td>String, Number, Boolean</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>false-value</td>
+                            <td>没有选中时的值，当使用类似 1 和 0 来判断是否选中时会很有用</td>
+                            <td>String, Number, Boolean</td>
+                            <td>false</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Radio Group props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>label</td>
+                            <td>指定当前选中的项目数据。可以双向绑定数据</td>
+                            <td>String | Number</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td>可选值为 button 或不填，为 button 时使用按钮样式</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>size</td>
+                            <td>尺寸，可选值为<code>large</code>、<code>small</code>、<code>default</code>或者不设置</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>vertical</td>
+                            <td>是否垂直排列，按钮样式下无效</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Radio Group events" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名</th>
+                            <th>说明</th>
+                            <th>返回值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>on-select</td>
+                            <td>在选项状态发生改变时触发，返回当前选中的项。通过修改外部的数据改变时不会触发</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import Code from 'code/radio';
+    import article from 'components/article';
+    import anchor from 'components/anchor';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import {Icon, Row, Col, Input, Radio, Message} from 'san-iview';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'i-row': Row,
+            'i-col': Col,
+            'i-input': Input,
+            'icon': Icon,
+            'radio': Radio,
+            'radio-group': Radio.Group,
+        },
+        initData () {
+            return {
+                code: Code,
+                single: false,
+                phone: 'apple',
+                animal: '爪哇犀牛',
+                disabledSingle: true,
+                disabledGroup: '爪哇犀牛',
+                vertical: 'apple',
+                button1: '北京',
+                button2: '北京',
+                button3: '北京',
+                button4: '北京',
+                button5: '北京',
+                button6: '北京'
+            }
+        }
+    }
+</script>

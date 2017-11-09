@@ -1,0 +1,40 @@
+<template>
+    <div>
+        <pre class="{{bg ? 'bg' : ''}}">
+            <code class="{{language}}">
+                <slot></slot>
+            </code>
+        </pre>
+    </div>
+</template>
+
+<script>
+import hljs from 'highlightjs/highlight.pack.js';
+import {DataTypes} from 'san';
+
+export default {
+    dataTypes: {
+        bg: DataTypes.bool
+    },
+    initData() {
+        return {
+            bg: false
+        }
+    },
+    computed: {
+        language() {
+            if (this.data.get('lang') == 'auto') {
+                return ''
+            } else {
+                return this.data.get('lang');
+            }
+        }
+    },
+    attached() {
+        this.code = this.el.querySelector('code').innerHTML.replace(/\n/, '');
+        this.el.querySelector('code').innerHTML = this.code;
+
+        hljs.highlightBlock(this.el.querySelector('code'));
+    }
+};
+</script>

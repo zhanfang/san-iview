@@ -1,0 +1,51 @@
+{
+  "name": "san-view-doc",
+  "version": "0.1.0",
+  "description": "san-view document",
+  "author": "zhanfang(fzhanxd@gmail.com)",
+  "scripts": {
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "build": "NODE_ENV=production node build/build.js",
+    "test": ""
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "highlightjs": "^9.10.0",
+    "san": "^3.2.6",
+    "san-iview": "^0.2.5",
+    "san-router": "^1.0.3"
+  },
+  "devDependencies": {
+    "autoprefixer-loader": "^3.2.0",
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-preset-stage-2": "^6.0.0",
+    "body-parser": "^1.17.2",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.25.0",
+    "express": "^4.13.3",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "file-loader": "^1.1.5",
+    "friendly-errors-webpack-plugin": "^1.6.1",
+    "glob": "^7.1.2",
+    "html-loader": "^0.4.4",
+    "html-webpack-plugin": "^2.8.1",
+    "inline-manifest-webpack-plugin": "^3.0.1",
+    "node-notifier": "^5.1.2",
+    "optimize-css-assets-webpack-plugin": "^3.0.0",
+    "ora": "^0.2.0",
+    "portfinder": "^1.0.13",
+    "resolve-url-loader": "^2.1.0",
+    "san-loader": "github:ecomfe/san-loader",
+    "shelljs": "^0.6.0",
+    "style-loader": "^0.13.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1",
+    "url-loader": "^0.5.9",
+    "webpack": "^2.7.0",
+    "webpack-bundle-analyzer": "^2.9.0",
+    "webpack-merge": "^3.0.0"
+  }
+}

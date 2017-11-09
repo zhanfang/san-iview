@@ -1,0 +1,355 @@
+<style lang="stylus">
+    .vertical-center-modal{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .view-modal{
+            top: 0;
+        }
+    }
+</style>
+<template>
+    <div>
+        <article>
+            <h1>Modal 对话框</h1>
+            <anchor title="概述" h2></anchor>
+            <p>模态对话框，在浮层中显示，引导用户进行相关操作。</p>
+            <p><code>Modal</code>提供了两种用法，普通组件使用和封装好的简洁实例调用。</p>
+            <anchor title="代码示例" h2></anchor>
+            <anchor title="普通组件使用方法" h3></anchor>
+            <demo title="基础用法">
+                <div slot="demo">
+                    <i-button type="primary" on-select="handleModal1">显示对话框</i-button>
+                    <Modal
+                        value="{{modal1}}"
+                        width="{{360}}"
+                        title="普通的Modal对话框标题"
+                        on-ok="ok"
+                        on-close="closeModal1">
+                        <p>对话框内容</p>
+                        <p>对话框内容</p>
+                        <p>对话框内容</p>
+                    </Modal>
+                </div>
+                <div slot="desc">
+                    <p>最简单的使用方法，通过控制属性<code>value</code>来显示 / 隐藏对话框。</p>
+                    <p>默认按键盘<code>ESC</code>键也可以关闭。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.base }}</i-code>
+            </demo>
+            <demo title="自定义样式">
+                <div slot="demo">
+                    <i-button on-select="handleModal2">自定义页头和页脚</i-button>
+                    <Modal 
+                        s-if="modal2"
+                        value="{{modal2}}" 
+                        on-close="closeModal2"
+                        >
+                        <p slot="header" style="color:#f60;text-align:center">
+                            <Icon type="information-circled"></Icon>
+                            <span>删除确认</span>
+                        </p>
+                        <div style="text-align:center">
+                            <p>此任务删除后，下游 10 个任务将无法执行。</p>
+                            <p>是否继续删除？</p>
+                        </div>
+                        <div slot="footer">
+                            <i-button type="error" size="large" long loading="{=modal_loading=}" on-select="del">删除</i-button>
+                        </div>
+                    </Modal>
+                    <i-button on-select="handleModal3">不带标题栏</i-button>
+                    <Modal 
+                        s-if="modal3"
+                        value="{=modal3=}"
+                        showHead="{{false}}"
+                        on-close="closeModal3"
+                        >
+                        <p>对话框内容</p>
+                        <p>对话框内容</p>
+                        <p>对话框内容</p>
+                    </Modal>
+                    <i-button on-select="handleModal5">设置宽度</i-button>
+                    <Modal
+                        s-if="modal5"
+                        value="{{modal5}}"
+                        title="自定义宽度"
+                        width="{{300}}"
+                        on-close="closeModal5">
+                        <p>自定义宽度，单位 px，默认 520px。</p>
+                        <p>对话框的宽度是响应式的，当屏幕尺寸小于 768px 时，宽度会变为自动<code>auto</code>。</p>
+                    </Modal>
+                </div>
+                <div slot="desc">
+                    <p>Modal 组件提供了灵活的自定义样式 API 和 Slot，可以自由控制整个 Modal 的各个组成部分，比如页头、页脚、关闭按钮。</p>
+                    <p>通过和其它组件的交互，能实现更复杂的功能，满足了大多业务场景。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.custom }}</i-code>
+            </demo>
+            <demo title="禁用关闭">
+                <div slot="demo">
+                    <i-button on-select="handleModal8">禁用遮罩层关闭</i-button>
+                    <Modal
+                        title="对话框标题"
+                        value="{{modal8}}"
+                        showFooter="{{false}}"
+                        maskCloseable="{{false}}"
+                        on-close="closeModal8">
+                        <p>对话框内容</p>
+                        <p>对话框内容</p>
+                        <p>对话框内容</p>
+                    </Modal>
+                </div>
+                <div slot="desc">
+                    <p>可以禁用关闭和遮罩层关闭。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.close }}</i-code>
+            </demo>
+            <demo title="自定义位置">
+                <div slot="demo">
+                    <i-button on-select="handleModal9">距离顶部 20px</i-button>
+                    <Modal
+                        title="对话框标题"
+                        value="{{modal9}}"
+                        styles="{{styles}}"
+                        on-close="closeModal9">
+                        <p>对话框内容</p>
+                        <p>对话框内容</p>
+                        <p>对话框内容</p>
+                    </Modal>
+                </div>
+                <div slot="desc">
+                    <p>可以自定义 Modal 的对话框样式 以及 对话框 Wrap 的 class 名称，从而实现更多自定义的样式，比如垂直居中。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.position }}</i-code>
+            </demo>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="Modal props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>value</td>
+                            <td>对话框是否显示</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>title</td>
+                            <td>对话框标题，如果使用 slot 自定义了页头，则 title 无效</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>showHead</td>
+                            <td>是否显示标题栏</td>
+                            <td>Boolead</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>showFooter</td>
+                            <td>是否显示Footer</td>
+                            <td>Boolead</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>closable</td>
+                            <td>是否显示右上角的关闭按钮，关闭后 Esc 按键也将关闭</td>
+                            <td>Boolean</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>maskCloseable</td>
+                            <td>是否允许点击遮罩层关闭</td>
+                            <td>Boolean</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>okText</td>
+                            <td>确定按钮文字</td>
+                            <td>String</td>
+                            <td>确定</td>
+                        </tr>
+                        <tr>
+                            <td>cancelText</td>
+                            <td>取消按钮文字</td>
+                            <td>String</td>
+                            <td>取消</td>
+                        </tr>
+                        <tr>
+                            <td>width</td>
+                            <td>对话框宽度，对话框的宽度是响应式的，当屏幕尺寸小于 768px 时，宽度会变为自动<code>auto</code>。当其值不大于 100 时以百分比显示，大于 100 时为像素</td>
+                            <td>Number | String</td>
+                            <td>520</td>
+                        </tr>
+                        <tr>
+                            <td>styles</td>
+                            <td>设置浮层样式，调整浮层位置等，该属性设置的是<code>.ivu-modal</code>的样式</td>
+                            <td>Object</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Modal events" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名</th>
+                            <th>说明</th>
+                            <th>返回值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>on-ok</td>
+                            <td>点击确定的回调</td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>on-close</td>
+                            <td>点击取消/蒙层/关闭按钮 的回调，必须存在</td>
+                            <td>无</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Modal slot" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>header</td>
+                            <td>自定义页头</td>
+                        </tr>
+                        <tr>
+                            <td>footer</td>
+                            <td>自定义页脚内容</td>
+                        </tr>
+                        <tr>
+                            <td>close</td>
+                            <td>自定义右上角关闭内容</td>
+                        </tr>
+                        <tr>
+                            <td>无</td>
+                            <td>对话框主体内容</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import Code from 'code/modal';
+    import article from 'components/article';
+    import anchor from 'components/anchor';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import {Icon, Row, Col, Input, Message, Button, Modal} from 'san-iview';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'i-row': Row,
+            'i-col': Col,
+            'i-input': Input,
+            'icon': Icon,
+            'i-button': Button,
+            'modal': Modal
+        },
+        initData () {
+            return {
+                code: Code,
+                modal1: false,
+                modal2: false,
+                modal_loading: false,
+                modal3: false,
+                modal4: false,
+                modal5: false,
+                modal6: false,
+                loading: true,
+                modal7: false,
+                modal8: false,
+                modal9: false,
+                modal10: false,
+                value: '',
+                styles: {
+                    top: '20px'
+                }
+            }
+        },
+        handleModal1() {
+            this.data.set('modal1', true);
+        },
+        closeModal1() {
+            this.data.set('modal1', false);
+            Message.info('点击了取消');
+        },
+        handleModal2() {
+            this.data.set('modal2', true);
+        },
+        closeModal2() {
+            this.data.set('modal2', false);
+            Message.info('点击了取消');
+        },
+        handleModal3() {
+            this.data.set('modal3', true);
+        },
+        closeModal3() {
+            this.data.set('modal3', false);
+            Message.info('点击了取消');
+        },
+        handleModal5() {
+            this.data.set('modal5', true);
+        },
+        closeModal5() {
+            this.data.set('modal5', false);
+            Message.info('点击了取消');
+        },
+        handleModal8() {
+            this.data.set('modal8', true);
+        },
+        closeModal8() {
+            this.data.set('modal8', false);
+        },
+        handleModal9() {
+            this.data.set('modal9', true);
+        },
+        closeModal9() {
+            this.data.set('modal9', false);
+        },
+        ok () {
+            Message.info('点击了确定');
+        },
+        cancel () {
+            Message.info('点击了取消');
+        },
+        del() {
+            this.data.set('modal_loading', true);
+            setTimeout(() => {
+                this.data.set('modal_loading', false);
+                Message.success('删除成功');
+            }, 2000);
+        },
+        asyncOK () {
+            setTimeout(() => {
+                this.modal6 = false;
+            }, 2000);
+        }
+    }
+</script>

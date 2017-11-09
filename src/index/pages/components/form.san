@@ -1,0 +1,596 @@
+<template>
+    <div>
+        <article>
+            <h1>Form 表单</h1>
+            <anchor title="概述" h2></anchor>
+            <p>具有数据收集、校验和提交功能的表单，包含复选框、单选框、输入框、下拉选择框等元素。</p>
+            <anchor title="代码示例" h2></anchor>
+            <demo title="行内表单">
+                <div slot="demo">
+                    <i-form model="{{formInline}}" rules="{{ruleInline}}" inline>
+                        <form-item prop="user">
+                            <i-input 
+                                type="text"
+                                value="{=formInline.user=}"
+                                placeholder="Username"
+                                prepend>
+                                <Icon type="ios-person-outline" slot="prepend"></Icon>
+                            </i-input>
+                        </form-item>
+                        <form-item prop="password">
+                            <i-input 
+                                type="password"
+                                value="{=formInline.password=}"
+                                placeholder="Password"
+                                prepend>
+                                <Icon type="ios-locked-outline" slot="prepend"></Icon>
+                            </i-input>
+                        </form-item>
+                        <form-item>
+                            <i-btn type="primary" on-select="handleSubmit('formInline')">登录</i-btn>
+                        </form-item>
+                    </i-form>
+                </div>
+                <div slot="desc">
+                    <p>设置属性 <code>inline</code>，表单元素可以水平排列。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.inline }}</i-code>
+            </demo>
+            <demo title="表单控件">
+                <div slot="demo">
+                    <i-form model="{{formItem}}" labelWidth="{{80}}">
+                        <form-item label="输入框">
+                            <i-input value="{=formItem.input=}" placeholder="请输入"></i-input>
+                        </form-item>
+                        <form-item label="选择器">
+                            <Select value="{=formItem.select=}" placeholder="请选择">
+                                <select-option value="beijing">北京市</select-option>
+                                <select-option value="shanghai">上海市</select-option>
+                                <select-option value="shenzhen">深圳市</select-option>
+                            </Select>
+                        </form-item>
+                        <form-item label="单选框">
+                            <radio-group label="{=formItem.radio=}">
+                                <Radio label="male">男</Radio>
+                                <Radio label="female">女</Radio>
+                            </radio-group>
+                        </form-item>
+                        <form-item label="多选框">
+                            <checkbox-group value="{=formItem.checkbox=}">
+                                <checkbox label="吃饭"></checkbox>
+                                <checkbox label="睡觉"></checkbox>
+                                <checkbox label="跑步"></checkbox>
+                                <checkbox label="看电影"></checkbox>
+                            </checkbox-group>
+                        </form-item>
+                        <form-item label="开关">
+                            <i-switch value="{=formItem.switch=}" size="large">
+                                <span slot="open">开启</span>
+                                <span slot="close">关闭</span>
+                            </i-switch>
+                        </form-item>
+                        <form-item label="文本域">
+                            <i-input value="{=formItem.textarea=}" type="textarea" autosize="{{autosize}}" placeholder="请输入..."></i-input>
+                        </form-item>
+                        <form-item>
+                            <i-btn type="primary">提交</i-btn>
+                            <i-btn type="ghost" style="margin-left: 8px">取消</i-btn>
+                        </form-item>
+                    </i-form>
+                </div>
+                <div slot="desc">
+                    <p>在 <code>i-form</code> 内，每个表单域由 <code>form-item</code> 组成，可包含的控件有：Input、Radio、Checkbox、Switch、Select、Slider、DatePicker、TimePicker、Cascader、Transfer、InputNumber、Rate、Upload、AutoComplete、ColorPicker。</p>
+                    <p>给 <code>form-item</code> 设置属性 <code>label</code> 可以显示表单域的标签，需要给 i-form 设置 <code>labelWidth</code>。</p>
+                    <p>给 <code>form-item</code> 设置属性 <code>label-for</code> 可以指定原生的 label 标签的 for 属性，配合设置控件的 <code>element-id</code> 属性，可以点击 label 时聚焦控件。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.item }}</i-code>
+            </demo>
+            <demo title="对齐方式">
+                <div slot="demo">
+                    <i-form labelPosition="left" labelWidth="{{100}}">
+                        <form-item label="标题">
+                            <i-input value="{=formLeft.input1=}"></i-input>
+                        </form-item>
+                        <form-item label="标题名称">
+                            <i-input value="{=formLeft.input2=}"></i-input>
+                        </form-item>
+                        <form-item label="标题名称对齐">
+                            <i-input value="{=formLeft.input3=}"></i-input>
+                        </form-item>
+                    </i-form>
+                    <i-form labelPosition="right" labelWidth="{{100}}">
+                        <form-item label="标题">
+                            <i-input value="{=formRight.input1=}"></i-input>
+                        </form-item>
+                        <form-item label="标题名称">
+                            <i-input value="{=formRight.input2=}"></i-input>
+                        </form-item>
+                        <form-item label="标题名称对齐">
+                            <i-input value="{=formRight.input3=}"></i-input>
+                        </form-item>
+                    </i-form>
+                    <i-form labelPosition="top">
+                        <form-item label="标题">
+                            <i-input value="{=formTop.input1=}"></i-input>
+                        </form-item>
+                        <form-item label="标题名称">
+                            <i-input value="{=formTop.input2=}"></i-input>
+                        </form-item>
+                        <form-item label="标题名称对齐">
+                            <i-input value="{=formTop.input3=}"></i-input>
+                        </form-item>
+                    </i-form>
+                </div>
+                <div slot="desc">
+                    <p>设置属性 <code>labelPosition</code>，可以改变表单域标签的位置，left 为左对齐，right 为右对齐，top 会置于表单域顶部。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.position }}</i-code>
+            </demo>
+            <demo title="表单验证">
+                <div slot="demo">
+                    <i-form
+                        model="{=formValidate=}"
+                        rules="{{ruleValidate}}"
+                        labelWidth="{{80}}"
+                        s-ref="formValidate"
+                    >
+                        <form-item label="姓名" prop="name">
+                            <i-input value="{=formValidate.name=}" placeholder="请输入姓名"></i-input>
+                        </form-item>
+                        <form-item label="邮箱" prop="mail">
+                            <i-input value="{=formValidate.mail=}" placeholder="请输入邮箱"></i-input>
+                        </form-item>
+                        <form-item label="城市" prop="city">
+                            <Select value="{=formValidate.city=}" placeholder="请选择所在地">
+                                <select-option value="beijing">北京市</select-option>
+                                <select-option value="shanghai">上海市</select-option>
+                                <select-option value="shenzhen">深圳市</select-option>
+                            </Select>
+                        </form-item>
+                        <form-item label="性别" prop="gender">
+                            <radio-group label="{=formValidate.gender=}">
+                                <Radio label="male">男</Radio>
+                                <Radio label="female">女</Radio>
+                            </radio-group>
+                        </form-item>
+                        <form-item label="爱好" prop="interest">
+                            <checkbox-group value="{=formValidate.interest=}">
+                                <checkbox label="吃饭"></checkbox>
+                                <checkbox label="睡觉"></checkbox>
+                                <checkbox label="跑步"></checkbox>
+                                <checkbox label="看电影"></checkbox>
+                            </checkbox-group>
+                        </form-item>
+                        <form-item label="介绍" prop="desc">
+                            <i-input value="{=formValidate.desc=}" type="textarea" autosize="{{autosize}}" placeholder="请输入..."></i-input>
+                        </form-item>
+                        <form-item>
+                            <i-btn type="primary" on-select="handleSubmit('formValidate')">提交</i-btn>
+                            <i-btn type="ghost" on-select="handleReset('formValidate')" style="margin-left: 8px">重置</i-btn>
+                        </form-item>
+                    </i-form>
+                </div>
+                <div slot="desc">
+                    <p>i-form 组件基于 <a href="https://github.com/yiminghe/async-validator" target="_blank"><Icon type="social-github"></Icon> async-validator</a> 实现的数据验证，给 i-form 设置属性 <code>rules</code>，同时给需要验证的 form-item 设置属性 <code>prop</code> 指向对应字段即可。</p>
+                    <p>完整的验证规则请参照开源项目 async-validator。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.validate }}</i-code>
+            </demo>
+            <demo title="自定义验证">
+                <div slot="demo">
+                    <i-form 
+                        s-ref="formCustom" 
+                        model="{{formCustom}}"
+                        rules="{{ruleCustom}}"
+                        labelWidth="{{80}}">
+                        <form-item label="密码" prop="passwd">
+                            <i-input type="password" value="{=formCustom.passwd=}"></i-input>
+                        </form-item>
+                        <form-item label="确认密码" prop="passwdCheck">
+                            <i-input type="password" value="{=formCustom.passwdCheck=}"></i-input>
+                        </form-item>
+                        <form-item label="年龄" prop="age">
+                            <i-input type="text" value="{=formCustom.age=}" number></i-input>
+                        </form-item>
+                        <form-item>
+                            <i-btn type="primary" on-select="handleSubmit('formCustom')">提交</i-btn>
+                            <i-btn type="ghost" on-select="handleReset('formCustom')" style="margin-left: 8px">重置</i-btn>
+                        </form-item>
+                    </i-form>
+                </div>
+                <div slot="desc">
+                    <p>可以完全自定义验证规则来完成更复杂的验证，比如某些数据需要在服务端验证时。示例展示的是密码的二次确认及模拟的一个异步验证。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.custom }}</i-code>
+            </demo>
+            <demo title="动态增减表单项">
+                <div slot="demo">
+                    <i-form s-ref="formDynamic" labelWidth="{{80}}">
+                        <form-item
+                            s-for="item, index in formDynamic.items"
+                            label="项目{{index + 1}}">
+                            <i-row>
+                                <i-col span="18">
+                                    <i-input type="text" value="{=item.value=}" placeholder="请输入..."></i-input>
+                                </i-col>
+                                <i-col span="4" offset="1">
+                                    <i-btn type="ghost" on-select="handleRemove(index)">删除</i-btn>
+                                </i-col>
+                            </i-row>
+                        </form-item>
+                        <form-item>
+                            <i-row>
+                                <i-col span="12">
+                                    <i-btn type="dashed" long on-select="handleAdd" icon="plus-round">新增</i-btn>
+                                </i-col>
+                            </i-row>
+                        </form-item>
+                        <form-item>
+                            <i-btn type="primary" on-select="handleSubmit('formDynamic')">提交</i-btn>
+                            <i-btn type="ghost" on-select="handleReset('formDynamic')" style="margin-left: 8px">重置</i-btn>
+                        </form-item>
+                    </i-form>
+                </div>
+                <div slot="desc">
+                    <p>当需要动态维护 FormItem 时，也可以直接给 FormItem 设置属性 <code>rules</code> 来单独为该域做验证。</p>
+                    <p>动态设置 FormItem 的 prop 属性时，会依据上层的 Form 组件的 model 来获取，查看示例代码。</p>
+                    <p>FormItem 还可以独立设置 required、error 等属性，详见 API。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.dynamic }}</i-code>
+            </demo>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="Form props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>model</td>
+                            <td>表单数据对象</td>
+                            <td>Object</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>rules</td>
+                            <td>表单验证规则，具体配置查看 <a href="https://github.com/yiminghe/async-validator" target="_blank"><Icon type="social-github"></Icon> async-validator</a></td>
+                            <td>Object</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>inline</td>
+                            <td>是否开启行内表单模式</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>labelPosition</td>
+                            <td>表单域标签的位置，可选值为 <code>left</code>、<code>right</code>、<code>top</code></td>
+                            <td>String</td>
+                            <td>right</td>
+                        </tr>
+                        <tr>
+                            <td>labelWidth</td>
+                            <td>表单域标签的宽度，所有的 form-item 都会继承 i-form 组件的 labelWidth 的值</td>
+                            <td>Number</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Form methods" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>方法名</th>
+                            <th>说明</th>
+                            <th>参数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>validate</td>
+                            <td>对整个表单进行校验，参数为检验完的回调，会返回一个 Boolean 表示成功与失败</td>
+                            <td>callback</td>
+                        </tr>
+                        <tr>
+                            <td>validateField</td>
+                            <td>对部分表单字段进行校验的方法，参数1为需校验的 prop，参数2为检验完回调，返回错误信息</td>
+                            <td>callback</td>
+                        </tr>
+                        <tr>
+                            <td>resetFields</td>
+                            <td>对整个表单进行重置，将所有字段值重置为空并移除校验结果</td>
+                            <td>无</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Form Item props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>prop</td>
+                            <td>对应表单域 model 里的字段</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>label</td>
+                            <td>标签文本</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>labelWidth</td>
+                            <td>表单域标签的的宽度</td>
+                            <td>Number</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>required</td>
+                            <td>是否必填，如不设置，则会根据校验规则自动生成</td>
+                            <td>Boolean</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>rules</td>
+                            <td>表单验证规则</td>
+                            <td>Object | Array</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>error</td>
+                            <td>表单域验证错误信息, 设置该值会使表单验证状态变为error，并显示该错误信息</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="Form Item slot" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>无</td>
+                            <td>内容</td>
+                        </tr>
+                        <tr>
+                            <td>label</td>
+                            <td>label 内容</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import Code from 'code/form';
+    import article from 'components/article';
+    import anchor from 'components/anchor';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import {
+        Icon, 
+        Row,
+        Col,
+        Input,
+        Switch,
+        Message,
+        Form,
+        Button,
+        Select,
+        Radio,
+        Checkbox
+    } from 'san-iview';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'i-row': Row,
+            'i-col': Col,
+            'i-input': Input,
+            'icon': Icon,
+            'i-form': Form,
+            'form-item': Form.Item,
+            'i-switch': Switch,
+            'i-btn': Button,
+            'select': Select,
+            'select-option': Select.Option,
+            'radio': Radio,
+            'radio-group': Radio.Group,
+            'checkbox': Checkbox,
+            'checkbox-group': Checkbox.Group
+        },
+        initData () {
+            const validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.data.get('formCustom.passwdCheck') !== '') {
+                        // 对第二个密码框单独验证
+                        this.ref('formCustom').validateField('passwdCheck');
+                    }
+                    callback();
+                }
+            };
+            const validatePassCheck = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.data.get('formCustom.passwd')) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            const validateAge = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('年龄不能为空'));
+                }
+                // 模拟异步验证效果
+                setTimeout(() => {
+                    if (!Number.isInteger(value)) {
+                        callback(new Error('请输入数字值'));
+                    } else {
+                        if (value < 18) {
+                            callback(new Error('必须年满18岁'));
+                        } else {
+                            callback();
+                        }
+                    }
+                }, 1000);
+            };
+
+            return {
+                code: Code,
+                formInline: {
+                    user: 'zhanfang',
+                    password: ''
+                },
+                ruleInline: {
+                    user: [
+                        { required: true, message: '请填写用户名', trigger: 'blur' }
+                    ],
+                    password: [
+                        { required: true, message: '请填写密码', trigger: 'blur' },
+                        { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur' }
+                    ]
+                },
+                formItem: {
+                    input: '',
+                    select: 'beijing',
+                    radio: 'male',
+                    checkbox: ['吃饭'],
+                    switch: true,
+                    date: '',
+                    time: '',
+                    slider: [20, 50],
+                    textarea: ''
+                },
+                formLeft: {
+                    input1: '',
+                    input2: '',
+                    input3: ''
+                },
+                formRight: {
+                    input1: '',
+                    input2: '',
+                    input3: ''
+                },
+                formTop: {
+                    input1: '',
+                    input2: '',
+                    input3: ''
+                },
+                formValidate: {
+                    name: '',
+                    mail: '',
+                    city: '',
+                    gender: 'male',
+                    interest: ['吃饭'],
+                    date: '',
+                    time: '',
+                    desc: ''
+                },
+                ruleValidate: {
+                    name: [
+                        { required: true, message: '姓名不能为空', trigger: 'blur' }
+                    ],
+                    mail: [
+                        { required: true, message: '邮箱不能为空', trigger: 'blur' },
+                        { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+                    ],
+                    city: [
+                        { required: true, message: '请选择城市', trigger: 'change' }
+                    ],
+                    gender: [
+                        { required: true, message: '请选择性别', trigger: 'change' }
+                    ],
+                    interest: [
+                        { required: true, type: 'array', min: 1, message: '至少选择一个爱好', trigger: 'change' },
+                        { type: 'array', max: 2, message: '最多选择两个爱好', trigger: 'change' }
+                    ],
+                    date: [
+                        { required: true, type: 'date', message: '请选择日期', trigger: 'change' }
+                    ],
+                    time: [
+                        { required: true, type: 'date', message: '请选择时间', trigger: 'change' }
+                    ],
+                    desc: [
+                        { required: true, message: '请输入个人介绍', trigger: 'blur' },
+                        { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'blur' }
+                    ]
+                },
+                formCustom: {
+                    passwd: '',
+                    passwdCheck: '',
+                    age: ''
+                },
+                ruleCustom: {
+                    passwd: [
+                        { validator: validatePass, trigger: 'blur' }
+                    ],
+                    passwdCheck: [
+                        { validator: validatePassCheck, trigger: 'blur' }
+                    ],
+                    age: [
+                        { validator: validateAge, trigger: 'blur' }
+                    ]
+                },
+                formDynamic: {
+                    items: [
+                        {
+                            value: ''
+                        }
+                    ]
+                },
+                autosize: {
+                    minRows: 2,
+                    maxRows: 5
+                }
+            }
+        },
+        handleSubmit (name) {
+            this.ref(name).validate((valid) => {
+                if (valid) {
+                    Message.success('提交成功!');
+                } else {
+                    Message.error('表单验证失败!');
+                }
+            })
+        },
+        handleReset (name) {
+            this.ref(name).resetFields();
+        },
+        handleAdd () {
+            this.data.push('formDynamic.items', {
+                value: ''
+            });
+        },
+        handleRemove (index) {
+            console.log(index);
+            this.data.splice('formDynamic.items', [index, 1]);
+        }
+    }
+</script>

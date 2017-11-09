@@ -1,0 +1,349 @@
+<style lang="stylus">
+    .ivu-article .view-select li{
+        margin-bottom: 0;
+    }
+    .ivu-article .view-select ul{
+        padding-left: 0 !important;
+        list-style-type: none;
+    }
+</style>
+<template>
+    <div>
+        <article>
+            <h1>select 选择器</h1>
+            <anchor title="概述" h2></anchor>
+            <p>使用模拟的增强下拉选择器来代替浏览器原生的选择器。</p>
+            <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
+            <anchor title="代码示例" h2></anchor>
+            <demo title="基础用法">
+                <div slot="demo">
+                    <select value="{=model1=}" style="width:200px">
+                        <select-option
+                            s-for="item in cityList"
+                            value="{{item.value}}">
+                            {{ item.label }}
+                        </select-option>
+                    </select>
+                    <span class="demo-data">{{ model1 }}</span>
+                </div>
+                <div slot="desc">
+                    <p>基本用法。可以使用双向绑定数据。</p>
+                    <p>单选时，value 只接受字符串和数字类型，多选时，只接受数组类型，组件会自动根据<code>select-option</code>的<code>value</code>来返回选中的数据。</p>
+                    <p>可以给<code>select</code>添加 style 样式，比如宽度。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.base }}</i-code>
+            </demo>
+            <demo title="尺寸">
+                <div slot="demo">
+                    <select value="{=model2=}" size="small" style="width:100px">
+                        <select-option s-for="item in cityList" value="{{item.value}}">{{ item.label }}</select-option>
+                    </select>
+                    <select value="{=model3=}" style="width:100px">
+                        <select-option s-for="item in cityList" value="{{item.value}}">{{ item.label }}</select-option>
+                    </select>
+                    <select value="{=model4=}" size="large" style="width:100px">
+                        <select-option s-for="item in cityList" value="{{item.value}}">{{ item.label }}</select-option>
+                    </select>
+                </div>
+                <div slot="desc">
+                    <p>通过设置<code>size</code>属性为<code>large</code>和<code>small</code>将输入框设置为大和小尺寸，不设置为默认（中）尺寸。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.size }}</i-code>
+            </demo>
+            <demo title="禁用">
+                <div slot="demo">
+                    <select value="{=model5=}" disabled style="width:200px">
+                        <select-option s-for="item in cityList" value="{{item.value}}">{{ item.label }}</select-option>
+                    </select>
+                    <select value="{=model6=}" style="width:200px">
+                        <select-option value="beijing">北京市</select-option>
+                        <select-option value="shanghai" disabled>上海市</select-option>
+                        <select-option value="shenzhen">深圳市</select-option>
+                    </select>
+                </div>
+                <div slot="desc">
+                    <p>通过给<code>select</code>设置属性<code>disabled</code>禁用整个选择器。</p>
+                    <p>通过给<code>select-option</code>设置属性<code>disabled</code>可以禁用当前项。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.disabled }}</i-code>
+            </demo>
+            <demo title="可清空">
+                <div slot="demo">
+                    <select value="model8" clearable style="width:200px">
+                        <select-option s-for="item in cityList" value="{{item.value}}" :key="item.value">{{ item.label }}</select-option>
+                    </select>
+                    <span class="demo-data">{{ model8 }}</span>
+                </div>
+                <div slot="desc">
+                    <p>通过设置属性<code>clearable</code>可以清空已选项，仅适用于单选模式。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.clearable }}</i-code>
+            </demo>
+            <demo title="自定义模板">
+                <div slot="demo">
+                    <select value="{=model9=}" style="width:200px">
+                        <select-option value="beijing" label="北京市">
+                            <span>北京</span>
+                            <span style="float:right;color:#ccc">Beiing</span>
+                        </select-option>
+                        <select-option value="shanghai" label="上海市">
+                            <span>上海</span>
+                            <span style="float:right;color:#ccc">ShangHai</span>
+                        </select-option>
+                        <select-option value="shenzhen" label="深圳市">
+                            <span>深圳</span>
+                            <span style="float:right;color:#ccc">ShenZhen</span>
+                        </select-option>
+                    </select>
+                    <span class="demo-data">{{ model9 }}</span>
+                </div>
+                <div slot="desc">
+                    <p>对选项内容可以进行自定义。注意在<code>select-option</code>中使用<code>label</code>属性，可以让选择器优先读取该属性的值以显示，否则选中时显示的内容会和自定义的一样，这往往不是我们想要的。</p>
+                    <p>对于选项显示内容的逻辑：优先显示 slot 内容，如果没有定义 slot，则显示<code>label</code>的值，如果没有设置 label，则显示<code>value</code>的值。</p>
+                </div>
+                <i-code lang="html" slot="code">{{ code.label }}</i-code>
+            </demo>
+            <div class="api">
+                <anchor title="API" h2></anchor>
+                <anchor title="select props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>value</td>
+                            <td>指定选中项目的 value 值，可以使用 value 双向绑定数据。单选时只接受 String 或 Number，多选时只接受 Array</td>
+                            <td>String | Number | Array</td>
+                            <td>空</td>
+                        </tr>
+                        <tr>
+                            <td>disabled</td>
+                            <td>是否禁用</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>clearable</td>
+                            <td>是否可以清空选项，只在单选时有效</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>size</td>
+                            <td>选择框大小，可选值为<code>large</code>、<code>small</code>、<code>default</code>或者不填</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>placeholder</td>
+                            <td>选择框默认文字</td>
+                            <td>String</td>
+                            <td>请选择</td>
+                        </tr>
+                        <tr>
+                            <td>label-in-value</td>
+                            <td>在返回选项时，是否将 label 和 value 一并返回，默认只返回 value</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                        <tr>
+                            <td>placement</td>
+                            <td>弹窗的展开方向，可选值为 <code>bottom</code> 和 <code>top</code></td>
+                            <td>String</td>
+                            <td>bottom</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="select events" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名</th>
+                            <th>说明</th>
+                            <th>返回值</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>on-select</td>
+                            <td>选中的<code>select-option</code>变化时触发，默认返回 value</td>
+                            <td>当前选中项</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <anchor title="select-option props" h3></anchor>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>说明</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>value</td>
+                            <td>选项值，默认根据此属性值进行筛选，必填</td>
+                            <td>String | Number</td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>label</td>
+                            <td>选项显示的内容，默认会读取 slot，无 slot 时，优先读取该 label 值，无 label 时，读取 value。当选中时，选择器会显示 label 为已选文案。大部分情况不需要配置此项，直接写入 slot 即可，在自定义选项时，该属性非常有用。</td>
+                            <td>String</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>disabled</td>
+                            <td>是否禁用当前项</td>
+                            <td>Boolean</td>
+                            <td>false</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</template>
+<script>
+    import Code from 'code/select';
+    import article from 'components/article';
+    import anchor from 'components/anchor';
+    import iCode from 'components/Code';
+    import demo from 'components/demo';
+    import {Icon, Row, Col, Input, Select} from 'san-iview';
+
+    export default {
+        components: {
+            'article': article,
+            'i-code': iCode,
+            'demo': demo,
+            'anchor': anchor,
+            'i-row': Row,
+            'i-col': Col,
+            'i-input': Input,
+            'icon': Icon,
+            'select': Select,
+            'select-option': Select.Option
+        },
+        initData () {
+            return {
+                code: Code,
+                cityList: [
+                    {
+                        value: 'beijing',
+                        label: '北京市'
+                    },
+                    {
+                        value: 'shanghai',
+                        label: '上海市'
+                    },
+                    {
+                        value: 'shenzhen',
+                        label: '深圳市'
+                    },
+                    {
+                        value: 'hangzhou',
+                        label: '杭州市'
+                    },
+                    {
+                        value: 'nanjing',
+                        label: '南京市'
+                    },
+                    {
+                        value: 'chongqing',
+                        label: '重庆市'
+                    }
+                ],
+                cityList1: [
+                    {
+                        value: 'beijing',
+                        label: '北京市'
+                    },
+                    {
+                        value: 'shanghai',
+                        label: '上海市'
+                    },
+                    {
+                        value: 'shenzhen',
+                        label: '深圳市'
+                    }
+                ],
+                cityList2: [
+                    {
+                        value: 'hangzhou',
+                        label: '杭州市'
+                    },
+                    {
+                        value: 'nanjing',
+                        label: '南京市'
+                    },
+                    {
+                        value: 'chongqing',
+                        label: '重庆市'
+                    }
+                ],
+                model1: '',
+                model2: '',
+                model3: '',
+                model4: '',
+                model5: '',
+                model6: '',
+                model7: '',
+                model8: '',
+                model9: '',
+                model10: [],
+                model11: '',
+                model12: [],
+                list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
+                model13: '',
+                loading1: false,
+                options1: [],
+                model14: [],
+                loading2: false,
+                options2: []
+            }
+        },
+        remoteMethod1 (query) {
+            if (query !== '') {
+                this.loading1 = true;
+                setTimeout(() => {
+                    this.loading1 = false;
+                    const list = this.list.map(item => {
+                        return {
+                            value: item,
+                            label: item
+                        };
+                    });
+                    this.options1 = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
+                }, 200);
+            } else {
+                this.options1 = [];
+            }
+        },
+        remoteMethod2 (query) {
+            if (query !== '') {
+                this.loading2 = true;
+                setTimeout(() => {
+                    this.loading2 = false;
+                    const list = this.list.map(item => {
+                        return {
+                            value: item,
+                            label: item
+                        };
+                    });
+                    this.options2 = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
+                }, 200);
+            } else {
+                this.options2 = [];
+            }
+        }
+    }
+</script>

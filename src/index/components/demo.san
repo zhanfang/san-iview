@@ -1,0 +1,102 @@
+<style lang="stylus">
+    @import '../styles/demo.styl'
+</style>
+<template>
+<div>
+    <i-row class="example" class="{{ vertical : 'example example-vertical': 'example'}}" :id="title">
+        <i-col class="example-demo" span="{{vertical ? 24 : 12}}">
+            <div class="example-case">
+                <slot name="demo"></slot>
+            </div>
+            <header class="example-header">
+                <span>
+                    {{ title }}
+                    <a href="#${{title}}">#</a>
+                </span>
+            </header>
+            <div class="example-desc">
+                <slot name="desc"></slot>
+            </div>
+        </i-col>
+        <div class="example-split"></div>
+        <i-col class="example-code" style="{{codeHeight}}" span="{{vertical ? 24 : 12}}">
+            <div style="{{style}}"><slot name="code"></slot></div>
+            <div class="example-code-more" s-if="showMore" on-click="showCode = !showCode">
+                <icon type="ios-arrow-down" s-if="!showCode"></icon>
+                <icon type="ios-arrow-up" s-if="showCode"></icon>
+                <i-button type="text" s-if="hideCode && !showCode">
+                    显示代码
+                </i-button>
+            </div>
+        </i-col>
+    </i-row>
+</div>
+</template>
+<script>
+    import {DataTypes} from 'san';
+    import {Col, Row, Icon, Button} from 'san-iview';
+    export default {
+        dataTypes: {
+            title: DataTypes.string,
+            vertical: DataTypes.bool,
+            hideCode: DataTypes.bool
+        },
+        data () {
+            return {
+                vertical: false,
+                hideCode: false,
+                showCode: false,
+                showMore: true,
+                demo_height: 0,
+                code_height: 0,
+                ready: false,
+                lang: this.$lang
+            }
+        },
+        components: {
+            'i-row': Row,
+            'i-col': Col,
+            'icon': Icon,
+            'i-button': Button
+        },
+        computed: {
+            codeHeight () {
+                let style = {};
+
+                if (this.data.get('ready')) {
+                    if (this.data.get('showCode')) {
+                        style.height = `${this.data.get('code_height')}px`;
+                    } else {
+                        style.height = `${this.data.get('demo_height')}px`;
+                    }
+                }
+
+                return style;
+            },
+            style () {
+                let style = {
+                    opacity: 1
+                };
+                if (this.data.get('hideCode') && !this.data.get('showCode')) {
+                    style.opacity = 0;
+                }
+                return style;
+            }
+        },
+        attached () {
+            // this.$nextTick(() => {
+            //     const demo_height = this.$children[0].$children[0].$el.clientHeight;
+            //     const code_height = this.$children[0].$children[1].$el.clientHeight + 20;
+
+            //     this.code_height = code_height;
+
+            //     if ((code_height <= demo_height) && !this.hideCode) {
+            //         this.showMore = false;
+            //     }
+
+            //     this.demo_height = this.hideCode ? 30 : demo_height;
+            //     this.ready = true;
+            // });
+        }
+    }
+</script>

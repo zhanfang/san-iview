@@ -1,0 +1,100 @@
+<template>
+<div class="doc-home">
+    <doc-row>
+        <doc-col span="24">
+            <h1 class="doc-home-title">San View</h1>
+        </doc-col>
+    </doc-row>
+    <doc-row>
+        <doc-col span="24">
+            <p class="doc-home-subtitle">
+                一套基于 San 的桌面端 UI 组件库
+            </p>
+        </doc-col>
+    </doc-row>
+    <doc-row>
+        <doc-col span="24" style="text-align: center">
+            <doc-btn type="primary" class="doc-home-start" on-select="handleSelect">立即开始</doc-btn>
+        </doc-col>
+    </doc-row>
+    <doc-row>
+        <doc-col span="4" offset="4">
+            <doc-card>
+                <div class="doc-home-feature">
+                    <h2>特性一</h2>
+                    <p>基于iView功能及样式进行实现</p>
+                </div>
+            </doc-card>
+        </doc-col>
+        <doc-col span="4" offset="2">
+            <doc-card>
+                <div class="doc-home-feature">
+                    <h2>特性二</h2>
+                    <p>符合桌面端视觉要求</p>
+                </div>
+            </doc-card>
+        </doc-col>
+        <doc-col span="4" offset="2">
+            <doc-card>
+                <div class="doc-home-feature">
+                    <h2>特性三</h2>
+                    <p>基于 San 的 UI 组件库</p>
+                </div>
+            </doc-card>
+        </doc-col>
+    </doc-row>
+
+</div>
+</template>
+<script>
+import {Row, Col, Card, Button} from 'san-iview';
+import {router} from 'san-router';
+
+export default {
+    components: {
+        'doc-row': Row,
+        'doc-col': Col,
+        'doc-card': Card,
+        'doc-btn': Button,
+        'doc-btn-group': Button.Group
+    },
+    handleSelect() {
+        router.locator.redirect('/docs/guide/install');
+    }
+};
+</script>
+
+<style lang="stylus">
+.doc-home
+    &-title
+        margin 91px 0 15px 0
+        font-weight 400
+        font-size 45px
+        color: #525252
+        line-height 50px
+        text-align center
+    &-subtitle
+        width 422px
+        margin 0 auto
+        font-size 14px
+        color #888888
+        letter-spacing 0
+        line-height 18px
+        text-align center
+    &-start
+        width:140px;
+        height:40px;
+        margin 30px 0 90px 0 !important
+        span 
+            font-size 14px
+            line-height 14px
+            text-align center
+    &-feature
+        padding 38px 38px 32px 38px
+        text-align center
+        img 
+            width 35px
+        h2
+            margin 15px 0 15px 0
+
+</style>
