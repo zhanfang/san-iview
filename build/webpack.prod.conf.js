@@ -70,7 +70,7 @@ var webpackConfig = merge(baseWebpackConfig, {
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: 'index.html',
+            template: 'src/index/index.html',
             inject: true,
             minify: {
               removeComments: true,
