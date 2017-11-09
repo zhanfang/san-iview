@@ -93,7 +93,7 @@ export default {
                     };
                 }
                 this.popper = new Popper(this.parentComponent.el, this.el, options);
-                this.popper.onCreate(popper => {
+                this.popper.options.onCreate(popper => {
                     this.resetTransformOrigin(popper);
                 });
             });
@@ -113,9 +113,9 @@ export default {
     },
     resetTransformOrigin(popper) {
         let placementMap = {top: 'bottom', bottom: 'top'};
-        let placement = popper._popper.getAttribute('x-placement').split('-')[0];
+        let placement = popper.popper.getAttribute('x-placement').split('-')[0];
         let origin = placementMap[placement];
-        popper._popper.style.transformOrigin = `center ${ origin }`;
+        popper.popper.style.transformOrigin = `center ${ origin }`;
     }
 };
 </script>
