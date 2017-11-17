@@ -38,6 +38,9 @@ export default {
             this.items.forEach(item => {
                 item.data.set('activeName', activeName);
             });
+            this.subItems.forEach(item => {
+                item.data.set('activeName', activeName);
+            });
         });
         this.watch('mode', mode => {
             this.subItems.forEach(item => {
@@ -78,6 +81,8 @@ export default {
     },
     messages: {
         [C.MENU_ITEM_INITED](e) {
+            const item = e.target;
+            item.data.set('activeName', this.data.get('activeName'));
             this.items.push(e.target);
         },
         [C.MENU_ITEM_DETACHED](e) {
@@ -89,6 +94,7 @@ export default {
         },
         [C.SUBMENU_ITEM_INITED](e) {
             const item = e.target;
+            item.data.set('activeName', this.data.get('activeName'));
             item.data.set('mode', this.data.get('mode'));
             item.data.set('accordion', this.data.get('accordion'));
             this.subItems.push(e.target);

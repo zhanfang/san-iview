@@ -16,14 +16,16 @@
 </div>
 </template>
 <script>
-import {Icon, Select, Circle} from '../dist/san-iview';
+import {Icon, Select, Circle, Input, Menu} from '../dist/san-iview';
 
 export default {
     components: {
         'icon': Icon,
         'select': Select,
         'select-option': Select.Option,
-        'circle': Circle
+        'circle': Circle,
+        'i-input': Input,
+        'menu': Menu
     },
     initData() {
         return {

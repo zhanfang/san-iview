@@ -3,7 +3,8 @@
         <div class="{{maskClasses}}"></div>
         <div class="{{wrapClasses}}" on-click="handleWrapClick($event)">
             <div class="view-modal" style="{{mainStyles}}" s-if="value">
-                <div class="view-modal-content">
+                <div s-if="!!content" s-html="content"></div>
+                <div s-else class="view-modal-content">
                     <a class="{{closeClasses}}" on-click="close($event)">
                         <slot name="close">
                             <icon type="ios-close-empty"></icon>
@@ -57,7 +58,8 @@ export default {
         okText: DataTypes.string,
         cancelText: DataTypes.string,
         showHead: DataTypes.bool,
-        showFooter: DataTypes.bool
+        showFooter: DataTypes.bool,
+        content: DataTypes.string
     },
     initData() {
         return {

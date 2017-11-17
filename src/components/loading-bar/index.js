@@ -1,6 +1,6 @@
 /**
  * @file LoadingBar
- * @author zhanfang(zhanfang@baidu.com)
+ * @author zhanfang(fzhanxd@gmail.com)
  */
 import LoadingBar from './loading-bar.js';
 

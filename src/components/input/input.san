@@ -12,6 +12,7 @@
             on-click="handleIconClick($event)">
         </icon>
         <input
+            id="{{elementId}}"
             type="{{type}}"
             class="{{inputClasses}}"
             placeholder="{{placeholder}}"
@@ -30,7 +31,9 @@
             on-focus="handleFocus($event)"
             on-blur="handleBlur($event)"
             on-input="handleInput($event)"
-            on-change="handleChange($event)">
+            on-change="handleChange($event)"
+            on-mouseenter="handleMouseEnter($event)"
+            on-mouseleave="handleMouseLeave($event)">
         <div 
             class="view-input-group-append" 
             s-if="append">
@@ -39,6 +42,7 @@
     </div>
     <div class="{{wrapClasses}}" s-else>
         <textarea
+            id="{{elementId}}"
             class="{{textareaClasses}}"
             style="{{textareaStyles}}"
             placeholder="{{placeholder}}"
@@ -200,6 +204,12 @@ export default {
     handleBlur(e) {
         this.fire('input-blur', e);
         this.dispatch(C.FORM_ITEM_BLUR, this.data.get('value'));
+    },
+    handleMouseEnter(e) {
+        this.fire('input-mouseenter', e);
+    },
+    handleMouseLeave(e) {
+        this.fire('input-mouseleave', e);
     },
     // TODO
     resizeTextarea() {

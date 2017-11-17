@@ -1,6 +1,6 @@
 /**
  * @file LoadingBar Ins
- * @author zhanfang(zhanfang@baidu.com)
+ * @author zhanfang(fzhanxd@gmail.com)
  */
 import LoadingBar from './loading-bar.san';
 

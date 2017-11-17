@@ -1,6 +1,6 @@
 /**
  * @file Tooltip
- * @author zhanfang(zhanfang@baidu.com)
+ * @author zhanfang(fzhanxd@gmail.com)
  */
 import Tooltip from './tooltip';
 

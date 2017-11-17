@@ -76,6 +76,12 @@ export default {
         if (extraNum === 0) {
             this.data.set('showSlot', false);
         }
+
+        this.watch('name', name => {
+            this.items.forEach(item => {
+                item.data.set('activeName', name);
+            });
+        });
     },
     computed: {
         classes() {

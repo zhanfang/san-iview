@@ -1,6 +1,6 @@
 /**
  * @file spin func
- * @author zhanfang(zhanfang@baidu.com)
+ * @author zhanfang(fzhanxd@gmail.com)
  */
 import Spin from './spin.san';
 

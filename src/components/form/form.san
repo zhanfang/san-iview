@@ -85,7 +85,7 @@ export default {
             item.data.set('formRules', this.data.get('rules'));
             item.data.set('formModel', this.data.get('model'));
         },
-        [C.MENU_ITEM_DETACHED](e) {
+        [C.FORM_ITEM_DETACHED](e) {
             this.items = this.items.filter(item => item !== e.target);
         }
     }

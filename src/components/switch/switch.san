@@ -73,7 +73,7 @@ export default {
             checked = this.data.get('trueValue');
         }
 
-        this.data.set('value', checked);
+        // this.data.set('value', checked);
         this.fire('switch', checked);
     }
 };
