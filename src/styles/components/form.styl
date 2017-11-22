@@ -8,6 +8,8 @@
         line-height: 1
         padding: 10px 12px 10px 0
         box-sizing: border-box
+
+
     &-label-left .view-form-item-label
         text-align: left
     &-label-top .view-form-item-label
@@ -40,6 +42,20 @@
         line-height: 1
         padding-top: 6px
         color: $error-color
+    &-help
+        width: 100%
+        position: absolute
+        top: 100%
+        left: 0
+        line-height: 1
+        padding-top: 6px
+        color: $text-color
+    &-help-tip
+        display: inline-block
+        width: 100%
+        overflow: hidden
+        white-space: nowrap
+        text-overflow ellipsis
 
     &-required
         .view-form-item-label:before

@@ -118,6 +118,14 @@ export default {
             this.ref('dropdown').fire('update-popper');
         });
         this.registerClickOutside();
+        this.watch('value', val => {
+            this.items.forEach(item => {
+                item.data.set('activeValue', val);
+                if (item.data.get('value') === val) {
+                    this.data.set('selectedSingle', item.data.get('showLabel'));
+                }
+            });
+        });
     },
     registerClickOutside() {
         const self = this;

@@ -73,15 +73,14 @@ export default {
         }
         else {
             nextTick(() => {
-                let options = {
-                    gpuAcceleration: false,
-                    placement: this.data.get('placement'),
-                    boundariesPadding: 0,
-                    forceAbsolute: true,
-                    boundariesElement: 'body'
+                let modifiers = {
+                    computeStyle: {
+                        gpuAcceleration: false
+                    }
                 };
+
                 if (this.data.get('overflow')) {
-                    options.modifiers = {
+                    modifiers = Object.assign({}, modifiers, {
                         preventOverflow: {
                             order: 300,
                             enabled: false
@@ -90,9 +89,16 @@ export default {
                             order: 800,
                             enabled: false
                         }
-                    };
+                    });
                 }
-                this.popper = new Popper(this.parentComponent.el, this.el, options);
+
+                this.popper = new Popper(this.parentComponent.el, this.el, {
+                    placement: this.data.get('placement'),
+                    boundariesPadding: 0,
+                    forceAbsolute: true,
+                    boundariesElement: 'body',
+                    modifiers: modifiers
+                });
                 this.popper.options.onCreate(popper => {
                     this.resetTransformOrigin(popper);
                 });

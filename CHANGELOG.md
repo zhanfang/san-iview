@@ -1,5 +1,20 @@
 # 更新日志
 
+## 1.0.18
+- 修改dropdown 中 popper.js tranfrom，解决 windows 下字体模糊的问题
+
+## 1.0.17
+- 添加了balloon对from-item的支持，通过在底部显示
+
+## 1.0.15
+- 添加了balloon对from-item的支持
+
+## 1.0.14
+- Input 不能使用id，因为san使用了
+
+## 1.0.13
+- 修复 select 在for循环时不 inited 的问题
+
 ## 1.0.11
 - 修复 1.0.10引入的问题
 

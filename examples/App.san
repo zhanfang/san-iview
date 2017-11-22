@@ -4,6 +4,15 @@
     <select value="{=model1=}" style="width:200px">
         <select-option
             s-for="item in cityList"
+            label="{{item.label}}"
+            value="{{item.value}}">
+            {{ item.label }}
+        </select-option>
+    </select>
+    <select value="{=model2=}" style="width:200px">
+        <select-option
+            s-for="item in cityList"
+            label="{{item.label}}"
             value="{{item.value}}">
             {{ item.label }}
         </select-option>
@@ -13,10 +22,72 @@
             <span>80%</span>
         </circle>
     </p>
+    <div style="width:20%">
+        <i-form
+            model="{=formValidate=}"
+            rules="{{ruleValidate}}"
+            labelWidth="{{100}}"
+            s-ref="formValidate">
+            <form-item 
+                label="姓名" 
+                prop="name"
+                desc="测试"
+                tip
+                descPos="up-left"
+                descLen="medium">
+                <i-input value="{=formValidate.name=}" placeholder="请输入姓名"></i-input>
+            </form-item>
+            <form-item label="邮箱" prop="mail">
+                <i-input value="{=formValidate.mail=}" placeholder="请输入邮箱"></i-input>
+            </form-item>
+            <form-item label="城市" prop="city">
+                <Select value="{=formValidate.city=}" placeholder="请选择所在地">
+                    <select-option value="beijing">北京市</select-option>
+                    <select-option value="shanghai">上海市</select-option>
+                    <select-option value="shenzhen">深圳市</select-option>
+                </Select>
+            </form-item>
+            <form-item label="性别" prop="gender">
+                <radio-group label="{=formValidate.gender=}">
+                    <Radio label="male">男</Radio>
+                    <Radio label="female">女</Radio>
+                </radio-group>
+            </form-item>
+            <form-item label="爱好" prop="interest">
+                <checkbox-group value="{=formValidate.interest=}">
+                    <checkbox label="吃饭"></checkbox>
+                    <checkbox label="睡觉"></checkbox>
+                    <checkbox label="跑步"></checkbox>
+                    <checkbox label="看电影"></checkbox>
+                </checkbox-group>
+            </form-item>
+            <form-item label="介绍" prop="desc">
+                <i-input value="{=formValidate.desc=}" type="textarea" autosize="{{autosize}}" placeholder="请输入..."></i-input>
+            </form-item>
+            <form-item>
+                <i-btn type="primary" on-select="handleSubmit('formValidate')">提交</i-btn>
+                <i-btn type="ghost" on-select="handleReset('formValidate')" style="margin-left: 8px">重置</i-btn>
+            </form-item>
+        </i-form>
+    </div>
+    <button data-balloon="Whats up!" data-balloon-pos="up">Hover me!</button>
+    <dropdown>
+        <a href="javascript:void(0)">
+            hover 触发
+            <Icon type="arrow-down-b"></Icon>
+        </a>
+        <dropdown-menu slot="list">
+            <dropdown-item>驴打滚</dropdown-item>
+            <dropdown-item>炸酱面</dropdown-item>
+            <dropdown-item>豆汁儿</dropdown-item>
+            <dropdown-item>冰糖葫芦</dropdown-item>
+            <dropdown-item>北京烤鸭</dropdown-item>
+        </dropdown-menu>
+    </dropdown>
 </div>
 </template>
 <script>
-import {Icon, Select, Circle, Input, Menu} from '../dist/san-iview';
+import {Icon, Select, Circle, Input, Menu, Form, Dropdown} from '../src/index';
 
 export default {
     components: {
@@ -25,11 +96,15 @@ export default {
         'select-option': Select.Option,
         'circle': Circle,
         'i-input': Input,
-        'menu': Menu
+        'menu': Menu,
+        'i-form': Form,
+        'form-item': Form.Item,
+        'dropdown': Dropdown,
+        'dropdown-menu': Dropdown.Menu,
+        'dropdown-item': Dropdown.Item
     },
     initData() {
         return {
-
             cityList: [
                     {
                         value: 'beijing',
@@ -55,7 +130,58 @@ export default {
                         value: 'chongqing',
                         label: '重庆市'
                     }
+                ],
+            cityList2: [
+                    {
+                        value: 'xian',
+                        label: '西安'
+                    },
+                    {
+                        value: 'guangzhou',
+                        label: '广州'
+                    }
+                ],
+            model1: 'beijing',
+            model2: 'shanghai',
+            formValidate: {
+                name: '',
+                mail: '',
+                city: '',
+                gender: '',
+                interest: [],
+                date: '',
+                time: '',
+                desc: ''
+            },
+            ruleValidate: {
+                name: [
+                    { required: true, message: '姓名不能为空', trigger: 'blur' }
+                ],
+                mail: [
+                    { required: true, message: '邮箱不能为空', trigger: 'blur' },
+                    { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+                ],
+                city: [
+                    { required: true, message: '请选择城市', trigger: 'change' }
+                ],
+                gender: [
+                    { required: true, message: '请选择性别', trigger: 'change' }
+                ],
+                interest: [
+                    { required: true, type: 'array', min: 1, message: '至少选择一个爱好', trigger: 'change' },
+                    { type: 'array', max: 2, message: '最多选择两个爱好', trigger: 'change' }
+                ],
+                date: [
+                    { required: true, type: 'date', message: '请选择日期', trigger: 'change' }
+                ],
+                time: [
+                    { required: true, type: 'date', message: '请选择时间', trigger: 'change' }
+                ],
+                desc: [
+                    { required: true, message: '请输入个人介绍', trigger: 'blur' },
+                    { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'blur' }
                 ]
+            }
         }
     }
 };

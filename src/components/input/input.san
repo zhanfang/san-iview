@@ -12,7 +12,6 @@
             on-click="handleIconClick($event)">
         </icon>
         <input
-            id="{{elementId}}"
             type="{{type}}"
             class="{{inputClasses}}"
             placeholder="{{placeholder}}"
@@ -42,7 +41,6 @@
     </div>
     <div class="{{wrapClasses}}" s-else>
         <textarea
-            id="{{elementId}}"
             class="{{textareaClasses}}"
             style="{{textareaStyles}}"
             placeholder="{{placeholder}}"

@@ -1,6 +1,6 @@
 {
   "name": "san-iview",
-  "version": "1.0.11",
+  "version": "1.0.18",
   "title": "san-iview",
   "description": "A high quality UI components Library with San",
   "keywords": [
@@ -20,7 +20,7 @@
     "src"
   ],
   "scripts": {
-    "dev": "webpack-dev-server --content-base test/ --open --inline --hot --compress --history-api-fallback --port 8081 --config build/webpack.dev.config.js",
+    "dev": "webpack-dev-server --content-base test/ --open --inline --hot --compress --history-api-fallback --port 8081 --config build/webpack.dev.config.js --host 0.0.0.0",
     "dist:style": "gulp --gulpfile build/build-style.js",
     "dist:dev": "webpack --config build/webpack.dist.dev.config.js",
     "dist:prod": "webpack --config build/webpack.dist.prod.config.js",
@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "async-validator": "^1.8.1",
+    "balloon-css": "^0.5.0",
     "classnames": "^2.2.5",
     "core-js": "^2.5.0",
     "deepmerge": "^1.5.1",
@@ -65,7 +66,7 @@
     "friendly-errors-webpack-plugin": "^1.6.1",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
-    "gulp-clean-css": "^2.0.13",
+    "gulp-clean-css": "^3.0.4",
     "gulp-rename": "^1.2.2",
     "gulp-stylus": "^2.6.0",
     "html-loader": "^0.3.0",

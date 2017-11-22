@@ -6,12 +6,28 @@
             s-if="label">
             {{ label }}
         </label>
-        <div class="view-form-item-content" style="{{contentStyles}}">
+        <div 
+            class="view-form-item-content" 
+            style="{{contentStyles}}"
+            >
             <slot></slot>
             <div 
                 class="view-form-item-error-tip"
                 s-if="validateState === 'error'">
                 {{ validateMessage }}
+            </div>
+            <div 
+                class="view-form-item-help"
+                s-elif="validateState !== 'error' && desc && !tip">
+                {{ desc }}
+            </div>
+            <div 
+                class="view-form-item-help"
+                data-balloon="{{desc}}"
+                data-balloon-pos="{{descPos}}"
+                data-balloon-length="{{descLen}}"
+                s-elif="validateState !== 'error' && desc && tip">
+                <span class="view-form-item-help-tip">{{ desc }}</span>
             </div>
         </div>
     </div>
@@ -22,6 +38,7 @@ import AsyncValidator from 'async-validator';
 import {DataTypes} from 'san';
 import classNames from 'classnames';
 import * as C from './constant';
+import Icon from '../icon';
 
 const prefixCls = 'view-form-item';
 
@@ -63,7 +80,10 @@ export default {
         // 错误信息
         error: DataTypes.string,
         // 提示信息
-        help: DataTypes.string,
+        tip: DataTypes.bool,
+        desc: DataTypes.string,
+        descPos: DataTypes.oneOf(['up', 'down', 'left', 'right', 'up-left', 'up-right', 'down-left', 'down-right']),
+        descLen: DataTypes.oneOf(['small', 'medium', 'large', 'xlarge', 'fit']),
         formRules: DataTypes.oneOfType([DataTypes.array, DataTypes.object]),
         formModel: DataTypes.oneOfType([DataTypes.array, DataTypes.object])
     },
@@ -76,7 +96,9 @@ export default {
             // 验证结果 error success validating
             validateState: '',
             validateDisabled: false,
-            validator: {}
+            validator: {},
+            descPos: 'up',
+            tip: false
         };
     },
     computed: {
@@ -135,6 +157,9 @@ export default {
             }
             return false;
         }
+    },
+    components: {
+        'icon': Icon
     },
     inited() {
         this.dispatch(C.FORM_ITEM_INITED);

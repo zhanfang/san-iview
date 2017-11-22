@@ -6,7 +6,7 @@
 /* eslint-disable */
 import san from 'san';
 /* eslint-enable */
-import '../dist/styles/san-iview.css';
+import '../src/styles/index.styl';
 
 import App from './App';
 
