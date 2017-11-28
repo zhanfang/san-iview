@@ -1,6 +1,6 @@
 <template>
 <div>
-    <icon type="ionic"></icon>
+    <!-- <icon type="ionic"></icon>
     <select value="{=model1=}" style="width:200px">
         <select-option
             s-for="item in cityList"
@@ -83,11 +83,27 @@
             <dropdown-item>冰糖葫芦</dropdown-item>
             <dropdown-item>北京烤鸭</dropdown-item>
         </dropdown-menu>
-    </dropdown>
+    </dropdown> -->
+    <!-- 10代表的是11月 -->
+    <date 
+        value="{=date=}"
+        type="date"
+        placeholder="Select date"
+        style="width: 215px"
+        on-change="handleDate($event)">
+
+    </date>
+    <color-picker></color-picker>
+    <time 
+        value="{=date=}"
+        type="time"
+        placeholder="Select date"
+        style="width: 168px"
+        on-change="handleDate($event)"></time>
 </div>
 </template>
 <script>
-import {Icon, Select, Circle, Input, Menu, Form, Dropdown} from '../src/index';
+import {Icon, Select, Circle, Input, Menu, Form, Dropdown, DatePicker, ColorPicker, TimePicker} from '../src/index';
 
 export default {
     components: {
@@ -101,10 +117,17 @@ export default {
         'form-item': Form.Item,
         'dropdown': Dropdown,
         'dropdown-menu': Dropdown.Menu,
-        'dropdown-item': Dropdown.Item
+        'dropdown-item': Dropdown.Item,
+        'date': DatePicker,
+        'color-picker': ColorPicker,
+        'time': TimePicker
     },
     initData() {
         return {
+            date: new Date(),
+            disabledDate(time) {
+                return time.getTime() < Date.now();
+            },
             cityList: [
                     {
                         value: 'beijing',
@@ -183,6 +206,9 @@ export default {
                 ]
             }
         }
+    },
+    handleDate(date) {
+        console.log(date);
     }
 };
 </script>

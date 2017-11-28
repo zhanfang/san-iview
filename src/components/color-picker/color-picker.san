@@ -204,7 +204,11 @@ export default {
             return this.data.get('recommendedColor');
         },
         displayedColor() {
-            const rgba = this.data.get('value.rgba');
+            const value = this.data.get('value');
+            if (!value) {
+                return '';
+            }
+            const rgba = value.rgba;
             if (rgba) {
                 let color;
                 color = {
@@ -218,6 +222,9 @@ export default {
         },
         colors() {
             const value = this.data.get('value');
+            if (!value) {
+                return null;
+            }
             if (value.rgba) {
                 return value;
             }
@@ -225,7 +232,7 @@ export default {
         value() {
             let value = this.data.get('value');
             if (!value) {
-                value = '#2d8cf0';
+                return null;
             }
             if (value.rgba) {
                 return value;
@@ -284,7 +291,7 @@ export default {
         this.data.set('visible', false);
     },
     handleClear() {
-        this.data.set('value', '#fff');
+        this.data.set('value', null);
     },
     handleInputColor(e) {
         this.data.set('value', e.target.value);

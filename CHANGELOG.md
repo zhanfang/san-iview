@@ -1,6 +1,12 @@
 # 更新日志
 
-## 1.0.18
+## 1.1.0
+- 增加日历选择及时间选择器 DatePicker & TimePicker
+
+## 1.0.20
+- 修复colorPicker中默认透明颜色问题
+
+## 1.0.19
 - 修改dropdown 中 popper.js tranfrom，解决 windows 下字体模糊的问题
 
 ## 1.0.17

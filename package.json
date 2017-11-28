@@ -1,6 +1,6 @@
 {
   "name": "san-iview",
-  "version": "1.0.18",
+  "version": "1.1.0",
   "title": "san-iview",
   "description": "A high quality UI components Library with San",
   "keywords": [
@@ -52,6 +52,7 @@
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^6.4.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.12.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",

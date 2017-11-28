@@ -1,0 +1,137 @@
+<template>
+    <div class="{{prefixCls}}-body-wrapper" 
+        on-mousedown="handlePrevent($event)">
+        <div class="{{prefixCls}}-body">
+            <div class="{{timePrefixCls}}-header" 
+                s-if="showDate">
+                {{ visibleDate }}
+            </div>
+            <div class="{{prefixCls}}-content">
+                <time-spinner
+                    s-ref="timeSpinner"
+                    showSeconds="{{showSeconds}}"
+                    steps="{{steps}}"
+                    hours="{{hours}}"
+                    minutes="{{minutes}}"
+                    seconds="{{seconds}}"
+                    disabledHours="{{disabledHours}}"
+                    disabledMinutes="{{disabledMinutes}}"
+                    disabledSeconds="{{disabledSeconds}}"
+                    hideDisabledOptions="{{hideDisabledOptions}}"
+                    on-change="handleChange($event)"
+                    on-pick-click="handlePickClick"></time-spinner>
+            </div>
+            <!-- <Confirm
+                s-if="confirm"
+                on-pick-clear="handlePickClear"
+                on-pick-success="handlePickSuccess">
+            </Confirm> -->
+        </div>
+    </div>
+</template>
+<script>
+    import {DataTypes} from 'san';
+    import TimeSpinner from '../base/time-spinner';
+    import Confirm from '../base/confirm';
+
+    import {initTimeDate} from '../util';
+
+    const prefixCls = 'view-picker-panel';
+    const timePrefixCls = 'view-time-picker';
+
+    export default {
+        dataTypes: {
+            steps: DataTypes.array
+        },
+        components: {
+            'time-spinner': TimeSpinner
+        },
+        initData() {
+            return {
+                // prop
+                steps: [],
+                // state
+                prefixCls: prefixCls,
+                timePrefixCls: timePrefixCls,
+                date: initTimeDate(),
+                value: '',
+                showDate: false,
+                format: 'HH:mm:ss',
+                hours: '',
+                minutes: '',
+                seconds: '',
+                disabledHours: [],
+                disabledMinutes: [],
+                disabledSeconds: [],
+                hideDisabledOptions: false,
+                confirm: false
+            };
+        },
+        computed: {
+            showSeconds() {
+                return (this.data.get('format') || '').indexOf('ss') !== -1;
+            },
+            visibleDate() {
+                const date = this.data.get('date');
+                if (!date) {
+                    return;
+                }
+                const month = date.getMonth() + 1;
+                return `${date.getFullYear()}年 ${month}月`;
+            }
+        },
+        inited() {
+            this.watch('value', val => {
+                if (!val) {
+                    return;
+                }
+                val = new Date(val);
+                if (!isNaN(val)) {
+                    this.data.set('date', val);
+                    this.handleChange({
+                        hours: val.getHours(),
+                        minutes: val.getMinutes(),
+                        seconds: val.getSeconds()
+                    }, false);
+                }
+            });
+        },
+        handleClear() {
+            this.data.set('date', initTimeDate());
+            this.data.set('hours', '');
+            this.data.set('minutes', '');
+            this.data.set('seconds', '');
+        },
+        handleChange(date, fire = true) {
+            let tmp = this.data.get('date');
+            if (date.hours !== undefined) {
+                tmp.setHours(date.hours);
+                this.data.set('hours', tmp.getHours());
+            }
+            if (date.minutes !== undefined) {
+                tmp.setMinutes(date.minutes);
+                this.data.set('minutes', tmp.getMinutes());
+            }
+            if (date.seconds !== undefined) {
+                tmp.setSeconds(date.seconds);
+                this.data.set('seconds', tmp.getSeconds());
+            }
+            this.data.set('date', tmp);
+            if (fire) {
+                this.fire('pick', tmp);
+            }
+        },
+        updateScroll() {
+            this.ref('timeSpinner').updateScroll();
+        },
+        attached() {
+            // if (this.$parent && this.$parent.$options.name === 'DatePicker') this.showDate = true;
+        },
+        handlePrevent(e) {
+            e.preventDefault();
+        },
+        handlePickClick() {
+            this.fire('pick-click');
+        }
+    };
+</script>

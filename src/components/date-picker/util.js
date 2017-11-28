@@ -1,3 +1,8 @@
+/**
+ * @file picker utils
+ * @author zhanfang(fzhanxd@gmail.com)
+ */
+/* eslint-disable */
 import dateUtil from '../../utils/date';
 
 export const toDate = function(date) {
@@ -103,7 +108,7 @@ export const formatDateLabels = (function() {
     };
     const formatRegex = new RegExp(['yyyy', 'Mmmm', 'mmmm', 'Mmm', 'mmm', 'mm', 'm'].join('|'), 'g');
 
-    return function(locale, format, date) {
+    return (locale, format, date) => {
         const componetsRegex = /(\[[^\]]+\])([^\[\]]+)(\[[^\]]+\])/;
         const components = format.match(componetsRegex).slice(1);
         const separator = components[1];

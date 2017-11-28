@@ -1,0 +1,243 @@
+<template>
+    <div class="{{classes}}">
+        <div class="{{prefixCls}}-list hours">
+            <ul class="{{prefixCls}}-ul">
+                <li class="{{item | getCellCls}}"
+                    s-for="item in hoursList" 
+                    s-if="!item.hide" 
+                    on-click="handleClick('hours', item)">
+                    {{ item.text | formatTime }}
+                </li>
+            </ul>
+        </div>
+        <div class="{{prefixCls}}-list minutes">
+            <ul class="{{prefixCls}}-ul">
+                <li class="{{item | getCellCls}}"
+                    s-for="item in minutesList"
+                    s-if="!item.hide" 
+                    on-click="handleClick('minutes', item)">
+                    {{ item.text | formatTime }}
+                </li>
+            </ul>
+        </div>
+        <div 
+            class="{{prefixCls}}-list seconds" 
+            s-show="showSeconds">
+            <ul class="{{prefixCls}}-ul">
+                <li class="{{item | getCellCls}}"
+                    s-for="item in secondsList"
+                    s-if="!item.hide" 
+                    on-click="handleClick('seconds', item)">
+                    {{ item.text | formatTime}}
+                </li>
+            </ul>
+        </div>
+    </div>
+</template>
+<script>
+    import {DataTypes, nextTick} from 'san';
+    import classNames from 'classnames';
+    import {deepCopy, scrollTop, firstUpperCase} from '../../../utils/assist';
+
+    const prefixCls = 'view-time-picker-cells';
+
+    export default {
+        dataTypes: {
+            disabledHours: DataTypes.array,
+            disabledMinutes: DataTypes.array,
+            disabledSeconds: DataTypes.array,
+            hideDisabledOptions: DataTypes.bool,
+            hours: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+            minutes: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+            seconds: DataTypes.oneOfType([DataTypes.number, DataTypes.string]),
+            showSeconds: DataTypes.bool,
+            steps: DataTypes.array
+        },
+        initData() {
+            return {
+                // props
+                disabledHours: [],
+                disabledMinutes: [],
+                disabledSeconds: [],
+                hideDisabledOptions: false,
+                hours: 0,
+                minutes: 0,
+                seconds: 0,
+                showSeconds: true,
+                steps: [],
+                // state
+                spinerSteps: [1, 1, 1].map((one, i) => Math.abs(one)),
+                prefixCls: prefixCls,
+                compiled: false
+            };
+        },
+        computed: {
+            classes() {
+                return classNames([
+                    `${prefixCls}`,
+                    {
+                        [`${prefixCls}-with-seconds`]: this.showSeconds
+                    }
+                ]);
+            },
+            hoursList() {
+                let hours = [];
+                const step = this.data.get('spinerSteps[0]');
+                const hour_tmpl = {
+                    text: 0,
+                    selected: false,
+                    disabled: false,
+                    hide: false
+                };
+
+                for (let i = 0; i < 24; i += step) {
+                    const hour = deepCopy(hour_tmpl);
+                    hour.text = i;
+
+                    if (this.data.get('disabledHours').length && this.data.get('disabledHours').indexOf(i) > -1) {
+                        hour.disabled = true;
+                        if (this.data.get('hideDisabledOptions')) {
+                            hour.hide = true;
+                        }
+                    }
+                    if (this.data.get('hours') === i) {
+                        hour.selected = true;
+                    }
+                    hours.push(hour);
+                }
+
+                return hours;
+            },
+            minutesList() {
+                let minutes = [];
+                const step = this.data.get('spinerSteps[1]');
+                const minute_tmpl = {
+                    text: 0,
+                    selected: false,
+                    disabled: false,
+                    hide: false
+                };
+
+                for (let i = 0; i < 60; i += step) {
+                    const minute = deepCopy(minute_tmpl);
+                    minute.text = i;
+
+                    if (this.data.get('disabledMinutes').length && this.data.get('disabledMinutes').indexOf(i) > -1) {
+                        minute.disabled = true;
+                        if (this.data.get('hideDisabledOptions')) {
+                            minute.hide = true;
+                        }
+                    }
+                    if (this.data.get('minutes') === i) {
+                        minute.selected = true;
+                    }
+                    minutes.push(minute);
+                }
+                return minutes;
+            },
+            secondsList() {
+                let seconds = [];
+                const step = this.data.get('spinerSteps[2]');
+                const second_tmpl = {
+                    text: 0,
+                    selected: false,
+                    disabled: false,
+                    hide: false
+                };
+
+                for (let i = 0; i < 60; i += step) {
+                    const second = deepCopy(second_tmpl);
+                    second.text = i;
+
+                    if (this.data.get('disabledSeconds').length && this.data.get('disabledSeconds').indexOf(i) > -1) {
+                        second.disabled = true;
+                        if (this.data.get('hideDisabledOptions')) {
+                            second.hide = true;
+                        }
+                    }
+                    if (this.data.get('seconds') === i) {
+                        second.selected = true;
+                    }
+                    seconds.push(second);
+                }
+
+                return seconds;
+            }
+        },
+        filters: {
+            getCellCls(cell) {
+                return classNames([
+                    `${prefixCls}-cell`,
+                    {
+                        [`${prefixCls}-cell-selected`]: cell.selected,
+                        [`${prefixCls}-cell-disabled`]: cell.disabled
+                    }
+                ]);
+            },
+            formatTime(text) {
+                return text < 10 ? '0' + text : text;
+            }
+        },
+        inited() {
+            this.watch('hours', val => {
+                if (!this.data.get('compiled')) {
+                    return;
+                }
+                this.scroll('hours', this.data.get('hoursList').findIndex(obj => obj.text == val));
+            });
+
+            this.watch('minutes', val => {
+                if (!this.data.get('compiled')) {
+                    return;
+                }
+                this.scroll('minutes', this.data.get('minutesList').findIndex(obj => obj.text == val));
+            });
+
+            this.watch('seconds', val => {
+                if (!this.data.get('compiled')) {
+                    return;
+                }
+                this.scroll('seconds', this.data.get('secondsList').findIndex(obj => obj.text == val));
+            });
+        },
+        attached() {
+            this.updateScroll();
+            nextTick(() => this.data.set('compiled', true));
+        },
+        updateScroll() {
+            const times = ['hours', 'minutes', 'seconds'];
+            nextTick(() => {
+                times.forEach(type => {
+                    const val = this.data.get(`${type}`);
+                    const index = this.data.get(`${type}List`).findIndex(obj => obj.text == val);
+                    this.el.querySelector(`.${type}`).scrollTop
+                        = 24 * index;
+                });
+            });
+        },
+        handleClick(type, cell) {
+            if (cell.disabled) {
+                return;
+            }
+            const data = {};
+            data[type] = cell.text;
+            this.fire('change', data);
+            this.fire('pick-click');
+        },
+        scroll(type, index) {
+            const from = this.el.querySelector(`.${type}`).scrollTop;
+            const to = 24 * this.getScrollIndex(type, index);
+            scrollTop(this.el.querySelector(`.${type}`), from, to, 500);
+        },
+        getScrollIndex(type, index) {
+            const Type = firstUpperCase(type);
+            const disabled = this.data.get(`disabled${Type}`);
+            if (disabled.length && this.hideDisabledOptions) {
+                let _count = 0;
+                disabled.forEach(item => item <= index ? _count++ : '');
+                index -= _count;
+            }
+            return index;
+        }
+    };
+</script>

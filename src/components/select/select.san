@@ -97,7 +97,7 @@ export default {
         },
         dropdownCls() {
             return classNames([{
-                [`${prefixCls}-dropdown-transfer`]: this.data.get('transfer'),
+                [`${prefixCls}-dropdown-transfer`]: this.data.get('transfer')
                 // ['slide-up-enter-active']: this.data.get('visible'),
                 // ['slide-up-leave-active']: !this.data.get('visible'),
             }]);
@@ -115,7 +115,12 @@ export default {
     },
     attached() {
         this.watch('visible', val => {
-            this.ref('dropdown').fire('update-popper');
+            if (val) {
+                this.ref('dropdown').fire('update-popper');
+            }
+            else {
+                this.ref('dropdown').destroy();
+            }
         });
         this.registerClickOutside();
         this.watch('value', val => {

@@ -1,0 +1,380 @@
+<template>
+    <div class="{{prefixCls}}">
+        <div class="{{prefixCls}}-rel"
+            on-mouseenter="handleInputMouseenter"
+            on-mouseleave="handleInputMouseleave">
+            <slot name="input">
+                <i-input
+                    class="{{prefixCls}}-editor"
+                    readonly="{{!editable || readonly}}"
+                    disabled="{{disabled}}"
+                    size="{{size}}"
+                    placeholder="{{placeholder}}"
+                    value="{{visualValue}}"
+                    name="{{name}}"
+                    on-input-click="handleFocus"
+                    on-input-change="handleInputChange($event)"
+                    on-input-blur="handleBlur"
+                    on-input-clickicon="handleIconClick"
+                    icon="{{iconType}}"></i-input>
+            </slot>
+        </div>
+        <drop
+            class="{{dropdownCls}}"
+            placement="{{placement}}"
+            overflow="{{overflow}}"
+            width="{{width}}"
+            visible="{{visible}}"
+            s-ref="drop">
+            <div class="view-picker-panel-only"></div>
+        </drop>
+    </div>
+</template>
+<script>
+    import {DataTypes, nextTick} from 'san';
+    import classNames from 'classnames';
+    import Input from '../input';
+    import Drop from '../select/dropdown';
+    import {formatDate, parseDate} from './util';
+    import * as C from '../form/constant';
+    import DatePicker from './panel/date';
+
+    const prefixCls = 'view-date-picker';
+
+    const DEFAULT_FORMATS = {
+        date: 'yyyy-MM-dd',
+        month: 'yyyy-MM',
+        year: 'yyyy',
+        datetime: 'yyyy-MM-dd HH:mm:ss',
+        time: 'HH:mm:ss',
+        timerange: 'HH:mm:ss',
+        daterange: 'yyyy-MM-dd',
+        datetimerange: 'yyyy-MM-dd HH:mm:ss'
+    };
+
+    const RANGE_SEPARATOR = ' - ';
+
+    const DATE_FORMATTER = (value, format) => formatDate(value, format);
+
+    const DATE_PARSER = (text, format) => parseDate(text, format);
+
+    const RANGE_FORMATTER = (value, format) => {
+        if (Array.isArray(value) && value.length === 2) {
+            const start = value[0];
+            const end = value[1];
+
+            if (start && end) {
+                return formatDate(start, format) + RANGE_SEPARATOR + formatDate(end, format);
+            }
+        }
+        return '';
+    };
+
+    const RANGE_PARSER = (text, format) => {
+        const array = text.split(RANGE_SEPARATOR);
+        if (array.length === 2) {
+            const range1 = array[0];
+            const range2 = array[1];
+
+            return [parseDate(range1, format), parseDate(range2, format)];
+        }
+        return [];
+    };
+
+    const TYPE_VALUE_RESOLVER_MAP = {
+        default: {
+            formatter(value) {
+                if (!value) {
+                    return '';
+                }
+                return '' + value;
+            },
+            parser(text) {
+                if (text === undefined || text === '') {
+                    return null;
+                }
+                return text;
+            }
+        },
+        date: {
+            formatter: DATE_FORMATTER,
+            parser: DATE_PARSER
+        },
+        datetime: {
+            formatter: DATE_FORMATTER,
+            parser: DATE_PARSER
+        },
+        daterange: {
+            formatter: RANGE_FORMATTER,
+            parser: RANGE_PARSER
+        },
+        datetimerange: {
+            formatter: RANGE_FORMATTER,
+            parser: RANGE_PARSER
+        },
+        timerange: {
+            formatter: RANGE_FORMATTER,
+            parser: RANGE_PARSER
+        },
+        time: {
+            formatter: DATE_FORMATTER,
+            parser: DATE_PARSER
+        },
+        month: {
+            formatter: DATE_FORMATTER,
+            parser: DATE_PARSER
+        },
+        year: {
+            formatter: DATE_FORMATTER,
+            parser: DATE_PARSER
+        },
+        number: {
+            formatter(value) {
+                if (!value) {
+                    return '';
+                }
+                return '' + value;
+            },
+            parser(text) {
+                let result = Number(text);
+
+                if (!isNaN(text)) {
+                    return result;
+                } else {
+                    return null;
+                }
+            }
+        }
+    };
+
+    export default {
+        components: {
+            'i-input': Input,
+            'drop': Drop,
+            'date-picker': DatePicker
+        },
+        dataTypes: {
+            format: DataTypes.string,
+            readonly: DataTypes.bool,
+            disabled: DataTypes.bool,
+            editable: DataTypes.bool,
+            clearable: DataTypes.bool,
+            confirm: DataTypes.bool,
+            open: DataTypes.bool,
+            size: DataTypes.oneOf(['small', 'large', 'default']),
+            placeholder: DataTypes.string,
+            placement: DataTypes.oneOf([
+                'top',
+                'top-start',
+                'top-end',
+                'bottom',
+                'bottom-start',
+                'bottom-end',
+                'left',
+                'left-start',
+                'left-end',
+                'right',
+                'right-start',
+                'right-end'
+            ]),
+            options: DataTypes.object,
+            name: DataTypes.string
+        },
+        initData() {
+            return {
+                placement: 'bottom-start',
+                value: '',
+                readonly: false,
+                disabled: false,
+                editable: true,
+                clearable: true,
+                confirm: false,
+                open: null,
+                placeholder: '',
+                prefixCls: prefixCls,
+                showClose: false,
+                visible: false,
+                disableClickOutside: true
+            };
+        },
+        computed: {
+            iconType() {
+                let icon = 'ios-calendar-outline';
+                if (this.data.get('type') === 'time' || this.data.get('type') === 'timerange') {
+                    icon = 'ios-clock-outline';
+                }
+
+                if (this.data.get('showClose')) {
+                    icon = 'ios-close';
+                }
+
+                return icon;
+            },
+            selectionMode() {
+                if (this.data.get('type') === 'month') {
+                    return 'month';
+                }
+                else if (this.data.get('type') === 'year') {
+                    return 'year';
+                }
+
+                return 'day';
+            },
+            visualValue() {
+                const value = this.data.get('value');
+                const type = this.data.get('type');
+                if (!value || value === '') {
+                    return null;
+                }
+                const formatter = (
+                    TYPE_VALUE_RESOLVER_MAP[type]
+                    || TYPE_VALUE_RESOLVER_MAP['default']).formatter;
+                const format = DEFAULT_FORMATS[type];
+
+                return formatter(value, this.data.get('format') || format);
+            }
+        },
+        inited() {
+            this.__init = false;
+        },
+        attached() {
+            this.watch('visible', val => {
+                if (val) {
+                    this.showPicker();
+                    this.ref('drop').fire('update-popper');
+                }
+                else {
+                    this.ref('drop').destroy();
+                }
+            });
+
+            this.__clickOutside__ = this.registerClickOutside.bind(this);
+            document.addEventListener('click', this.__clickOutside__);
+        },
+        detached() {
+            document.removeEventListener('click', this.__clickOutside__);
+            delete this.__clickOutside__;
+            delete this.__init;
+        },
+        showPicker() {
+            const type = this.data.get('type');
+            if (!this.__init) {
+                this.Panel.attach(this.el.querySelector('.view-picker-panel-only'));
+                this.__init = true;
+
+                this.Panel.on('pick', date => {
+                    this.emitChange(date);
+                });
+            }
+
+            if (type === 'datetime' || type === 'datetimerange') {
+                this.Panel.data.set('showTime', true);
+            }
+
+            this.Panel.data.set('value', this.data.get('value'));
+            this.Panel.resetView && this.Panel.resetView();
+
+            // this.Panel.on('pick-click', () => {
+            //     this.disableClickOutSide = true;
+            // });
+        },
+        registerClickOutside(e) {
+            if (this.el.contains(e.target)) {
+                return null;
+            }
+            else {
+                this.data.set('visible', false);
+            }
+        },
+        handleFocus() {
+            if (this.data.get('readonly')) {
+                return;
+            }
+            this.data.set('visible', true);
+        },
+        handleBlur() {
+            this.data.set('visible', false);
+        },
+        handleInputChange(e) {
+            const oldValue = this.data.get('visualValue');
+            const value = e.target.value;
+
+            let correctValue = '';
+            let correctDate = '';
+            const type = this.data.get('type');
+            const format = this.data.get('format') || DEFAULT_FORMATS[type];
+
+            const parsedDate = parseDate(value, format);
+
+            if (parsedDate instanceof Date) {
+                const options = this.data.get('options') || false;
+                if (options
+                    && options.disabledDate
+                    && typeof options.disabledDate === 'function'
+                    && options.disabledDate(new Date(parsedDate))) {
+                    correctValue = oldValue;
+                }
+                else {
+                    correctValue = formatDate(parsedDate, format);
+                }
+            }
+            else if (!parsedDate) {
+                correctValue = '';
+            }
+            else {
+                correctValue = oldValue;
+            }
+            correctDate = parseDate(correctValue, format);
+            this.visualValue = correctValue;
+            e.target.value = correctValue;
+            if (correctValue !== oldValue) {
+                this.emitChange(correctDate);
+            }
+        },
+        emitChange(date) {
+            const newDate = this.formattingDate(date);
+            this.fire('change', newDate);
+            nextTick(() => {
+                this.dispatch(C.FORM_ITEM_CHANGE, newDate);
+            });
+        },
+        formattingDate(date) {
+            const type = this.data.get('type');
+            const format = this.data.get('format') || DEFAULT_FORMATS[type];
+            const formatter = (
+                TYPE_VALUE_RESOLVER_MAP[type] ||
+                TYPE_VALUE_RESOLVER_MAP['default']
+            ).formatter;
+            let newDate = formatter(date, format);
+            if (type === 'daterange' || type === 'timerange' || type === 'datetimerange') {
+                newDate = [newDate.split(RANGE_SEPARATOR)[0], newDate.split(RANGE_SEPARATOR)[1]];
+            }
+            return newDate;
+        },
+        handleInputMouseenter() {
+            if (this.data.get('readonly') || this.data.get('disabled')) {
+                return;
+            }
+            if (this.data.get('visualValue') && this.data.get('clearable')) {
+                this.data.set('showClose', true);
+            }
+        },
+        handleInputMouseleave() {
+            this.data.set('showClose', false);
+        },
+        handleIconClick() {
+            if (this.data.get('showClose')) {
+                this.handleClear();
+            }
+            else if (!this.data.get('disabled')) {
+                this.handleFocus();
+            }
+        },
+        handleClear() {
+            this.data.set('visible', false);
+            this.data.set('value', '');
+            this.fire('clear');
+            this.dispatch(C.FORM_ITEM_CHANGE, '');
+        }
+    };
+</script>

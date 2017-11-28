@@ -1,0 +1,282 @@
+<template>
+    <div class="{{classes}}" on-mousedown="handleMouseDown($event)">
+        <div class="{{prefixCls}}-sidebar" s-if="shortcuts.length">
+            <div
+                class="{{prefixCls}}-shortcut"
+                s-for="shortcut in shortcuts"
+                on-click="handleShortcutClick(shortcut)">
+                {{ shortcut.text }}
+            </div>
+        </div>
+        <div class="{{prefixCls}}-body">
+            <div class="{{datePrefixCls}}-header" s-if="currentView !== 'time'">
+                <span
+                    class="{{'prev' | iconBtnCls('double')}}"
+                    on-click="changeYear(-1)"><icon type="ios-arrow-left"></icon></span>
+                <span
+                    class="{{'prev' | iconBtnCls}}"
+                    on-click="changeMonth(-1)"
+                    s-if="currentView === 'date'"><icon type="ios-arrow-left"></icon></span>
+                <date-panel-label
+                    datePanelLabel="{{year | datePanelLabel(month)}}"
+                    currentView="{{currentView}}"
+                    datePrefixCls="{{datePrefixCls}}"/>
+                <span
+                    class="{{'next' | iconBtnCls('double')}}"
+                    on-click="changeYear(1)"><icon type="ios-arrow-right"></icon></span>
+                <span
+                    class="{{'next' | iconBtnCls}}"
+                    on-click="changeMonth(1)"
+                    s-if="currentView === 'date'"><icon type="ios-arrow-right"></icon></span>
+            </div>
+            <div class="{{prefixCls}}-content">
+                <date-table
+                    s-if="currentView === 'date'"
+                    year="{{year}}"
+                    month="{{month}}"
+                    date="{{date}}"
+                    value="{{value}}"
+                    selectionMode="{{selectionMode}}"
+                    disabledDate="{{disabledDate}}"
+                    on-pick="handleDatePick($event)"
+                    on-pick-click="handlePickClick">
+                </date-table>
+                <year-table
+                    s-ref="yearTable"
+                    s-if="currentView === 'year'"
+                    year="{{year}}"
+                    date="{{date}}"
+                    selectionMode="{{selectionMode}}"
+                    disabledDate="{{disabledDate}}"
+                    on-pick="handleYearPick($event)"
+                    on-pick-click="handlePickClick"></year-table>
+                <month-table
+                    s-ref="monthTable"
+                    s-if="currentView === 'month'"
+                    month="{{month}}"
+                    date="{{date}}"
+                    selectionMode="{{selectionMode}}"
+                    disabledDate="{{disabledDate}}"
+                    on-pick="handleMonthPick($event)"
+                    on-pick-click="handlePickClick"></month-table>
+                <time-picker
+                    s-ref="timePicker"
+                    show-date
+                    s-if="currentView === 'time'"
+                    on-pick="handleTimePick"
+                    on-pick-click="handlePickClick"></time-picker>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    import classNames from 'classnames';
+    import Icon from '../../icon/icon';
+    import DateTable from '../base/date-table';
+    import YearTable from '../base/year-table';
+    import MonthTable from '../base/month-table';
+    // import TimePicker from './time.vue';
+    // import Confirm from '../base/confirm.vue';
+    import DatePanelLabel from './date-panel-label';
+
+    import {initTimeDate, siblingMonth, formatDateLabels} from '../util';
+
+    const prefixCls = 'view-picker-panel';
+    const datePrefixCls = 'view-date-picker';
+
+    export default {
+        components: {
+            'icon': Icon,
+            'date-table': DateTable,
+            'year-table': YearTable,
+            'month-table': MonthTable,
+            'date-panel-label': DatePanelLabel
+        },
+        initData() {
+            return {
+                prefixCls: prefixCls,
+                datePrefixCls: datePrefixCls,
+                shortcuts: [],
+                currentView: 'date',
+                date: initTimeDate(),
+                value: '',
+                showTime: false,
+                selectionMode: 'day',
+                disabledDate: '',
+                year: null,
+                month: null,
+                isTime: false,
+                format: 'yyyy-MM-dd'
+            };
+        },
+        computed: {
+            classes() {
+                return classNames([
+                    `${prefixCls}-body-wrapper`,
+                    {
+                        [`${prefixCls}-with-sidebar`]: this.data.get('shortcuts').length
+                    }
+                ]);
+            }
+        },
+        inited() {
+            this.watch('value', val => {
+                if (!val) {
+                    return;
+                }
+                if (!isNaN(val)) {
+                    this.data.set('date', val);
+                    this.setMonthYear(val);
+                }
+            });
+        },
+        filters: {
+            iconBtnCls(direction, type) {
+                return classNames([
+                    `${prefixCls}-icon-btn`,
+                    `${datePrefixCls}-${direction}-btn`,
+                    {
+                        [`${datePrefixCls}-${direction}-btn-arrow-${type}`]: !!type
+                    }
+                ]);
+            },
+            datePanelLabel(year, month) {
+                if (!year || !month) {
+                    return null;
+                }
+
+                const date = new Date(year, month);
+
+                const {labels, separator} = formatDateLabels('zh-CN', '[yyyy年] [m月]', date);
+
+                const handler = type => {
+                    return () => this.data.set('currentView', type);
+                };
+
+                return {
+                    separator: separator,
+                    labels: labels.map(obj => ((obj.handler = handler(obj.type)), obj))
+                };
+            }
+        },
+        attached() {
+            if (this.data.get('selectionMode') === 'month') {
+                this.data.set('currentView', 'month');
+            }
+            const date = this.data.get('date');
+            const year = this.data.get('year');
+            if (date && !year) {
+                this.setMonthYear(date);
+            }
+        },
+        handleMouseDown(e) {
+            e.preventDefault();
+        },
+        handleShortcutClick(shortcut) {
+            if (shortcut.value) {
+                this.fire('pick', shortcut.value());
+            }
+            if (shortcut.onClick) {
+                shortcut.onClick(this);
+            }
+        },
+        handlePickClear() {
+            this.fire('on-pick-clear');
+        },
+        handlePickSuccess() {
+            this.fire('on-pick-success');
+        },
+        handlePickClick() {
+            this.fire('on-pick-click');
+        },
+        resetDate() {
+            this.data.set('date', new Date(this.data.get('date')));
+        },
+        setMonthYear(date) {
+            this.data.set('month', date.getMonth());
+            this.data.set('year', date.getFullYear());
+        },
+        handleClear() {
+            this.data.set('date', new Date());
+            this.fire('pick', '');
+
+            if (this.data.get('showTime')) {
+                this.ref('timePicker').handleClear();
+            }
+        },
+        resetView(reset = false) {
+            if (this.currentView !== 'time' || reset) {
+                if (this.selectionMode === 'month') {
+                    this.currentView = 'month';
+                } else if (this.selectionMode === 'year') {
+                    this.currentView = 'year';
+                } else {
+                    this.currentView = 'date';
+                }
+            }
+            this.setMonthYear(this.data.get('date'));
+            if (reset) {
+                this.isTime = false;
+            }
+        },
+        changeYear(dir) {
+            if (this.data.get('currentView') === 'year') {
+                this.ref('yearTable')[dir === 1 ? 'nextTenYear' : 'prevTenYear']();
+            } else {
+                this.data.set('year', this.data.get('year') + dir);
+                this.data.set('date', siblingMonth(this.data.get('date'), dir * 12));
+            }
+        },
+        changeMonth(dir) {
+            this.data.set('date', siblingMonth(this.data.get('date'), dir));
+            this.setMonthYear(this.data.get('date'));
+        },
+        handleToggleTime() {
+            if (this.currentView === 'date') {
+                this.currentView = 'time';
+                this.isTime = true;
+            } else if (this.currentView === 'time') {
+                this.currentView = 'date';
+                this.isTime = false;
+            }
+        },
+        handleYearPick({year, close = true}) {
+            let date = this.data.get('date');
+            this.data.set('year', year);
+
+            if (!close) {
+                return;
+            }
+            date.setFullYear(year);
+
+            if (this.data.get('selectionMode') === 'year') {
+                this.fire('pick', new Date(year, 0, 1));
+            } else {
+                this.data.set('currentView', 'month');
+            }
+            this.resetDate();
+        },
+        handleMonthPick(month) {
+            let date = this.data.get('date');
+            this.data.set('month', month);
+            date.setMonth(month);
+
+            if (this.data.get('selectionMode') === 'month') {
+                const value = new Date(date.getFullYear(), month, 1);
+                this.fire('pick', value);
+            } else {
+                this.data.set('currentView', 'date');
+            }
+            this.resetDate();
+        },
+        handleDatePick(value) {
+            if (this.data.get('selectionMode') === 'day') {
+                this.fire('pick', new Date(value.getTime()));
+                this.data.set('date', new Date(value));
+            }
+        },
+        handleTimePick(date) {
+            this.handleDatePick(date);
+        }
+    };
+</script>

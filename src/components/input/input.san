@@ -9,9 +9,10 @@
         <icon 
             class="{{iconClasses}}"
             type="{{icon}}"
-            on-click="handleIconClick($event)">
+            on-select="handleIconClick($event)">
         </icon>
         <input
+            autofocus="{{autofocus}}"
             type="{{type}}"
             class="{{inputClasses}}"
             placeholder="{{placeholder}}"
@@ -21,7 +22,6 @@
             name="{{name}}"
             value="{=value=}"
             number="{{number}}"
-            autofocus="{{autofocus}}"
             autocomplete="{{autocomplete}}"
             on-click="handleClick($event)"
             on-keyup="handleKeyup($event)"
@@ -41,6 +41,7 @@
     </div>
     <div class="{{wrapClasses}}" s-else>
         <textarea
+            autofocus="{{autofocus}}"
             class="{{textareaClasses}}"
             style="{{textareaStyles}}"
             placeholder="{{placeholder}}"
@@ -50,7 +51,6 @@
             rows="{{rows}}"
             name="{{name}}"
             value="{{value}}"
-            autofocus="{{autofocus}}"
             autocomplete="{{autocomplete}}"
             on-keyup="handleKeyup($event)"
             on-keypress="handleKeypress($event)"
@@ -103,7 +103,7 @@ export default {
             placeholder: '',
             disabled: false,
             autocomplete: 'off',
-            autofocus: true,
+            autofocus: false,
             readonly: false,
             prepend: false,
             append: false,

@@ -1,0 +1,35 @@
+<template>
+    <span>
+        <span
+            s-if="datePanelLabel.labels[0].type === 'year' || currentView === 'date'"
+            class="{{datePrefixCls}}-header-label"
+            on-click="run($event, datePanelLabel.labels[0].handler)">
+            {{ datePanelLabel.labels[0].label }}
+        </span>
+        <span s-if="datePanelLabel && currentView === 'date'">
+            {{ datePanelLabel.separator }}
+        </span>
+        <span
+            s-if="datePanelLabel.labels[1].type === 'year' || currentView === 'date'"
+            class="{{datePrefixCls}}-header-label"
+            on-click="run($event, datePanelLabel.labels[1].handler)">
+            {{ datePanelLabel.labels[1].label }}
+        </span>
+    </span>
+</template>
+
+<script>
+import {DataTypes} from 'san';
+
+export default {
+    dataTypes: {
+        datePanelLabel: DataTypes.oneOfType([DataTypes.object, DataTypes.string]),
+        currentView: DataTypes.string,
+        datePrefixCls: DataTypes.string
+    },
+    run(e, cb) {
+        e.stopPropagation();
+        cb();
+    }
+};
+</script>

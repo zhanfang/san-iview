@@ -1,0 +1,82 @@
+<template>
+    <div class="{{classes}}" on-click="handleClick($event)">
+        <span class="{{cell | cellCls}}" s-for="cell, index in cells">
+            <em data-index="{{index}}">{{cell.text}}月</em>
+        </span>
+    </div>
+</template>
+<script>
+    import {DataTypes} from 'san';
+    import classNames from 'classnames';
+    import {deepCopy} from '../../../utils/assist';
+    const prefixCls = 'view-date-picker-cells';
+
+    export default {
+        dataTypes: {
+            month: DataTypes.number,
+            disabledDate: DataTypes.oneOfType([DataTypes.func, DataTypes.string]),
+            selectionMode: DataTypes.string
+        },
+        initData() {
+            return {
+                selectionMode: 'month'
+            };
+        },
+        computed: {
+            classes() {
+                return classNames([
+                    `${prefixCls}`,
+                    `${prefixCls}-month`
+                ]);
+            },
+            cells() {
+                let cells = [];
+                const cell_tmpl = {
+                    text: '',
+                    selected: false,
+                    disabled: false
+                };
+
+                const date = new Date(this.data.get('date'));
+
+                for (let i = 0; i < 12; i++) {
+                    const cell = deepCopy(cell_tmpl);
+                    cell.text = i + 1;
+
+                    date.setMonth(i);
+                    const disabledDate = this.data.get('disabledDate');
+                    cell.disabled = typeof disabledDate === 'function' && disabledDate(date)  && this.data.get('selectionMode') === 'month';
+
+                    cell.selected = Number(this.data.get('month')) === i;
+                    cells.push(cell);
+                }
+
+                return cells;
+            }
+        },
+        filters: {
+            cellCls(cell) {
+                return classNames([
+                    `${prefixCls}-cell`,
+                    {
+                        [`${prefixCls}-cell-selected`]: cell.selected,
+                        [`${prefixCls}-cell-disabled`]: cell.disabled
+                    }
+                ]);
+            }
+        },
+        handleClick(e) {
+            const target = e.target;
+            e.stopPropagation();
+
+            if (target.tagName === 'EM') {
+                const index = parseInt(event.target.getAttribute('data-index'), 10);
+                const cell = this.data.get(`cells[${index}]`);
+                if (cell.disabled) {
+                    return;
+                }
+                this.fire('pick', index);
+            }
+        }
+    };
+</script>

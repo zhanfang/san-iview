@@ -97,10 +97,11 @@ export default {
                     boundariesPadding: 0,
                     forceAbsolute: true,
                     boundariesElement: 'body',
-                    modifiers: modifiers
-                });
-                this.popper.options.onCreate(popper => {
-                    this.resetTransformOrigin(popper);
+                    modifiers: modifiers,
+                    onCreate: () => {
+                        // this.popper.popper.style.top = '34px';
+                        this.resetTransformOrigin(this.popper);
+                    }
                 });
             });
         }
@@ -122,6 +123,7 @@ export default {
         let placement = popper.popper.getAttribute('x-placement').split('-')[0];
         let origin = placementMap[placement];
         popper.popper.style.transformOrigin = `center ${ origin }`;
+        // popper.popper.style.top = `0px`;
     }
 };
 </script>
