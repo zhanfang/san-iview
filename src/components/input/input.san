@@ -192,7 +192,7 @@ export default {
         }
 
         this.fire('input-input', value);
-        this.data.set('value', value);
+        // this.data.set('value', value);
         this.fire('input-change', e);
     },
     handleChange(e) {

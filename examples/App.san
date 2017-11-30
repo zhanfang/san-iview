@@ -85,6 +85,7 @@
         </dropdown-menu>
     </dropdown> -->
     <!-- 10代表的是11月 -->
+    <i-input></i-input>
     <date 
         value="{=date=}"
         type="date"

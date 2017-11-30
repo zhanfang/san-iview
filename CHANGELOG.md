@@ -1,4 +1,21 @@
-# 更新日志
+<a name="1.1.0"></a>
+# 1.1.0 (2017-11-28)
+
+
+### Bug Fixes
+
+* **dropdown:** fix dropdown popper version to 1.12.6 ([124905d](https://github.com/zhanfang/san-iview/commit/124905d))
+* **Input:** fix input type number problem ([f06e302](https://github.com/zhanfang/san-iview/commit/f06e302))
+* **location:** update readme and package.json ([b7ea7cb](https://github.com/zhanfang/san-iview/commit/b7ea7cb))
+* **readme:** update readme.md ([cdbe7d3](https://github.com/zhanfang/san-iview/commit/cdbe7d3))
+
+
+### Features
+
+* **all:** add balloon to input tip and fix dropdown translate ([1d571ab](https://github.com/zhanfang/san-iview/commit/1d571ab))
+* **all:** fix some bug and add some feature at Changelog ([137a7a9](https://github.com/zhanfang/san-iview/commit/137a7a9))
+* **all:** init san-iview ([83b7764](https://github.com/zhanfang/san-iview/commit/83b7764))
+* **Time&DatePicker:** add timePicker and DatePicker ([25f5792](https://github.com/zhanfang/san-iview/commit/25f5792))
 
 ## 1.1.0
 - 增加日历选择及时间选择器 DatePicker & TimePicker
