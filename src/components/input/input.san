@@ -50,7 +50,7 @@
             readonly="{{readonly}}"
             rows="{{rows}}"
             name="{{name}}"
-            value="{{value}}"
+            value="{=value=}"
             autocomplete="{{autocomplete}}"
             on-keyup="handleKeyup($event)"
             on-keypress="handleKeypress($event)"
