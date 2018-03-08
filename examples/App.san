@@ -1,6 +1,6 @@
 <template>
 <div>
-    <!-- <icon type="ionic"></icon>
+    <icon type="ionic"></icon>
     <select value="{=model1=}" style="width:200px">
         <select-option
             s-for="item in cityList"
@@ -64,6 +64,11 @@
             <form-item label="介绍" prop="desc">
                 <i-input value="{=formValidate.desc=}" type="textarea" autosize="{{autosize}}" placeholder="请输入..."></i-input>
             </form-item>
+            <form-item label="上传图片" prop="img">
+                <upload>
+                     <i-button type="ghost" icon="ios-cloud-upload-outline">
+                </upload>
+            </form-item>
             <form-item>
                 <i-btn type="primary" on-select="handleSubmit('formValidate')">提交</i-btn>
                 <i-btn type="ghost" on-select="handleReset('formValidate')" style="margin-left: 8px">重置</i-btn>
@@ -83,7 +88,7 @@
             <dropdown-item>冰糖葫芦</dropdown-item>
             <dropdown-item>北京烤鸭</dropdown-item>
         </dropdown-menu>
-    </dropdown> -->
+    </dropdown>
     <!-- 10代表的是11月 -->
     <i-input></i-input>
     <date 
@@ -91,6 +96,7 @@
         type="date"
         placeholder="Select date"
         style="width: 215px"
+        options="{{options}}"
         on-change="handleDate($event)">
 
     </date>
@@ -104,10 +110,11 @@
 </div>
 </template>
 <script>
-import {Icon, Select, Circle, Input, Menu, Form, Dropdown, DatePicker, ColorPicker, TimePicker} from '../src/index';
+import {Button, Icon, Select, Circle, Input, Menu, Form, Dropdown, DatePicker, ColorPicker, TimePicker, Upload} from '../src/index';
 
 export default {
     components: {
+        'i-button': Button,
         'icon': Icon,
         'select': Select,
         'select-option': Select.Option,
@@ -121,13 +128,28 @@ export default {
         'dropdown-item': Dropdown.Item,
         'date': DatePicker,
         'color-picker': ColorPicker,
-        'time': TimePicker
+        'time': TimePicker,
+        'upload': Upload
     },
     initData() {
+        const validateImg = (rule, files, callback) => {
+            if (files === '') {
+                callback(new Error('Please enter your password'));
+            } else {
+                callback();
+            }
+        };
         return {
+            imgRules: [
+                {validator: validateImg, trigger: 'blur'}
+            ],
             date: new Date(),
-            disabledDate(time) {
-                return time.getTime() < Date.now();
+            options: {
+                disabledDate(date) {
+                    const start = new Date('2018-02-09');
+
+                    return date && (date.valueOf() >= Date.now() || date.valueOf() <= start.valueOf());
+                }
             },
             cityList: [
                     {
@@ -175,7 +197,8 @@ export default {
                 interest: [],
                 date: '',
                 time: '',
-                desc: ''
+                desc: '',
+                img: ''
             },
             ruleValidate: {
                 name: [
@@ -204,6 +227,9 @@ export default {
                 desc: [
                     { required: true, message: '请输入个人介绍', trigger: 'blur' },
                     { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'blur' }
+                ],
+                img: [
+                    {validator: validateImg, trigger: 'blur'}
                 ]
             }
         }

@@ -81,11 +81,6 @@ export default {
                 this.close();
             }, duration * 1000);
         }
-
-        // check if with desc in notice component
-        if (this.prefixCls === 'view-notice') {
-            this.withDesc = this.$refs.content.querySelectorAll(`.${this.prefixCls}-desc`)[0].innerHTML !== '';
-        }
     },
     debounce: debounce((fn, data) => {fn(data);}, 300),
     clearCloseTimer() {

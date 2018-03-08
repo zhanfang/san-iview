@@ -232,7 +232,7 @@
         getScrollIndex(type, index) {
             const Type = firstUpperCase(type);
             const disabled = this.data.get(`disabled${Type}`);
-            if (disabled.length && this.hideDisabledOptions) {
+            if (disabled.length && this.data.get('hideDisabledOptions')) {
                 let _count = 0;
                 disabled.forEach(item => item <= index ? _count++ : '');
                 index -= _count;

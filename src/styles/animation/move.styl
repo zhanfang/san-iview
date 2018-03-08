@@ -7,7 +7,7 @@ move-motion($className, $keyframeName)
     {$className}-leave-active 
         animation-timing-function: $ease-in-out
 
-move-motion('.move-up', 'viewMoveUp');
+move-motion('.move-up', viewMoveUp);
 
 @keyframes viewMoveUpIn
     0%
@@ -29,7 +29,7 @@ move-motion('.move-up', 'viewMoveUp');
         transform: translateY(-100%)
         opacity: 0
 
-move-motion('.move-notice', 'viewMoveNotice');
+move-motion('.move-notice', viewMoveNotice);
 
 @keyframes viewMoveNoticeIn {
     0% {

@@ -12,11 +12,11 @@ make-motion($className, $keyframeName)
         animation-play-state: paused
 
     {$className}-enter-active, {$className}-appear
-        animation-name: $keyframeName + 'In'
+        animation-name: $keyframeName + In
         animation-play-state: running
 
     {$className}-leave-active
-        animation-name: $keyframeName + 'Out'
+        animation-name: $keyframeName + Out
         animation-play-state: running
 
 @import './move.styl';

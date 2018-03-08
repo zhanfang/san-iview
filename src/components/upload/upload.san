@@ -20,6 +20,7 @@
 <script>
 import {DataTypes} from 'san';
 import classNames from 'classnames';
+import * as C from '../form/constant';
 
 const prefixCls = 'view-upload';
 

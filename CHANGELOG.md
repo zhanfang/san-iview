@@ -17,6 +17,15 @@
 * **all:** init san-iview ([83b7764](https://github.com/zhanfang/san-iview/commit/83b7764))
 * **Time&DatePicker:** add timePicker and DatePicker ([25f5792](https://github.com/zhanfang/san-iview/commit/25f5792))
 
+## 1.1.5
+- 添加DatePicker options
+
+## 1.1.4
+- 修复动画样式的css字符串问题
+
+## 1.1.3
+- 修复 DatePicker 选择一月时显示bug
+
 ## 1.1.0
 - 增加日历选择及时间选择器 DatePicker & TimePicker
 

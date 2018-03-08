@@ -141,7 +141,7 @@
                 ]);
             },
             datePanelLabel(year, month) {
-                if (!year || !month) {
+                if (!year) {
                     return null;
                 }
 

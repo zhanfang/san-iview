@@ -33,7 +33,11 @@ export default class DatePicker extends Picker {
         }
 
         const PanelClass = getPanel(this.data.get('type'));
-        this.Panel = new PanelClass();
+        this.Panel = new PanelClass({
+            data: {
+                disabledDate: this.data.get('options.disabledDate')
+            }
+        });
         const value = this.data.get('type');
         const typeMap = {
             year: 'year',
