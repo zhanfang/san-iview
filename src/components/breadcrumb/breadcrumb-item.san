@@ -51,7 +51,7 @@ export default {
     },
     attached() {
         let num = 0;
-        this.slotChilds.forEach(child => {
+        this.slotChildren.forEach(child => {
             if (child.name === 'separator') {
                 num++;
             }

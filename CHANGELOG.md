@@ -17,6 +17,9 @@
 * **all:** init san-iview ([83b7764](https://github.com/zhanfang/san-iview/commit/83b7764))
 * **Time&DatePicker:** add timePicker and DatePicker ([25f5792](https://github.com/zhanfang/san-iview/commit/25f5792))
 
+## 1.2.0
+- update San to 3.5.0
+
 ## 1.1.5
 - 添加DatePicker options
 

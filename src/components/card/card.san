@@ -38,7 +38,7 @@ export default {
     attached() {
         let titleNum = 0;
         let extraNum = 0;
-        this.slotChilds.forEach(child => {
+        this.slotChildren.forEach(child => {
             if (child.name === 'title') {
                 titleNum++;
             }

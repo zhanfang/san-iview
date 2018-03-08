@@ -42,7 +42,7 @@ export default {
     attached() {
         let header = 0;
         let footer = 0;
-        this.slotChilds.forEach(child => {
+        this.slotChildren.forEach(child => {
             if (child.name === 'header') {
                 header++;
             }

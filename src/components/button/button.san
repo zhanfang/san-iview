@@ -60,7 +60,7 @@ export default {
         }
     },
     attached() {
-        if (this.slotChilds.length === 0) {
+        if (this.slotChildren.length === 0) {
             this.data.set('showSlot', false);
         }
     },

@@ -7,7 +7,7 @@
             {{ placeHolder }}
         </span>
         <span class="view-select-selected-value" s-else>
-            {{ selectedSingle }}
+            {{ value | getSelectedSingle(items) }}
         </span>
         <input
             s-if="filterable"
@@ -79,7 +79,8 @@ export default {
             clearable: false,
             visible: false,
             transfer: false,
-            placement: 'bottom'
+            placement: 'bottom',
+            items: []
         };
     },
     computed: {
@@ -88,7 +89,6 @@ export default {
                 `${prefixCls}`,
                 `${prefixCls}-single`,
                 {
-                    [`${prefixCls}-visible`]: this.data.get('visible'),
                     [`${prefixCls}-disabled`]: this.data.get('disabled'),
                     [`${prefixCls}-show-clear`]: this.data.get('clearable') && this.data.get('value') !== '',
                     [`${prefixCls}-${this.data.get('size')}`]: !!this.data.get('size')
@@ -98,39 +98,31 @@ export default {
         dropdownCls() {
             return classNames([{
                 [`${prefixCls}-dropdown-transfer`]: this.data.get('transfer')
-                // ['slide-up-enter-active']: this.data.get('visible'),
-                // ['slide-up-leave-active']: !this.data.get('visible'),
             }]);
         },
         showPlaceholder() {
             return !!this.data.get('placeHolder') && this.data.get('value') === 'undefined';
         }
     },
+    filters: {
+        getSelectedSingle(value, items) {
+            let res;
+            items.forEach(item => {
+                let val = item.data.get('value')
+                item.data.set('activeValue', value);
+                if (value === val) {
+                    res = item.data.get('showLabel');
+                }
+            });
+            return res;
+        }
+    },
     components: {
         icon: Icon,
         drop: Drop
     },
-    inited() {
-        this.items = [];
-    },
     attached() {
-        this.watch('visible', val => {
-            if (val) {
-                this.ref('dropdown').fire('update-popper');
-            }
-            else {
-                this.ref('dropdown').destroy();
-            }
-        });
         this.registerClickOutside();
-        this.watch('value', val => {
-            this.items.forEach(item => {
-                item.data.set('activeValue', val);
-                if (item.data.get('value') === val) {
-                    this.data.set('selectedSingle', item.data.get('showLabel'));
-                }
-            });
-        });
     },
     registerClickOutside() {
         const self = this;
@@ -161,7 +153,8 @@ export default {
     },
     setSelectValue(val) {
         this.data.set('value', val);
-        this.items.forEach(item => {
+        const items = this.data.get('items');
+        items.forEach(item => {
             item.data.set('activeValue', val);
         });
         this.fire('select', val);
@@ -175,14 +168,16 @@ export default {
     messages: {
         [C.SELECT_ITEM_INITED](e) {
             const item = e.target;
-            this.items.push(item);
+            this.data.push('items', item);
             item.data.set('activeValue', this.data.get('value'));
             if (item.data.get('value') === this.data.get('value')) {
                 this.data.set('selectedSingle', e.target.data.get('showLabel'));
             }
         },
         [C.SELECT_ITEM_DETACHED](e) {
-            this.items = this.items.filter(item => item !== e.target);
+            let items = this.data.get('items');
+            items = items.filter(item => item !== e.target);
+            this.data.set('items', items);
         },
         [C.SELECT_ITEM_SELECTED](e) {
             this.data.set('visible', false);

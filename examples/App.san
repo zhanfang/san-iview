@@ -66,12 +66,13 @@
             </form-item>
             <form-item label="上传图片" prop="img">
                 <upload>
-                     <i-button type="ghost" icon="ios-cloud-upload-outline">
+                    <i-button type="ghost" icon="ios-cloud-upload-outline">
+                    </i-button>
                 </upload>
             </form-item>
             <form-item>
-                <i-btn type="primary" on-select="handleSubmit('formValidate')">提交</i-btn>
-                <i-btn type="ghost" on-select="handleReset('formValidate')" style="margin-left: 8px">重置</i-btn>
+                <i-button type="primary" on-select="handleSubmit('formValidate')">提交</i-button>
+                <i-button type="ghost" on-select="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
             </form-item>
         </i-form>
     </div>

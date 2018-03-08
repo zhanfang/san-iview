@@ -68,7 +68,7 @@ export default {
     },
     attached() {
         let extraNum = 0;
-        this.slotChilds.forEach(child => {
+        this.slotChildren.forEach(child => {
             if (child.name === 'extra') {
                 extraNum++;
             }

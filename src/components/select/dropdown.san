@@ -51,14 +51,6 @@ export default {
     inited() {
         this.on('update-popper', this.update.bind(this));
         this.on('destroy-popper', this.destroy.bind(this));
-        // this.watch('visible', visible => {
-        //     if (!visible) {
-        //         this.debounce(() => this.data.set('status', true));
-        //     }
-        //     else {
-        //         this.data.set('status', false);
-        //     }
-        // })
     },
     detached() {
         if (this.popper) {
@@ -123,7 +115,6 @@ export default {
         let placement = popper.popper.getAttribute('x-placement').split('-')[0];
         let origin = placementMap[placement];
         popper.popper.style.transformOrigin = `center ${ origin }`;
-        // popper.popper.style.top = `0px`;
     }
 };
 </script>
