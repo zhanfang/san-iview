@@ -1,6 +1,6 @@
 {
   "name": "san-iview",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "san-iview",
   "description": "A high quality UI components Library with San",
   "keywords": [
@@ -82,8 +82,9 @@
     "karma-webpack": "^2.0.4",
     "lolex": "^1.5.2",
     "mocha": "^3.5.3",
-    "san": "^3.4.3",
+    "san": "^3.5.0",
     "san-loader": "github:ecomfe/san-loader",
+    "san-router": "^1.2.0",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0",
     "style-loader": "^0.13.1",

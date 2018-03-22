@@ -1,6 +1,6 @@
 <template>
     <div class="{{classes}}">
-        <div class="{{headClasses}}" s-if="showHead">
+        <div class="{{headClasses}}" s-if="showTitle">
             <slot name="title"></slot>
         </div>
         <div class="{{extraClasses}}" s-if="showExtra">
@@ -31,27 +31,19 @@ export default {
             disHover: false,
             shadow: false,
             padding: defaultPadding,
-            showHead: true,
-            showExtra: true
+            showTitle: false,
+            showExtra: false
         };
     },
     attached() {
-        let titleNum = 0;
-        let extraNum = 0;
         this.slotChildren.forEach(child => {
-            if (child.name === 'title') {
-                titleNum++;
+            if (child.name === 'title' && child.children.length > 0) {
+                this.data.set('showTitle', true);
             }
-            else if (child.name === 'extra') {
-                extraNum++;
+            else if (child.name === 'extra' && child.children.length > 0) {
+                this.data.set('showTitle', true);
             }
         });
-        if (titleNum === 0) {
-            this.data.set('showHead', false);
-        }
-        if (extraNum === 0) {
-            this.data.set('showExtra', false);
-        }
     },
     computed: {
         classes() {
@@ -78,9 +70,8 @@ export default {
                 return {
                     padding: `${this.data.get('padding')}px`
                 };
-            } else {
-                return '';
             }
+            return '';
         }
     },
 };

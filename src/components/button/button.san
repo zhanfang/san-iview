@@ -3,13 +3,13 @@
         type="{{htmlType}}" 
         class="{{classes}}" 
         disabled="{{disabled}}"
-        on-click="handleClick($event)"
-    >
+        on-click="handleClick($event)">
+        
         <icon class="view-load-loop" type="load-c" s-if="loading"></icon>
         <icon type="{{icon}}" s-if="icon && !loading"></icon>
-        <span s-if="showSlot">
-            <slot></slot>
-        </span>
+        
+        <slot></slot>
+
     </button>
 </template>
 <script>
@@ -30,13 +30,11 @@ export default {
         htmlType: DataTypes.oneOf(['button', 'submit', 'reset']),
         icon: DataTypes.string,
         long: DataTypes.bool,
-        showSlot: DataTypes.bool
     },
     initData() {
         return {
             htmlType: 'button',
-            long: false,
-            showSlot: true
+            long: false
         };
     },
     components: {
@@ -57,11 +55,6 @@ export default {
                         || this.data.get('loading'))
                 }
             ]);
-        }
-    },
-    attached() {
-        if (this.slotChildren.length === 0) {
-            this.data.set('showSlot', false);
         }
     },
     handleClick(e) {

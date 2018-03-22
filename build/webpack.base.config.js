@@ -1,9 +1,9 @@
 /**
  * 公共配置
  */
-var path = require('path');
-function resolve (dir) {
-    return path.join(__dirname, '..', dir)
+const path = require('path');
+function resolve(dir) {
+    return path.join(__dirname, '..', dir);
 }
 
 const stylus = require('stylus');
@@ -39,7 +39,8 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                loader: 'babel-loader', exclude: /node_modules/
+                loader: 'babel-loader',
+                exclude: /node_modules/
             },
             {
                 test: /\.css$/,
@@ -49,14 +50,11 @@ module.exports = {
                     'autoprefixer-loader'
                 ]
             },
-            { test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, loader: 'url-loader?limit=8192'},
-            { test: /\.(html|tpl)$/, loader: 'html-loader' }
+            {test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, loader: 'url-loader?limit=8192'},
+            {test: /\.(html|tpl)$/, loader: 'html-loader'}
         ]
     },
     resolve: {
-        extensions: ['.js', '.san'],
-        alias: {
-            view: path.resolve(__dirname, '../src/view')
-        }
+        extensions: ['.js', '.san']
     }
 };

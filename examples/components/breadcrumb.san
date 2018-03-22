@@ -1,0 +1,25 @@
+<template>
+  <div>
+        <bread>
+            <bread-item>活动</bread-item>
+            <bread-item href="/#/button">123</bread-item>
+            <bread-item>页面列表</bread-item>
+        </bread>
+        <bread separator=">">
+            <bread-item>活动</bread-item>
+            <bread-item>123</bread-item>
+            <bread-item>页面列表</bread-item>
+        </bread>
+    </div>
+</template>
+
+<script>
+    import {Breadcrumb} from '../../src/index';
+    
+    export default {
+        components: {
+            'bread': Breadcrumb,
+            'bread-item': Breadcrumb.Item,
+        }
+    }
+</script>

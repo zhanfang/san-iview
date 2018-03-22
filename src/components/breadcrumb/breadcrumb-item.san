@@ -8,11 +8,7 @@
         </span>
         <span 
             class="{{separatorClasses}}" 
-            s-html="separator" 
-            s-if="!showSeparator">
-        </span>
-        <span class="{{separatorClasses}}" s-else>
-            <slot name="separator"></slot>
+            s-html="separator">
         </span>
     </span>
 </template>
@@ -31,8 +27,7 @@ export default {
     initData() {
         return {
             separator: '',
-            replace: false,
-            showSeparator: true
+            replace: false
         };
     },
     computed: {
@@ -48,18 +43,6 @@ export default {
     },
     detached() {
         this.dispatch(C.BREAD_ITEM_DETACHED);
-    },
-    attached() {
-        let num = 0;
-        this.slotChildren.forEach(child => {
-            if (child.name === 'separator') {
-                num++;
-            }
-        });
-        if (num === 0) {
-            this.data.set('showSeparator', false);
-        }
-
     },
     handleClick(e) {
         e.preventDefault();

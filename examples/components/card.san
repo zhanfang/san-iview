@@ -1,0 +1,19 @@
+<template>
+<div>
+    <card>
+        <div>
+            123
+        </div>
+    </card>
+</div>
+</template>
+
+<script>
+    import {Card} from '../../src/index';
+
+    export default {
+        components: {
+            'card': Card
+        }
+    }
+</script>

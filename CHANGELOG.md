@@ -1,4 +1,5 @@
 <a name="1.1.0"></a>
+# 1.2.0 (2018-03-01)
 # 1.1.0 (2017-11-28)
 
 
@@ -16,6 +17,11 @@
 * **all:** fix some bug and add some feature at Changelog ([137a7a9](https://github.com/zhanfang/san-iview/commit/137a7a9))
 * **all:** init san-iview ([83b7764](https://github.com/zhanfang/san-iview/commit/83b7764))
 * **Time&DatePicker:** add timePicker and DatePicker ([25f5792](https://github.com/zhanfang/san-iview/commit/25f5792))
+
+## 1.2.1
+- fix breadcrumb bug
+- fix card slot bug
+- add example routes
 
 ## 1.2.0
 - update San to 3.5.0

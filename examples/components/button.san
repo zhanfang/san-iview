@@ -1,0 +1,33 @@
+<template>
+    <div>
+        <i-button type="primary" loading>Loading...</i-button>
+        <i-button type="primary" loading="{{loading}}" on-select="toLoading">
+            <span s-if="!loading">Click me!</span>
+            <span s-else>Loading...</span>
+        </i-button>
+        <i-button type="primary" loading="{{loading2}}" icon="checkmark-round" on-select="toLoading2">
+            <span s-if="!loading2">Click me!</span>
+            <span s-else>Loading...</span>
+        </i-button>
+    </div>
+</template>
+<script>
+    import {Button} from '../../src/index';
+    export default {
+        components: {
+            'i-button': Button
+        },
+        initData () {
+            return {
+                loading: false,
+                loading2: false
+            }
+        },
+        toLoading () {
+            this.data.set('loading', true);
+        },
+        toLoading2 () {
+            this.data.set('loading2', true);
+        }
+    }
+</script>
