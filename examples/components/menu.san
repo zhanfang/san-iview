@@ -1,0 +1,41 @@
+<template>
+<div>
+    <oap-menu
+        class="oap-header"
+        activeName="{{path}}"
+        on-select="selectMenu($event, name)">
+        <oap-menu-item name="/act">
+            <span>活动</span>
+        </oap-menu-item>
+        <oap-menu-item name="/tpl">
+            <span>模板</span>
+            <span class="oap-header-blank">|</span>
+        </oap-menu-item>
+        <oap-menu-item name="/widget">
+            组件
+            <span class="oap-header-blank">|</span>
+        </oap-menu-item>
+        <oap-submenu name="/admin">
+            <span slot="title">管理</span>
+            <oap-menu-group title="zhanfang">
+                <oap-menu-item name="/admin/user">用户管理</oap-menu-item>
+                <oap-menu-item name="/admin/type">类型管理</oap-menu-item>
+                <oap-menu-item name="/admin/widget">组件审核</oap-menu-item>
+            </oap-menu-group>
+        </oap-submenu>
+    </oap-menu>
+</div>
+</template>
+
+<script>
+    import {Menu} from '../../src/index';
+
+    export default {
+        components: {
+            'oap-menu': Menu,
+            'oap-menu-group': Menu.Group,
+            'oap-menu-item': Menu.Item,
+            'oap-submenu': Menu.Sub,
+        }
+    }
+</script>

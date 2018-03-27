@@ -14,7 +14,6 @@
             s-else
             visible="{{opened}}"
             placement="bottom"
-            width="{{width}}"
             s-ref="drop">
             <ul class="view-menu-drop-list">
                 <slot></slot>
@@ -80,7 +79,6 @@ export default {
         this.dispatch(C.SUBMENU_ITEM_INITED);
     },
     attached() {
-        this.data.set('width', parseFloat(getStyle(this.el, 'width')));
         this.watch('mode', val => {
             if (val === 'horizontal') {
                 this.ref('drop').update();

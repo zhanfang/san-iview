@@ -6,6 +6,7 @@
 import Breadcrumb from './components/breadcrumb';
 import Card from './components/card';
 import Button from './components/button';
+import Menu from './components/menu';
 
 export default [
     {
@@ -21,6 +22,11 @@ export default [
     {
         rule: '/card',
         Component: Card,
+        target: '#page'
+    },
+    {
+        rule: '/menu',
+        Component: Menu,
         target: '#page'
     }
 ];
