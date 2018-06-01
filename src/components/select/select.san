@@ -157,7 +157,7 @@ export default {
         items.forEach(item => {
             item.data.set('activeValue', val);
         });
-        this.fire('select', val);
+        this.nextTick(() => this.fire('select', val));
     },
     handleBlur(e) {
         this.setSelectValue(e.target.value);

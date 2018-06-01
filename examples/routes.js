@@ -7,6 +7,7 @@ import Breadcrumb from './components/breadcrumb';
 import Card from './components/card';
 import Button from './components/button';
 import Menu from './components/menu';
+import Select from './components/select';
 
 export default [
     {
@@ -27,6 +28,11 @@ export default [
     {
         rule: '/menu',
         Component: Menu,
+        target: '#page'
+    },
+    {
+        rule: '/select',
+        Component: Select,
         target: '#page'
     }
 ];
