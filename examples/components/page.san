@@ -1,0 +1,23 @@
+<template>
+<div>
+    <div class="oap-act-main-cards">
+        <div class="oap-page-footer">
+            <page
+                total="{{100}}"
+                pageSize="{{100}}"
+                size="small"
+                on-select="handleSelect($event)">
+            </page>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+    import {Page} from '../../src/index.js';
+
+    export default {
+        components: {
+            'page': Page
+        }
+    }
+</script>

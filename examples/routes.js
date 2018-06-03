@@ -8,6 +8,7 @@ import Card from './components/card';
 import Button from './components/button';
 import Menu from './components/menu';
 import Select from './components/select';
+import Page from './components/page';
 
 export default [
     {
@@ -33,6 +34,11 @@ export default [
     {
         rule: '/select',
         Component: Select,
+        target: '#page'
+    },
+    {
+        rule: '/page',
+        Component: Page,
         target: '#page'
     }
 ];

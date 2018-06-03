@@ -107,6 +107,7 @@ export default {
         },
         allPages() {
             const allPage = Math.ceil(this.data.get('total') / this.data.get('pageSize'));
+            console.log(this.data.get('total'), this.data.get('pageSize'));
             return (allPage === 0) ? 1 : allPage;
         },
         prevClasses() {
