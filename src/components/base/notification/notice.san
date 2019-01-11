@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="{{classes}}" style="{{styles}}" s-if="enterStatus">
-        <div s-if="type === 'notice'" on-click="click">
+        <div s-if="type === 'notice'" on-click="click($event)">
             <div class="{{baseClass}}-content" s-html="{{content}}"></div>
             <a class="{{baseClass}}-close" on-click="close" s-if="closable">
                 <i class="view-icon ion-ios-close-empty"></i>
@@ -92,10 +92,10 @@ export default {
             this.closeTimer = null;
         }
     },
-    click() {
+    click(e) {
         const onClick = this.data.get('onClick');
         if (isFunction(onClick)) {
-            onClick();
+            onClick(e);
         }
     },
     close() {
