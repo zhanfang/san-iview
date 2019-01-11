@@ -3,14 +3,14 @@
     <div class="{{classes}}" style="{{styles}}" s-if="enterStatus">
         <div s-if="type === 'notice'" on-click="click($event)">
             <div class="{{baseClass}}-content" s-html="{{content}}"></div>
-            <a class="{{baseClass}}-close" on-click="close" s-if="closable">
+            <a class="{{baseClass}}-close" on-click="close($event)" s-if="closable">
                 <i class="view-icon ion-ios-close-empty"></i>
             </a>
         </div>
         <div s-if="type === 'message'">
             <div class="{{baseClass}}-content">
                 <div class="{{baseClass}}-content-text" s-html="{{content}}"></div>
-                <a class="{{baseClass}}-close" on-click="close" s-if="closable">
+                <a class="{{baseClass}}-close" on-click="close($event)" s-if="closable">
                     <i class="view-icon ion-ios-close-empty"></i>
                 </a>
             </div>
@@ -98,13 +98,13 @@ export default {
             onClick(e);
         }
     },
-    close() {
+    close(e) {
         this.data.set('enterStatus', false);
         this.clearCloseTimer();
         const onClose = this.data.get('onClose');
         
         if (isFunction(onClose)) {
-            onClose();
+            onClose(e);
         }
         this.debounce(() => {
             this.parentComponent.close(this.data.get('name'))
