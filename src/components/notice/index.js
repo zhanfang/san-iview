@@ -38,6 +38,7 @@ function notice(type, options) {
     const desc = options.desc || '';
     const noticeKey = options.name || `${prefixKey}${name}`;
     const onClose = options.onClose || function () {};
+    const onClick = options.onClick || function () {};
     // todo const btn = options.btn || null;
     const duration = (options.duration === 0) ? 0 : options.duration || defaultDuration;
 
@@ -72,11 +73,12 @@ function notice(type, options) {
 
     instance.notice({
         name: noticeKey.toString(),
-        duration: duration,
+        duration,
         styles: {},
         transitionName: 'move-notice',
-        content: content,
-        onClose: onClose,
+        content,
+        onClose,
+        onClick,
         closable: true,
         type: 'notice'
     });

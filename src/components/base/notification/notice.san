@@ -1,6 +1,7 @@
 <template>
-    <div class="{{classes}}" style="{{styles}}">
-        <div s-if="type === 'notice'">
+<div>
+    <div class="{{classes}}" style="{{styles}}" s-if="enterStatus">
+        <div s-if="type === 'notice'" on-click="click">
             <div class="{{baseClass}}-content" s-html="{{content}}"></div>
             <a class="{{baseClass}}-close" on-click="close" s-if="closable">
                 <i class="view-icon ion-ios-close-empty"></i>
@@ -15,6 +16,7 @@
             </div>
         </div>
     </div>
+</div>
 </template>
 <script>
 import {DataTypes} from 'san';
@@ -37,6 +39,7 @@ export default {
         className: DataTypes.string,
         name: DataTypes.string,
         onClose: DataTypes.func,
+        onClick: DataTypes.func,
         transitionName: DataTypes.string
     },
     initData() {
@@ -87,6 +90,12 @@ export default {
         if (this.closeTimer) {
             clearTimeout(this.closeTimer);
             this.closeTimer = null;
+        }
+    },
+    click() {
+        const onClick = this.data.get('onClick');
+        if (isFunction(onClick)) {
+            onClick();
         }
     },
     close() {

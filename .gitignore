@@ -22,3 +22,5 @@ yarn-error.log
 test/unit/coverage
 .vscode
 doc/
+yarn.lock
+package-lock.json
