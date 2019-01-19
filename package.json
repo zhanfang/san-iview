@@ -4,16 +4,16 @@
   "description": "san-view document",
   "author": "zhanfang(fzhanxd@gmail.com)",
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "npx webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "build": "NODE_ENV=production node build/build.js",
     "test": ""
   },
   "dependencies": {
-    "classnames": "^2.2.5",
-    "highlightjs": "^9.10.0",
-    "san": "^3.2.6",
-    "san-iview": "^0.2.5",
-    "san-router": "^1.0.3"
+    "classnames": "2.2.5",
+    "highlightjs": "9.10.0",
+    "san": "3.2.6",
+    "san-iview": "0.2.5",
+    "san-router": "1.0.3"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
@@ -43,9 +43,11 @@
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
+    "uglifyjs-webpack-plugin": "^1.3.0",
     "url-loader": "^0.5.9",
     "webpack": "^2.7.0",
     "webpack-bundle-analyzer": "^2.9.0",
+    "webpack-dev-server": "2.8.2",
     "webpack-merge": "^3.0.0"
   }
 }

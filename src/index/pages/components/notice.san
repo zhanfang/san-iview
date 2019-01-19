@@ -104,8 +104,14 @@
                             <td>自动</td>
                         </tr>
                         <tr>
-                            <td>onClose</td>
+                            <td>onClose(e)</td>
                             <td>关闭时的回调</td>
+                            <td>Function</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>onClick(e)</td>
+                            <td>点击主体面板时的回调</td>
                             <td>Function</td>
                             <td>-</td>
                         </tr>

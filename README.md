@@ -1,10 +1,10 @@
 # san-iview 文档及文档生成工具
 
 ## 开发文档
-1. 安装`webpack-dev-server`
+1. 安装`webpack`
 
 ```
-npm i webpack-dev-server -g
+npm i webpack@2.7.0 -g
 ```
 
 2. 安装依赖
